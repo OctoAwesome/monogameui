@@ -450,8 +450,8 @@ namespace MonoGameUi
                         screen.Alpha = 0f;
                         var trans = NavigateToTransition.Clone(screen);
                         screen.StartTransition(trans);
-                        ScreenTarget.Controls.Add(screen);
                     }
+                    ScreenTarget.Controls.Add(screen);
                 }
 
                 ActiveScreen = screen;

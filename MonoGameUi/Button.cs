@@ -10,8 +10,8 @@ namespace MonoGameUi
     /// </summary>
     public class Button : ContentControl
     {
-        public Button(IScreenManager manager)
-            : base(manager)
+        public Button(IScreenManager manager, string style = "")
+            : base(manager, style)
         {
             TabStop = true;
             CanFocus = true;
@@ -57,9 +57,9 @@ namespace MonoGameUi
         /// </summary>
         /// <param name="text">Enthaltener Text</param>
         /// <returns>Button-Instanz</returns>
-        public static Button TextButton(IScreenManager manager, string text)
+        public static Button TextButton(IScreenManager manager, string text, string style = "")
         {
-            return new Button(manager)
+            return new Button(manager, style)
             {
                 Content = new Label(manager) { Text = text }
             };
