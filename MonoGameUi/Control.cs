@@ -1117,12 +1117,12 @@ namespace MonoGameUi
             bool passive = false;
             foreach (var child in Children.InZOrder())
             {
-                args.LocalPosition = args.GlobalPosition - child.AbsolutePosition;
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
                 passive |= child.InternalMouseMove(args);
             }
 
             // Ermitteln ob hovered ist (Aktive & Passive)
-            args.LocalPosition = args.GlobalPosition - AbsolutePosition;
+            args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
             bool hovered =
                 args.LocalPosition.X >= 0 &&
                 args.LocalPosition.Y >= 0 &&
@@ -1176,7 +1176,7 @@ namespace MonoGameUi
             // Children first (Order by Z-Order)
             foreach (var child in Children.InZOrder())
             {
-                args.LocalPosition = args.GlobalPosition - child.AbsolutePosition;
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
                 child.InternalLeftMouseDown(args);
                 if (args.Handled) break;
             }
@@ -1184,7 +1184,7 @@ namespace MonoGameUi
             // Lokales Events
             if (!args.Handled)
             {
-                args.LocalPosition = args.GlobalPosition - AbsolutePosition;
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
                 OnLeftMouseDown(args);
                 if (LeftMouseDown != null)
                     LeftMouseDown(this, args);
@@ -1196,12 +1196,12 @@ namespace MonoGameUi
             // Children first (Order by Z-Order)
             foreach (var child in Children.InZOrder())
             {
-                args.LocalPosition = args.GlobalPosition - child.AbsolutePosition;
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
                 child.InternalLeftMouseUp(args);
             }
 
             // Lokales Events
-            args.LocalPosition = args.GlobalPosition - AbsolutePosition;
+            args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
             OnLeftMouseUp(args);
             if (LeftMouseUp != null)
                 LeftMouseUp(this, args);
@@ -1215,7 +1215,7 @@ namespace MonoGameUi
             // Children first (Order by Z-Order)
             foreach (var child in Children.InZOrder())
             {
-                args.LocalPosition = args.GlobalPosition - child.AbsolutePosition;
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
                 child.InternalLeftMouseClick(args);
                 if (args.Handled) break;
             }
@@ -1223,7 +1223,7 @@ namespace MonoGameUi
             // Lokales Events
             if (!args.Handled)
             {
-                args.LocalPosition = args.GlobalPosition - AbsolutePosition;
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
                 OnLeftMouseClick(args);
                 if (LeftMouseClick != null)
                     LeftMouseClick(this, args);
@@ -1240,7 +1240,7 @@ namespace MonoGameUi
             // Children first (Order by Z-Order)
             foreach (var child in Children.InZOrder())
             {
-                args.LocalPosition = args.GlobalPosition - child.AbsolutePosition;
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
                 child.InternalRightMouseDown(args);
                 if (args.Handled) break;
             }
@@ -1248,7 +1248,7 @@ namespace MonoGameUi
             // Lokales Events
             if (!args.Handled)
             {
-                args.LocalPosition = args.GlobalPosition - AbsolutePosition;
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
                 OnRightMouseDown(args);
                 if (RightMouseDown != null)
                     RightMouseDown(this, args);
@@ -1260,12 +1260,12 @@ namespace MonoGameUi
             // Children first (Order by Z-Order)
             foreach (var child in Children.InZOrder())
             {
-                args.LocalPosition = args.GlobalPosition - child.AbsolutePosition;
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
                 child.InternalRightMouseUp(args);
             }
 
             // Lokales Events
-            args.LocalPosition = args.GlobalPosition - AbsolutePosition;
+            args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
             OnRightMouseUp(args);
             if (RightMouseUp != null)
                 RightMouseUp(this, args);
@@ -1279,7 +1279,7 @@ namespace MonoGameUi
             // Children first (Order by Z-Order)
             foreach (var child in Children.InZOrder())
             {
-                args.LocalPosition = args.GlobalPosition - child.AbsolutePosition;
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
                 child.InternalRightMouseClick(args);
                 if (args.Handled) break;
             }
@@ -1287,7 +1287,7 @@ namespace MonoGameUi
             // Lokales Events
             if (!args.Handled)
             {
-                args.LocalPosition = args.GlobalPosition - AbsolutePosition;
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
                 OnRightMouseClick(args);
                 if (RightMouseClick != null)
                     RightMouseClick(this, args);
@@ -1302,7 +1302,7 @@ namespace MonoGameUi
             // Children first (Order by Z-Order)
             foreach (var child in Children.InZOrder())
             {
-                args.LocalPosition = args.GlobalPosition - child.AbsolutePosition;
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
                 child.InternalMouseScroll(args);
                 if (args.Handled) break;
             }
@@ -1310,11 +1310,20 @@ namespace MonoGameUi
             // Lokales Events
             if (!args.Handled)
             {
-                args.LocalPosition = args.GlobalPosition - AbsolutePosition;
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
                 OnMouseScroll(args);
                 if (MouseScroll != null)
                     MouseScroll(this, args);
             }
+        }
+
+        private Point CalculateLocalPosition(Point global, Control control)
+        {
+            Point absolutePosition = control.AbsolutePosition;
+            Vector2 local = Vector2.Transform(
+                new Vector2(global.X - absolutePosition.X, global.Y - absolutePosition.Y),
+                Matrix.Invert(control.AbsoluteTransformation));
+            return new Point((int)local.X, (int)local.Y);
         }
 
         protected virtual void OnMouseEnter(MouseEventArgs args) { }
