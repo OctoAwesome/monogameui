@@ -31,3 +31,9 @@
 /processorParam:TextureFormat=Compressed
 /build:BoldFont.spritefont
 
+#begin click1.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:click1.wav
+

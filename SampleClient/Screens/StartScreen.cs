@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using MonoGameUi;
+using Microsoft.Xna.Framework.Audio;
 
 namespace SampleClient.Screens
 {
@@ -10,6 +11,7 @@ namespace SampleClient.Screens
             Background = new BorderBrush(Color.DarkRed);
 
             Button nextButton = Button.TextButton(manager, "Next", "special");
+            nextButton.ClickSound = manager.Content.Load<SoundEffect>("click1");
             nextButton.LeftMouseClick += (s, e) =>
             {
                 manager.NavigateToScreen(new SplitScreen(manager));
