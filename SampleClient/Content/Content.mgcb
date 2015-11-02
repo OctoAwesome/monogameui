@@ -37,3 +37,9 @@
 /processorParam:Quality=Best
 /build:click1.wav
 
+#begin rollover5.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:rollover5.wav
+

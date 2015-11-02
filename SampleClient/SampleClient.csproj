@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\click1.wav" />
+    <Content Include="Content\rollover5.wav" />
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>

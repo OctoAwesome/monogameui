@@ -26,15 +26,26 @@ namespace MonoGameUi
 
         private SoundEffect clickSound = null;
 
+        private SoundEffect hoverSound = null;
+
         /// <summary>
         /// Referenz auf den aktuellen Screen Manager
         /// </summary>
         public IScreenManager ScreenManager { get; private set; }
 
+        /// <summary>
+        /// Sound der beim Klicken abgespielt wird
+        /// </summary>
         public SoundEffect ClickSound
         {
             get { return clickSound; }
             set { clickSound = value; }
+        }
+
+        public SoundEffect HoverSound
+        {
+            get { return hoverSound; }
+            set { hoverSound = value; }
         }
 
         /// <summary>
@@ -1358,7 +1369,7 @@ namespace MonoGameUi
 
         protected virtual void OnMouseScroll(MouseScrollEventArgs args) { }
 
-        protected virtual void OnHoveredChanged(PropertyEventArgs<TreeState> args) { }
+        protected virtual void OnHoveredChanged(PropertyEventArgs<TreeState> args) { if(hoverSound != null && hovered == TreeState.Active) hoverSound.Play(); }
 
         public event MouseEventDelegate MouseEnter;
 
