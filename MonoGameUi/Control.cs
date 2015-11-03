@@ -38,14 +38,35 @@ namespace MonoGameUi
         /// </summary>
         public SoundEffect ClickSound
         {
-            get { return clickSound; }
-            set { clickSound = value; }
+            get
+            {
+                return clickSound;
+            }
+            set
+            {
+                if (clickSound != value)
+                {
+                    clickSound = value;
+                }
+            }
         }
 
+        /// <summary>
+        /// Sound der beim Hoveren des Controls abgespielt wird.
+        /// </summary>
         public SoundEffect HoverSound
         {
-            get { return hoverSound; }
-            set { hoverSound = value; }
+            get
+            {
+                return hoverSound;
+            }
+            set
+            {
+                if (hoverSound != value)
+                {
+                    hoverSound = value;
+                }
+            }
         }
 
         /// <summary>
@@ -1106,6 +1127,10 @@ namespace MonoGameUi
                     OnHoveredChanged(args);
                     if (HoveredChanged != null)
                         HoveredChanged(this, args);
+
+                    // Sound abspielen
+                    if (hoverSound != null && hovered == TreeState.Active)
+                        hoverSound.Play();
                 }
             }
         }
@@ -1249,6 +1274,7 @@ namespace MonoGameUi
                     LeftMouseClick(this, args);
             }
 
+            // Click-Sound abspielen
             if (clickSound != null)
                 clickSound.Play();
         }
@@ -1369,7 +1395,7 @@ namespace MonoGameUi
 
         protected virtual void OnMouseScroll(MouseScrollEventArgs args) { }
 
-        protected virtual void OnHoveredChanged(PropertyEventArgs<TreeState> args) { if(hoverSound != null && hovered == TreeState.Active) hoverSound.Play(); }
+        protected virtual void OnHoveredChanged(PropertyEventArgs<TreeState> args) { }
 
         public event MouseEventDelegate MouseEnter;
 
