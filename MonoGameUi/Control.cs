@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,10 +24,29 @@ namespace MonoGameUi
 
         private Border padding = Border.All(0);
 
+        private SoundEffect clickSound = null;
+
+        private SoundEffect hoverSound = null;
+
         /// <summary>
         /// Referenz auf den aktuellen Screen Manager
         /// </summary>
         public IScreenManager ScreenManager { get; private set; }
+
+        /// <summary>
+        /// Sound der beim Klicken abgespielt wird
+        /// </summary>
+        public SoundEffect ClickSound
+        {
+            get { return clickSound; }
+            set { clickSound = value; }
+        }
+
+        public SoundEffect HoverSound
+        {
+            get { return hoverSound; }
+            set { hoverSound = value; }
+        }
 
         /// <summary>
         /// Standard-Background des Controls
@@ -1228,6 +1248,9 @@ namespace MonoGameUi
                 if (LeftMouseClick != null)
                     LeftMouseClick(this, args);
             }
+
+            if (clickSound != null)
+                clickSound.Play();
         }
 
         internal void InternalRightMouseDown(MouseEventArgs args)
@@ -1346,7 +1369,7 @@ namespace MonoGameUi
 
         protected virtual void OnMouseScroll(MouseScrollEventArgs args) { }
 
-        protected virtual void OnHoveredChanged(PropertyEventArgs<TreeState> args) { }
+        protected virtual void OnHoveredChanged(PropertyEventArgs<TreeState> args) { if(hoverSound != null && hovered == TreeState.Active) hoverSound.Play(); }
 
         public event MouseEventDelegate MouseEnter;
 
