@@ -31,6 +31,11 @@ namespace MonoGameUi
         ContentManager Content { get; }
 
         /// <summary>
+        /// Gibt den aktuellen Modus der Maus zurück.
+        /// </summary>
+        MouseMode MouseMode { get; }
+
+        /// <summary>
         /// Gibt an ob der aktuelle History Stack eine Navigation Back-Navigation erlaubt.
         /// </summary>
         bool CanGoBack { get; }
@@ -75,5 +80,33 @@ namespace MonoGameUi
         /// </summary>
         /// <param name="control"></param>
         void Flyback(Control control);
+
+        /// <summary>
+        /// Wechselt in den Catured Mouse Mode.
+        /// </summary>
+        void CaptureMouse();
+
+        /// <summary>
+        /// Wechselt in den Free Mouse Mode.
+        /// </summary>
+        void FreeMouse();
+    }
+
+    /// <summary>
+    /// Liste der möglichen Mouse-Modi für den Screen.
+    /// </summary>
+    public enum MouseMode
+    {
+        /// <summary>
+        /// Der Mauszeiger wird im Zentrum gefangen und nach jeder Bewegung wieder zurück 
+        /// gesetzt. Er wird ausgeblendet und die Bewegungswerte innerhalb der Mouse-Events 
+        /// entsprechen dem Bewegungsdelta seit dem letzten Aufruf.
+        /// </summary>
+        Captured,
+
+        /// <summary>
+        /// Der Mauszeiger kann sich frei bewegen und wird ganz normal angezeigt.
+        /// </summary>
+        Free
     }
 }

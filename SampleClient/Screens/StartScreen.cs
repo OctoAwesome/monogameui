@@ -10,14 +10,21 @@ namespace SampleClient.Screens
         {
             Background = new BorderBrush(Color.DarkRed);
 
-            Button nextButton = Button.TextButton(manager, "Next", "special");          //Button mit speziellen Style erstellen
-            nextButton.ClickSound = manager.Content.Load<SoundEffect>("click1");        //Click Sound festlegen
-            nextButton.HoverSound = manager.Content.Load<SoundEffect>("rollover5");     //Hover Sound festlegen
-            nextButton.LeftMouseClick += (s, e) =>                                      //Click Event festlegen
+            StackPanel stack = new StackPanel(manager);
+            Controls.Add(stack);
+
+            // Button zur Controls Demo
+            Button controlScreenButton = Button.TextButton(manager, "Controls", "special");          //Button mit speziellen Style erstellen
+            controlScreenButton.LeftMouseClick += (s, e) =>                                      //Click Event festlegen
             {
                 manager.NavigateToScreen(new SplitScreen(manager));                     //Screen wechseln
             };
-            Controls.Add(nextButton);                                                   //Button zu Root hinzufügen
+            stack.Controls.Add(controlScreenButton);                                                   //Button zu Root hinzufügen
+
+            // Button zur Mouse Capture Demo
+            Button capturedMouseButton = Button.TextButton(manager, "Captured Mouse", "special");
+            capturedMouseButton.LeftMouseClick += (s, e) => manager.NavigateToScreen(new MouseCaptureScreen(manager));
+            stack.Controls.Add(capturedMouseButton);
         }
     }
 }

@@ -14,11 +14,23 @@ namespace MonoGameUi
         public bool Handled { get; set; }
     }
 
+    /// <summary>
+    /// Standard Event Args bei Property Changed Events.
+    /// </summary>
+    /// <typeparam name="T">Typ des Properties</typeparam>
     public class PropertyEventArgs<T> : EventArgs
     {
         public T OldValue { get; set; }
 
         public T NewValue { get; set; }
+
+        public PropertyEventArgs() { }
+
+        public PropertyEventArgs(T oldValue, T newValue)
+        {
+            OldValue = oldValue;
+            NewValue = newValue;
+        }
     }
 
     /// <summary>
@@ -26,6 +38,11 @@ namespace MonoGameUi
     /// </summary>
     public class MouseEventArgs : EventArgs
     {
+        /// <summary>
+        /// Gibt den aktuellen Modus der Maus an.
+        /// </summary>
+        public MouseMode MouseMode { get; set; }
+
         /// <summary>
         /// Position des Mauspointers bezogen auf den Ursprung des aktuellen Controls
         /// </summary>
@@ -36,15 +53,26 @@ namespace MonoGameUi
         /// </summary>
         public Point GlobalPosition { get; set; }
 
-        /// <summary>
-        /// Gibt an, ob die Mausposition später wieder zurück gesetzt werden soll.
-        /// </summary>
-        public bool ResetPosition { get; set; }
+        public MouseEventArgs() { }
+
+        public MouseEventArgs(MouseMode mouseMode, Point localPosition, Point globalPosition)
+        {
+            MouseMode = mouseMode;
+            LocalPosition = localPosition;
+            GlobalPosition = globalPosition;
+        }
     }
 
     public class MouseScrollEventArgs : MouseEventArgs
     {
         public int Steps { get; set; }
+
+        public MouseScrollEventArgs() { }
+
+        public MouseScrollEventArgs(int steps)
+        {
+            Steps = steps;
+        }
     }
 
     /// <summary>

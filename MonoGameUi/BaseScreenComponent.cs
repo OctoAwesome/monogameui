@@ -15,6 +15,8 @@ namespace MonoGameUi
 
         private SpriteBatch batch;
 
+        private MouseMode mouseMode;
+
         /// <summary>
         /// Prefix für die Titel-Leiste
         /// </summary>
@@ -44,6 +46,25 @@ namespace MonoGameUi
         /// Referenz zum MonoGame Content Manager.
         /// </summary>
         public ContentManager Content { get; private set; }
+
+        /// <summary>
+        /// Gibt den aktuellen Modus der Maus zurück.
+        /// </summary>
+        public MouseMode MouseMode
+        {
+            get
+            {
+                return mouseMode;
+            }
+            private set
+            {
+                if (mouseMode != value)
+                {
+                    mouseMode = value;
+                    Game.IsMouseVisible = (mouseMode != MouseMode.Captured);
+                }
+            }
+        }
 
         public BaseScreenComponent(Game game)
             : base(game)
@@ -115,10 +136,16 @@ namespace MonoGameUi
             {
                 MouseState mouse = Mouse.GetState();
 
+                // Mausposition anhand des Mouse Modes ermitteln
+                Point mousePosition = mouse.Position;
+                if (MouseMode == MouseMode.Captured)
+                    mousePosition = mousePosition - lastMousePosition;
+
                 MouseEventArgs moveArgs = new MouseEventArgs()
                 {
-                    GlobalPosition = mouse.Position,
-                    LocalPosition = mouse.Position,
+                    MouseMode = MouseMode,
+                    GlobalPosition = mousePosition,
+                    LocalPosition = mousePosition,
                 };
 
                 root.InternalMouseMove(moveArgs);
@@ -131,8 +158,8 @@ namespace MonoGameUi
                         // Linke Maustaste wurde neu gedrückt
                         root.InternalLeftMouseDown(new MouseEventArgs
                         {
-                            GlobalPosition = mouse.Position,
-                            LocalPosition = mouse.Position
+                            GlobalPosition = mousePosition,
+                            LocalPosition = mousePosition
                         });
                     }
                     lastLeftMouseButtonPressed = true;
@@ -144,14 +171,16 @@ namespace MonoGameUi
                         // Linke Maustaste wurde losgelassen
                         root.InternalLeftMouseClick(new MouseEventArgs
                         {
-                            GlobalPosition = mouse.Position,
-                            LocalPosition = mouse.Position
+                            MouseMode = MouseMode,
+                            GlobalPosition = mousePosition,
+                            LocalPosition = mousePosition
                         });
 
                         root.InternalLeftMouseUp(new MouseEventArgs
                         {
-                            GlobalPosition = mouse.Position,
-                            LocalPosition = mouse.Position
+                            MouseMode = MouseMode,
+                            GlobalPosition = mousePosition,
+                            LocalPosition = mousePosition
                         });
                     }
                     lastLeftMouseButtonPressed = false;
@@ -165,8 +194,9 @@ namespace MonoGameUi
                         // Rechte Maustaste neu gedrückt
                         root.InternalRightMouseDown(new MouseEventArgs
                         {
-                            GlobalPosition = mouse.Position,
-                            LocalPosition = mouse.Position
+                            MouseMode = MouseMode,
+                            GlobalPosition = mousePosition,
+                            LocalPosition = mousePosition
                         });
                     }
                     lastRightMouseButtonPressed = true;
@@ -178,14 +208,16 @@ namespace MonoGameUi
                         // Rechte Maustaste losgelassen
                         root.InternalRightMouseUp(new MouseEventArgs
                         {
-                            GlobalPosition = mouse.Position,
-                            LocalPosition = mouse.Position
+                            MouseMode = MouseMode,
+                            GlobalPosition = mousePosition,
+                            LocalPosition = mousePosition
                         });
 
                         root.InternalRightMouseClick(new MouseEventArgs
                         {
-                            GlobalPosition = mouse.Position,
-                            LocalPosition = mouse.Position
+                            MouseMode = MouseMode,
+                            GlobalPosition = mousePosition,
+                            LocalPosition = mousePosition
                         });
                     }
                     lastRightMouseButtonPressed = false;
@@ -197,15 +229,16 @@ namespace MonoGameUi
                     int diff = (mouse.ScrollWheelValue - lastMouseWheelValue);
                     root.InternalMouseScroll(new MouseScrollEventArgs
                     {
-                        GlobalPosition = mouse.Position,
-                        LocalPosition = mouse.Position,
+                        MouseMode = MouseMode,
+                        GlobalPosition = mousePosition,
+                        LocalPosition = mousePosition,
                         Steps = diff
                     });
                     lastMouseWheelValue = mouse.ScrollWheelValue;
                 }
 
                 // Potentieller Positionsreset
-                if (moveArgs.ResetPosition)
+                if (MouseMode == MouseMode.Captured)
                     Mouse.SetPosition(lastMousePosition.X, lastMousePosition.Y);
                 else
                     lastMousePosition = mouse.Position;
@@ -328,10 +361,16 @@ namespace MonoGameUi
 
         private List<Screen> historyStack = new List<Screen>();
 
+        /// <summary>
+        /// Gibt an ob der aktuelle History Stack eine Navigation Back-Navigation erlaubt.
+        /// </summary>
         public bool CanGoBack { get { return historyStack.Count > 1; } }
 
         private Screen activeScreen = null;
 
+        /// <summary>
+        /// Referenz auf den aktuellen Screen.
+        /// </summary>
         public Screen ActiveScreen
         {
             get
@@ -347,13 +386,25 @@ namespace MonoGameUi
             }
         }
 
+        /// <summary>
+        /// Liste der History.
+        /// </summary>
         public IEnumerable<Screen> History { get { return historyStack; } }
 
+        /// <summary>
+        /// Navigiert den Screen Manager zum angegebenen Screen.
+        /// </summary>
+        /// <param name="screen"></param>
+        /// <returns>Gibt an ob die Navigation durchgeführt wurde.</returns>
         public bool NavigateToScreen(Screen screen, object parameter = null)
         {
             return Navigate(screen, false, parameter);
         }
 
+        /// <summary>
+        /// Navigiert zurück, sofern möglich.
+        /// </summary>
+        /// <returns>Gibt an ob die Navigation durchgeführt wurde.</returns>
         public bool NavigateBack()
         {
             if (CanGoBack)
@@ -381,7 +432,7 @@ namespace MonoGameUi
             // Schritt 1: Vorherigen Screen "abmelden"
             if (ActiveScreen != null)
             {
-                overlayed = activeScreen.IsOverlay;
+                overlayed = ActiveScreen.IsOverlay;
 
                 ActiveScreen.InternalNavigateFrom(args);
 
@@ -389,7 +440,7 @@ namespace MonoGameUi
                 if (args.Cancel) { return false; }
 
                 // Screen deaktivieren
-                ActiveScreen.Enabled = false;
+                ActiveScreen.IsActiveScreen = false;
 
                 // Spezialfall (aktueller Screen nicht in History, neuer Screen Overlay)
                 if (!ActiveScreen.InHistory && screen != null && screen.IsOverlay)
@@ -406,12 +457,14 @@ namespace MonoGameUi
                         trans.Finished += (s, e) =>
                         {
                             ScreenTarget.Controls.Remove(e);
+                            ((Screen)e).IsVisibleScreen = false;
                         };
                         activeScreen.StartTransition(trans);
                     }
                     else
                     {
                         ScreenTarget.Controls.Remove(ActiveScreen);
+                        ActiveScreen.IsVisibleScreen = false;
                     }
                 }
 
@@ -451,11 +504,15 @@ namespace MonoGameUi
                         var trans = NavigateToTransition.Clone(screen);
                         screen.StartTransition(trans);
                     }
+                    screen.IsVisibleScreen = true;
                     ScreenTarget.Controls.Add(screen);
                 }
 
                 ActiveScreen = screen;
-                ActiveScreen.Enabled = true;
+                ActiveScreen.IsActiveScreen = true;
+
+                // Default Mouse Mode anwenden
+                MouseMode = ActiveScreen.DefaultMouseMode;
 
                 // Navigate-Events aufrufen
                 args.Cancel = false;
@@ -467,21 +524,48 @@ namespace MonoGameUi
             return true;
         }
 
+        /// <summary>
+        /// Navigiert bis zum ersten Screen zurück.
+        /// </summary>
         public void NavigateHome()
         {
             while (CanGoBack)
                 NavigateBack();
         }
 
+        /// <summary>
+        /// Öffnet ein Flyout.
+        /// </summary>
+        /// <param name="control"></param>
+        /// <param name="position"></param>
         public void Flyout(Control control, Point position)
         {
             flyout.AddControl(control, position);
         }
 
+        /// <summary>
+        /// Schließt ein Flyout wieder.
+        /// </summary>
+        /// <param name="control"></param>
         public void Flyback(Control control)
         {
             flyout.RemoveControl(control);
         }
 
+        /// <summary>
+        /// Wechselt in den Catured Mouse Mode.
+        /// </summary>
+        public void CaptureMouse()
+        {
+            MouseMode = MouseMode.Captured;
+        }
+
+        /// <summary>
+        /// Wechselt in den Free Mouse Mode.
+        /// </summary>
+        public void FreeMouse()
+        {
+            MouseMode = MouseMode.Free;
+        }
     }
 }
