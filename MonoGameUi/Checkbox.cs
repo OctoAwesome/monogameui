@@ -22,7 +22,8 @@ namespace MonoGameUi
             set
             {
                 boxChecked = value;
-                CheckedChanged.Invoke(boxChecked);
+                if(CheckedChanged != null)
+                    CheckedChanged.Invoke(boxChecked);
             }
         }
 
