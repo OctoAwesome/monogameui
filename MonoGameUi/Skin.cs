@@ -155,6 +155,15 @@ namespace MonoGameUi
                 ProgressBar progressBar = c as ProgressBar;
                 progressBar.BarBrush = Current.ProgressBarBrush;
             });
+
+            //Slider
+            ControlSkins.Add(typeof(Slider), (c) =>
+            {
+                Slider s = c as Slider;
+                s.Orientation = Orientation.Horizontal;
+                s.SliderBackgroundBrush = new BorderBrush(Color.Blue);
+                s.SliderForegroundBrush = new BorderBrush(Color.SlateGray);
+            });
         }
 
         #region Basic Values

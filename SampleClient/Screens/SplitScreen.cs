@@ -85,7 +85,23 @@ namespace SampleClient.Screens
             combobox.Items.Add("Combobox");                             //Items zu Combobox hinzufügen
             combobox.Items.Add("Item");
 
+            //Horizontaler Slider
+            Slider sliderHorizontal = new Slider(manager)
+            {
+                Width = 150,
+                Height = 20
+            };
+            panel.Controls.Add(sliderHorizontal);
 
+            //Vertikaler Slider
+            Slider sliderVertical = new Slider(manager)
+            {
+                Range = 100,
+                Height = 200,
+                Width = 20,
+                Orientation = Orientation.Vertical
+            };
+            panel.Controls.Add(sliderVertical);
 
             //Textbox   
             Textbox textbox = new Textbox(manager)                      //Neue TextBox erzeugen
