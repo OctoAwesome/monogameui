@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 using MonoGameUi;
 
 namespace SampleClient.Screens
@@ -86,6 +87,14 @@ namespace SampleClient.Screens
             combobox.Items.Add("Item");
 
 
+            //Checkbox
+            Checkbox box = new Checkbox(manager);
+            box.CheckedChanged += (c) =>
+            {
+                //Irgendetwas tun wenn checked changed
+            };
+            panel.Controls.Add(box);
+
 
             //Textbox   
             Textbox textbox = new Textbox(manager)                      //Neue TextBox erzeugen
@@ -96,7 +105,6 @@ namespace SampleClient.Screens
                 MinWidth = 100                                          //Eine Textbox kann ihre Größe automatisch anpassen
             };
             panel.Controls.Add(textbox);                                //Textbox zu Panel hinzufügen
-
 
 
 

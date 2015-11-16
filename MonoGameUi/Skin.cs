@@ -155,6 +155,17 @@ namespace MonoGameUi
                 ProgressBar progressBar = c as ProgressBar;
                 progressBar.BarBrush = Current.ProgressBarBrush;
             });
+
+            //Checkbox
+            ControlSkins.Add(typeof(Checkbox), (c) =>
+            {
+                Checkbox checkbox = c as Checkbox;
+                checkbox.HookBrush = new BorderBrush(Color.LawnGreen);
+                checkbox.BoxBrush = new BorderBrush(Color.DarkGray);
+                checkbox.InnerBoxBrush = new BorderBrush(Color.LightGray);
+                checkbox.Width = 30;
+                checkbox.Height = 30;
+            });
         }
 
         #region Basic Values
