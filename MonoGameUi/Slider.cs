@@ -52,7 +52,8 @@ namespace MonoGameUi
             set
             {
                 sliderValue = value;
-                ValueChanged.Invoke(sliderValue);
+                if(ValueChanged != null)
+                    ValueChanged.Invoke(sliderValue);
             }
         }
 
