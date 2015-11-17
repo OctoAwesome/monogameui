@@ -103,9 +103,9 @@ namespace MonoGameUi
                 if (Orientation == Orientation.Vertical)
                 {
                     //Berechne den Wert des Sliders
-                    Value = localMousePos.Y / (contentArea.Height / Range);
-                    if (localMousePos.Y <= 0) Value = 0;                      //Wenn die Maus Position kleiner als 0 ist -> Value = 0
-                    if (localMousePos.Y >= contentArea.Height) Value = Range; //Wenn die Maus Position größer als die Breite des Controls -> Value = Range
+                    Value = (drawableKnobSpace.Height - localMousePos.Y) / (contentArea.Height / Range);
+                    if (Value <= 0) Value = 0;                      //Wenn die Maus Position kleiner als 0 ist -> Value = 0
+                    if (Value >= Range) Value = Range;              //Wenn die Maus Position größer als die Breite des Controls -> Value = Range
                 }
 
             }
@@ -133,8 +133,8 @@ namespace MonoGameUi
                 //Berechne die Position des SliderKnobs     
                 sliderKnob.X = contentArea.X;                                                       //Der SliderKnob beginnt immer am oberen Rand des Sliders
                 sliderKnob.Height = 20;                                                             //Der Slider ist 20px hoch
-                float HeightRange = ((float)drawableKnobSpace.Height / Range);                       //Berechnet wieviel Pixel 1 in Value wert ist
-                sliderKnob.Y = (int)Math.Round(drawableKnobSpace.Y + (HeightRange * Value) - 10);    //Berechnet die X Position des Knobs
+                float HeightRange = ((float)drawableKnobSpace.Height / Range);                      //Berechnet wieviel Pixel 1 in Value wert ist
+                sliderKnob.Y = (int)Math.Round(drawableKnobSpace.Y + drawableKnobSpace.Height - (HeightRange *Value) - 10);    //Berechnet die X Position des Knobs
                 sliderKnob.Width = contentArea.Width;                                               //Der SliderKnob ist immer so breit wie der Slider
             }
 
@@ -153,5 +153,29 @@ namespace MonoGameUi
 
         public delegate void ValueChangedDelegate(int Value);
 
+        protected override void OnKeyPress(KeyEventArgs args)
+        {
+            if (Focused != TreeState.Active)
+                return;
+
+
+            if (Orientation == Orientation.Horizontal)
+            {
+                if (args.Key == Keys.Right && Value < Range)
+                    Value++;
+                if (args.Key == Keys.Left && Value > 0)
+                    Value--;
+            }
+            else
+            {
+                if (args.Key == Keys.Up && Value < Range)
+                    Value++;
+                if (args.Key == Keys.Down && Value > 0)
+                    Value--;
+            }
+
+            if (args.Key == Keys.D0)
+                Value = 0;
+        }
     }
 }

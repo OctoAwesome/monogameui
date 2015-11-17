@@ -164,6 +164,16 @@ namespace MonoGameUi
                 s.SliderBackgroundBrush = new BorderBrush(Color.LightGray);
                 s.SliderForegroundBrush = new BorderBrush(Color.SlateGray);
             });
+
+            ControlSkins.Add(typeof(Checkbox), (c) =>
+            {
+                Checkbox checkbox = c as Checkbox;
+                checkbox.BoxBrush = new BorderBrush(Color.Black);
+                checkbox.InnerBoxBrush = new BorderBrush(Color.LightGray);
+                checkbox.HookBrush = new BorderBrush(Color.LawnGreen);
+                checkbox.Width = 20;
+                checkbox.Height = 20;
+            });
         }
 
         #region Basic Values

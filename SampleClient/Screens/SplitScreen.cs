@@ -105,6 +105,9 @@ namespace SampleClient.Screens
             labelSliderVertical.Text = "Value: " + sliderVertical.Value;
             panel.Controls.Add(labelSliderVertical);
 
+            Checkbox checkbox = new Checkbox(manager);
+            panel.Controls.Add(checkbox);
+
             //Textbox   
             Textbox textbox = new Textbox(manager)                      //Neue TextBox erzeugen
             {
