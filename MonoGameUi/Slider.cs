@@ -122,8 +122,8 @@ namespace MonoGameUi
             if (Orientation == Orientation.Horizontal)
             {
                 //Berechne die Position des SliderKnobs     
-                sliderKnob.Y = contentArea.Y;                                                       //Der SliderKnob beginnt immer am oberen Rand des Sliders
-                sliderKnob.Width = 20;                                                              //Der Slider ist 20px breit
+                sliderKnob.Y = contentArea.Y;                                                       //Y Koordinate des Knobs
+                sliderKnob.Width = 20;                                                              //Der Slider ist SliderWidth breit
                 float WidthRange = ((float)drawableKnobSpace.Width / Range);                        //Berechnet wieviel Pixel 1 in Value wert ist
                 sliderKnob.X = (int)Math.Round(drawableKnobSpace.X + (WidthRange * Value) - 10);    //Berechnet die X Position des Knobs
                 sliderKnob.Height = contentArea.Height;                                             //Der SliderKnob ist immer so hoch wie der Slider

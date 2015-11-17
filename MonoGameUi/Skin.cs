@@ -161,7 +161,7 @@ namespace MonoGameUi
             {
                 Slider s = c as Slider;
                 s.Orientation = Orientation.Horizontal;
-                s.SliderBackgroundBrush = new BorderBrush(Color.Blue);
+                s.SliderBackgroundBrush = new BorderBrush(Color.LightGray);
                 s.SliderForegroundBrush = new BorderBrush(Color.SlateGray);
             });
         }

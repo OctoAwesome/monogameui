@@ -32,19 +32,13 @@ namespace SampleClient.Screens
             panel.VerticalAlignment = VerticalAlignment.Stretch;        //100% Höhe
             scrollContainer.Content = panel;                            //Ein Scroll Container kann nur ein Control beherbergen
 
-
-
             //Label
             Label label = new Label(manager) { Text = "Control Showcase" }; //Neues Label erzeugen
             panel.Controls.Add(label);                                      //Label zu Panel hinzufügen
 
-
-
             //Button
             Button button = Button.TextButton(manager, "Dummy Button"); //Neuen TextButton erzeugen
             panel.Controls.Add(button);                                 //Button zu Panel hinzufügen
-
-
 
             //Progressbar
             ProgressBar pr = new ProgressBar(manager)                   //Neue ProgressBar erzeugen
@@ -54,8 +48,6 @@ namespace SampleClient.Screens
                 Width = 200                                             //Breite
             };      
             panel.Controls.Add(pr);                                     //ProgressBar zu Panel hinzufügen
-
-
 
             //ListBox
             Listbox<string> list = new Listbox<string>(manager);        //Neue ListBox erstellen
@@ -67,8 +59,6 @@ namespace SampleClient.Screens
 
             list.Items.Add("Hallo");                                    //Items zur Liste hinzufügen
             list.Items.Add("Welt");                                     //...
-
-
 
             //Combobox
             Combobox<string> combobox = new Combobox<string>(manager)   //Neue Combobox erstellen
@@ -85,13 +75,22 @@ namespace SampleClient.Screens
             combobox.Items.Add("Combobox");                             //Items zu Combobox hinzufügen
             combobox.Items.Add("Item");
 
+            //Slider Value Label
+            Label labelSliderHorizontal = new Label(manager);
+
             //Horizontaler Slider
             Slider sliderHorizontal = new Slider(manager)
             {
                 Width = 150,
-                Height = 20
+                Height = 20,
             };
+            sliderHorizontal.ValueChanged += (value) => { labelSliderHorizontal.Text = "Value: " + value; }; //Event on Value Changed
             panel.Controls.Add(sliderHorizontal);
+            labelSliderHorizontal.Text = "Value: " + sliderHorizontal.Value;                                 //Set Text initially
+            panel.Controls.Add(labelSliderHorizontal);
+
+            //Slider Value Label
+            Label labelSliderVertical = new Label(manager);
 
             //Vertikaler Slider
             Slider sliderVertical = new Slider(manager)
@@ -101,7 +100,10 @@ namespace SampleClient.Screens
                 Width = 20,
                 Orientation = Orientation.Vertical
             };
+            sliderVertical.ValueChanged += (value) => { labelSliderVertical.Text = "Value: " + value; };
             panel.Controls.Add(sliderVertical);
+            labelSliderVertical.Text = "Value: " + sliderVertical.Value;
+            panel.Controls.Add(labelSliderVertical);
 
             //Textbox   
             Textbox textbox = new Textbox(manager)                      //Neue TextBox erzeugen
@@ -112,9 +114,6 @@ namespace SampleClient.Screens
                 MinWidth = 100                                          //Eine Textbox kann ihre Größe automatisch anpassen
             };
             panel.Controls.Add(textbox);                                //Textbox zu Panel hinzufügen
-
-
-
 
         }
     }
