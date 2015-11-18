@@ -139,7 +139,9 @@ namespace MonoGameUi
                 // Mausposition anhand des Mouse Modes ermitteln
                 Point mousePosition = mouse.Position;
                 if (MouseMode == MouseMode.Captured)
-                    mousePosition = mousePosition - lastMousePosition;
+                    mousePosition = new Point(
+                        mousePosition.X - (GraphicsDevice.Viewport.Width / 2), 
+                        mousePosition.Y - (GraphicsDevice.Viewport.Height / 2));
 
                 MouseEventArgs moveArgs = new MouseEventArgs()
                 {
@@ -239,7 +241,7 @@ namespace MonoGameUi
 
                 // Potentieller Positionsreset
                 if (MouseMode == MouseMode.Captured)
-                    Mouse.SetPosition(lastMousePosition.X, lastMousePosition.Y);
+                    Mouse.SetPosition(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
                 else
                     lastMousePosition = mouse.Position;
             }
