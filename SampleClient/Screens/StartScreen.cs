@@ -25,6 +25,10 @@ namespace SampleClient.Screens
             Button capturedMouseButton = Button.TextButton(manager, "Captured Mouse", "special");
             capturedMouseButton.LeftMouseClick += (s, e) => manager.NavigateToScreen(new MouseCaptureScreen(manager));
             stack.Controls.Add(capturedMouseButton);
+
+            Button tabDemoScreen = Button.TextButton(manager, "Tab Demo", "special");
+            tabDemoScreen.LeftMouseClick += (s, e) => manager.NavigateToScreen(new TabScreen(manager));
+            stack.Controls.Add(tabDemoScreen);
         }
     }
 }
