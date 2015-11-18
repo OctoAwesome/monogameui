@@ -74,6 +74,15 @@ namespace SampleClient.Screens
 
             combobox.Items.Add("Combobox");                             //Items zu Combobox hinzufügen
             combobox.Items.Add("Item");
+            combobox.Items.Add("Hallo");
+           
+
+            Button clearCombobox = Button.TextButton(manager, "Clear Combobox");
+            clearCombobox.LeftMouseClick += (s, e) => {
+                combobox.Items.Clear();
+                list.Items.Clear();
+            };
+            panel.Controls.Add(clearCombobox);
 
             //Slider Value Label
             Label labelSliderHorizontal = new Label(manager);
