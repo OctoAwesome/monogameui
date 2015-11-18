@@ -93,9 +93,11 @@ namespace MonoGameUi
 
         protected override void OnRemove(T item, int index)
         {
-            Control control = SelectedItemContainer;
+            Control control = GetItemContainer(item);
             if (control != null)
                 StackPanel.Controls.Remove(control);
+            if (StackPanel.Controls.Count == 0)
+                InvalidateDimensions();
         }
 
         protected override void OnDrawBackground(SpriteBatch batch, Rectangle backgroundArea, GameTime gameTime, float alpha)
