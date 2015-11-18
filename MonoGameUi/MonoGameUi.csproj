@@ -79,6 +79,8 @@
     <Compile Include="Slider.cs" />
     <Compile Include="Splitter.cs" />
     <Compile Include="StackPanel.cs" />
+    <Compile Include="TabControl.cs" />
+    <Compile Include="TabPage.cs" />
     <Compile Include="Textbox.cs" />
     <Compile Include="TextureBrush.cs" />
     <Compile Include="TilesBrush.cs" />

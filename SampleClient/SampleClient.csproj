@@ -45,6 +45,7 @@
     <Compile Include="Screens\MouseCaptureScreen.cs" />
     <Compile Include="Screens\SplitScreen.cs" />
     <Compile Include="Screens\StartScreen.cs" />
+    <Compile Include="Screens\TabScreen.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework, Version=3.4.0.459, Culture=neutral, processorArchitecture=MSIL">
