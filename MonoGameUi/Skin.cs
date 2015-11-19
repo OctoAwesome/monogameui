@@ -174,6 +174,14 @@ namespace MonoGameUi
                 checkbox.Width = 20;
                 checkbox.Height = 20;
             });
+
+            ControlSkins.Add(typeof(TabControl), (c) =>
+            {
+                TabControl tabControl = c as TabControl;
+                tabControl.TabBrush = new BorderBrush(Color.LightGray);
+                tabControl.TabActiveBrush = new BorderBrush(Color.Gray);
+                tabControl.TabPageBackground = new BorderBrush(Color.Gray);
+            });
         }
 
         #region Basic Values
