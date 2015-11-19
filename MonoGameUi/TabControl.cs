@@ -173,7 +173,8 @@ namespace MonoGameUi
 
             tabPage.Content = Pages.ElementAt(SelectedTabIndex);
 
-            TabIndexChanged.Invoke(this, Pages.ElementAt(index), SelectedTabIndex);
+            if(TabIndexChanged != null)
+                TabIndexChanged.Invoke(this, Pages.ElementAt(index), SelectedTabIndex);
         }
 
         public void SelectTab(TabPage page)
@@ -189,7 +190,8 @@ namespace MonoGameUi
             tabListStack.Controls.ElementAt(SelectedTabIndex).Background = TabActiveBrush;
             tabPage.Content = Pages.ElementAt(SelectedTabIndex);
 
-            TabIndexChanged.Invoke(this, page, SelectedTabIndex);
+            if (TabIndexChanged != null)
+                TabIndexChanged.Invoke(this, page, SelectedTabIndex);
         }
 
         public event SelectionChangedDelegate TabIndexChanged;
