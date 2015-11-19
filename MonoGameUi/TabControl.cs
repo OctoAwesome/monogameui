@@ -145,10 +145,10 @@ namespace MonoGameUi
             title.Padding = Border.All(10);
             title.Background = TabBrush;
             title.Margin = new Border(0, 0, TabSpacing, 0);
-            title.LeftMouseClick += (s, e) => selectTab(Pages.IndexOf(item));
+            title.LeftMouseClick += (s, e) => SelectTab(Pages.IndexOf(item));
             tabListStack.Controls.Add(title);
 
-            selectTab(SelectedTabIndex);
+            SelectTab(SelectedTabIndex);
         }
 
         private void OnRemove(TabPage item, int index)
@@ -160,19 +160,40 @@ namespace MonoGameUi
                     SelectedTabIndex = tabListStack.Controls.Count;     //Setze den TabIndex auf die "neue" letzte
                 else SelectedTabIndex = index;                          //Andernfalls, setze den TabIndex  auf den aktuellen index
 
-                selectTab(SelectedTabIndex);                            //Selektiere den Tab
+                SelectTab(SelectedTabIndex);                            //Selektiere den Tab
             }
             tabListStack.InvalidateDimensions();                        //Zeichne den TabListStack neu
         }
 
-        private void selectTab(int index)
+        public void SelectTab(int index)
         {
             tabListStack.Controls.ElementAt(SelectedTabIndex).Background = TabBrush;
             SelectedTabIndex = index;
             tabListStack.Controls.ElementAt(index).Background = TabActiveBrush;
 
             tabPage.Content = Pages.ElementAt(SelectedTabIndex);
+
+            TabIndexChanged.Invoke(this, Pages.ElementAt(index), SelectedTabIndex);
         }
 
+        public void SelectTab(TabPage page)
+        {
+            try
+            {
+                tabListStack.Controls.ElementAt(SelectedTabIndex).Background = TabBrush;
+                SelectedTabIndex = Pages.IndexOf(page);
+            }
+            catch (Exception e) { }
+
+
+            tabListStack.Controls.ElementAt(SelectedTabIndex).Background = TabActiveBrush;
+            tabPage.Content = Pages.ElementAt(SelectedTabIndex);
+
+            TabIndexChanged.Invoke(this, page, SelectedTabIndex);
+        }
+
+        public event SelectionChangedDelegate TabIndexChanged;
+
+        public delegate void SelectionChangedDelegate(Control control, TabPage tab, int index);
     }
 }
