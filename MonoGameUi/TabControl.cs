@@ -6,19 +6,110 @@ using Microsoft.Xna.Framework;
 
 namespace MonoGameUi
 {
-    public class TabControl : ContentControl
+    public class TabControl : Control
     {
+        /// <summary>
+        /// Liste alle Pages
+        /// </summary>
         public ItemCollection<TabPage> Pages { get; private set; }
 
-        StackPanel tabControlStack, tabListStack;
-        ContentControl tabPage;
+        /// <summary>
+        /// Content des TabControl
+        /// </summary>
+        private Control Content
+        {
+            get { return Children.FirstOrDefault(); }
+            set
+            {
+                if (Content != value)
+                {
+                    Children.Clear();
+                    if (value != null)
+                        Children.Add(value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Die zur Darstellung benötigten Controls
+        /// </summary>
+        private StackPanel tabControlStack, tabListStack;
+        private ContentControl tabPage;
+
+        /// <summary>
+        /// Die nötigen Brushes
+        /// </summary>
+        public Brush tabActiveBrush;
+        public Brush tabBrush ;
+        public Brush tabPageBackground ;
+        public Brush tabListBackground ;
+
+        public Brush TabActiveBrush {
+            get { return tabActiveBrush; }
+            set
+            {
+                tabActiveBrush = value;
+                if(tabListStack.Controls.Count > 0)
+                    tabListStack.Controls.ElementAt(SelectedTabIndex).Background = tabActiveBrush;
+            }
+        }
+        public Brush TabBrush
+        {
+            get { return tabBrush; }
+            set
+            {
+                tabBrush = value;
+                if (tabListStack.Controls.Count > 0)
+                    foreach (Control c in tabListStack.Controls.Where(c => tabListStack.Controls.IndexOf(c) != SelectedTabIndex))
+                        c.Background = TabBrush;
+            }
+        }
+        public Brush TabPageBackground
+        {
+            get { return tabPageBackground; }
+            set
+            {
+                tabPageBackground = value;
+                tabPage.Background = TabPageBackground;
+            }
+        }
+
+        public Brush TabListBackground
+        {
+            get { return tabListBackground; }
+            set
+            {
+                tabListBackground = value;
+                tabListStack.Background = TabListBackground;
+            }
+        }
+
+        /// <summary>
+        /// Spacing zwischen Tabs
+        /// </summary>
+        private int tabSpacing;
+
+        public int TabSpacing {
+            get
+            {
+                return tabSpacing;
+            }
+            set
+            {
+                tabSpacing = value;
+                foreach (Control tabLabel in tabListStack.Controls)
+                    tabLabel.Margin = new Border(0, 0, tabSpacing, 0);
+            }
+        }
+
 
         IScreenManager Manager;
 
         int SelectedTabIndex = 0;
 
         public TabControl(IScreenManager manager) : base(manager)
-        {
+        { 
+
             Manager = manager;
 
             Pages = new ItemCollection<TabPage>();
@@ -33,13 +124,18 @@ namespace MonoGameUi
             tabListStack = new StackPanel(manager);
             tabListStack.HorizontalAlignment = HorizontalAlignment.Stretch;
             tabListStack.Orientation = Orientation.Horizontal;
+            tabListStack.Background = TabListBackground;
             tabControlStack.Controls.Add(tabListStack);
 
             tabPage = new ContentControl(manager);
             tabPage.HorizontalAlignment = HorizontalAlignment.Stretch;
             tabPage.VerticalAlignment = VerticalAlignment.Stretch;
-            tabPage.Background = new BorderBrush(Color.SlateGray);
+            tabPage.Background = TabPageBackground;
             tabControlStack.Controls.Add(tabPage);
+
+            tabSpacing = 1;
+
+            ApplySkin(typeof(TabControl));
         }
 
         private void OnInsert(TabPage item, int index)
@@ -47,8 +143,9 @@ namespace MonoGameUi
             Label title = new Label(Manager);
             title.Text = item.Title;
             title.Padding = Border.All(10);
-            title.Background = new BorderBrush(Color.Gray);
-            title.LeftMouseClick += (s, e) => selectTab(index);
+            title.Background = TabBrush;
+            title.Margin = new Border(0, 0, TabSpacing, 0);
+            title.LeftMouseClick += (s, e) => selectTab(Pages.IndexOf(item));
             tabListStack.Controls.Add(title);
 
             selectTab(SelectedTabIndex);
@@ -56,17 +153,23 @@ namespace MonoGameUi
 
         private void OnRemove(TabPage item, int index)
         {
-            tabListStack.Controls.RemoveAt(index);
-            if (Pages.Count > 0)
-                SelectedTabIndex = 0;
-                selectTab(0);
+            tabListStack.Controls.RemoveAt(index);                      //Entferne den Tab
+            if (Pages.Count > 0)                                        //Nur fortfahren wenn noch Pages vorhanden
+            {
+                if (index > tabListStack.Controls.Count)                //Wenn die letzte Page entfernt wird...
+                    SelectedTabIndex = tabListStack.Controls.Count;     //Setze den TabIndex auf die "neue" letzte
+                else SelectedTabIndex = index;                          //Andernfalls, setze den TabIndex  auf den aktuellen index
+
+                selectTab(SelectedTabIndex);                            //Selektiere den Tab
+            }
+            tabListStack.InvalidateDimensions();                        //Zeichne den TabListStack neu
         }
 
         private void selectTab(int index)
         {
-            tabListStack.Controls.ElementAt(SelectedTabIndex).Background = new BorderBrush(Color.Gray);
+            tabListStack.Controls.ElementAt(SelectedTabIndex).Background = TabBrush;
             SelectedTabIndex = index;
-            tabListStack.Controls.ElementAt(index).Background = new BorderBrush(Color.LightGray);
+            tabListStack.Controls.ElementAt(index).Background = TabActiveBrush;
 
             tabPage.Content = Pages.ElementAt(SelectedTabIndex);
         }
