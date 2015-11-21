@@ -3,3 +3,5 @@ Einige meiner Projekte basieren auf MonoGame und bei allen stellte sich die Frag
 
 #monogameui
 Some of my projects are based on MonoGame and at all of them I was looking for a solid UI-Framework. After some research I acknowledged that everybody used his own little Framework, and "the" Framework did not exist. Here is my attempt at it...
+
+Currently supported Controls: https://github.com/tomwendel/monogameui/wiki/Supported-Controls
