@@ -163,6 +163,7 @@ namespace MonoGameUi
                 s.Orientation = Orientation.Horizontal;
                 s.SliderBackgroundBrush = new BorderBrush(Color.LightGray);
                 s.SliderForegroundBrush = new BorderBrush(Color.SlateGray);
+                s.SliderWidth = 20;
             });
 
             ControlSkins.Add(typeof(Checkbox), (c) =>

@@ -82,7 +82,7 @@ namespace MonoGameUi
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
         {
             //Berechnet die mögliche Zeichenfläche für den SliderKnob
-            Rectangle drawableKnobSpace = new Rectangle(contentArea.X + 10, contentArea.Y + 10, contentArea.Width - 20, contentArea.Height - 20);
+            Rectangle drawableKnobSpace = new Rectangle(contentArea.X + SliderWidth / 2, contentArea.Y + SliderWidth/2, contentArea.Width - SliderWidth, contentArea.Height - SliderWidth);
 
             //Berechnen des Werts wenn die Maus gehalten wird & das Control ausgewählt ist
             if (mouseClickActive)
@@ -111,7 +111,7 @@ namespace MonoGameUi
             }
 
 
-            //Zeichnen des Sliders
+            ////////////////Zeichnen des Sliders////////////////
 
             //Zeichne Background
             SliderBackgroundBrush.Draw(batch, contentArea, alpha);
@@ -123,18 +123,18 @@ namespace MonoGameUi
             {
                 //Berechne die Position des SliderKnobs     
                 sliderKnob.Y = contentArea.Y;                                                       //Y Koordinate des Knobs
-                sliderKnob.Width = 20;                                                              //Der Slider ist SliderWidth breit
+                sliderKnob.Width = SliderWidth;                                                              //Der Slider ist SliderWidth breit
                 float WidthRange = ((float)drawableKnobSpace.Width / Range);                        //Berechnet wieviel Pixel 1 in Value wert ist
-                sliderKnob.X = (int)Math.Round(drawableKnobSpace.X + (WidthRange * Value) - 10);    //Berechnet die X Position des Knobs
+                sliderKnob.X = (int)Math.Round(drawableKnobSpace.X + (WidthRange * Value) - SliderWidth/2);    //Berechnet die X Position des Knobs
                 sliderKnob.Height = contentArea.Height;                                             //Der SliderKnob ist immer so hoch wie der Slider
             }
             else
             {
                 //Berechne die Position des SliderKnobs     
                 sliderKnob.X = contentArea.X;                                                       //Der SliderKnob beginnt immer am oberen Rand des Sliders
-                sliderKnob.Height = 20;                                                             //Der Slider ist 20px hoch
+                sliderKnob.Height = SliderWidth;                                                             //Der Slider ist SliderWidthpx hoch
                 float HeightRange = ((float)drawableKnobSpace.Height / Range);                      //Berechnet wieviel Pixel 1 in Value wert ist
-                sliderKnob.Y = (int)Math.Round(drawableKnobSpace.Y + drawableKnobSpace.Height - (HeightRange *Value) - 10);    //Berechnet die X Position des Knobs
+                sliderKnob.Y = (int)Math.Round(drawableKnobSpace.Y + drawableKnobSpace.Height - (HeightRange *Value) - SliderWidth/2);    //Berechnet die X Position des Knobs
                 sliderKnob.Width = contentArea.Width;                                               //Der SliderKnob ist immer so breit wie der Slider
             }
 
