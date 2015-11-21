@@ -187,8 +187,8 @@ namespace MonoGameUi
             tabListStack.Controls.RemoveAt(index);                      //Entferne den Tab
             if (Pages.Count > 0)                                        //Nur fortfahren wenn noch Pages vorhanden
             {
-                if (index > tabListStack.Controls.Count)                //Wenn die letzte Page entfernt wird...
-                    SelectedTabIndex = tabListStack.Controls.Count;     //Setze den TabIndex auf die "neue" letzte
+                if (index >= tabListStack.Controls.Count)                //Wenn die letzte Page entfernt wird...
+                    SelectedTabIndex = tabListStack.Controls.Count - 1;     //Setze den TabIndex auf die "neue" letzte
                 else SelectedTabIndex = index;                          //Andernfalls, setze den TabIndex  auf den aktuellen index
 
                 SelectTab(SelectedTabIndex);                            //Selektiere den Tab
