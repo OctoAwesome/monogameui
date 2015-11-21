@@ -181,6 +181,7 @@ namespace MonoGameUi
                 tabControl.TabBrush = new BorderBrush(Color.LightGray);
                 tabControl.TabActiveBrush = new BorderBrush(Color.Gray);
                 tabControl.TabPageBackground = new BorderBrush(Color.Gray);
+                tabControl.TabSpacing = 1;
             });
         }
 

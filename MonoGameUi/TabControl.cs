@@ -44,6 +44,9 @@ namespace MonoGameUi
         public Brush tabPageBackground ;
         public Brush tabListBackground ;
 
+        /// <summary>
+        /// Die Brush für den aktiven Tab
+        /// </summary>
         public Brush TabActiveBrush {
             get { return tabActiveBrush; }
             set
@@ -53,6 +56,10 @@ namespace MonoGameUi
                     tabListStack.Controls.ElementAt(SelectedTabIndex).Background = tabActiveBrush;
             }
         }
+
+        /// <summary>
+        /// Brush für inaktive Tabs
+        /// </summary>
         public Brush TabBrush
         {
             get { return tabBrush; }
@@ -64,6 +71,10 @@ namespace MonoGameUi
                         c.Background = TabBrush;
             }
         }
+
+        /// <summary>
+        /// Brush für den TabPage Background
+        /// </summary>
         public Brush TabPageBackground
         {
             get { return tabPageBackground; }
@@ -74,6 +85,9 @@ namespace MonoGameUi
             }
         }
 
+        /// <summary>
+        /// Brush für den Hintergrund der TabListe
+        /// </summary>
         public Brush TabListBackground
         {
             get { return tabListBackground; }
@@ -105,8 +119,15 @@ namespace MonoGameUi
 
         IScreenManager Manager;
 
-        int SelectedTabIndex = 0;
+        /// <summary>
+        /// Der Index des aktiven Tabs
+        /// </summary>
+        private int SelectedTabIndex = 0;
 
+        /// <summary>
+        /// Base Constructor
+        /// </summary>
+        /// <param name="manager">ScreenManager</param>
         public TabControl(IScreenManager manager) : base(manager)
         { 
 
@@ -133,11 +154,12 @@ namespace MonoGameUi
             tabPage.Background = TabPageBackground;
             tabControlStack.Controls.Add(tabPage);
 
-            tabSpacing = 1;
-
             ApplySkin(typeof(TabControl));
         }
 
+        /// <summary>
+        /// Wird aufgerufen wenn ein neues Element zu "Pages" hinzugefügt wird, erstellt einen neuen Eintrag in der TabList
+        /// </summary>
         private void OnInsert(TabPage item, int index)
         {
             Label title = new Label(Manager);
@@ -146,11 +168,20 @@ namespace MonoGameUi
             title.Background = TabBrush;
             title.Margin = new Border(0, 0, TabSpacing, 0);
             title.LeftMouseClick += (s, e) => SelectTab(Pages.IndexOf(item));
+            title.CanFocus = true;
+            title.TabStop = true;
+            title.KeyDown += (s, e) => {
+                if (e.Key == Microsoft.Xna.Framework.Input.Keys.Enter && title.Focused == TreeState.Active)
+                    SelectTab(Pages.IndexOf(item));
+            };
             tabListStack.Controls.Add(title);
 
             SelectTab(SelectedTabIndex);
         }
 
+        /// <summary>
+        /// Wird aufgerufen wenn ein Element aus "Pages" entfernt wird, entfernt den Eintrag in der TabList
+        /// </summary>
         private void OnRemove(TabPage item, int index)
         {
             tabListStack.Controls.RemoveAt(index);                      //Entferne den Tab
@@ -165,6 +196,9 @@ namespace MonoGameUi
             tabListStack.InvalidateDimensions();                        //Zeichne den TabListStack neu
         }
 
+        /// <summary>
+        /// Selektieren eines Tabs mit Index
+        /// </summary>
         public void SelectTab(int index)
         {
             tabListStack.Controls.ElementAt(SelectedTabIndex).Background = TabBrush;
@@ -177,6 +211,9 @@ namespace MonoGameUi
                 TabIndexChanged.Invoke(this, Pages.ElementAt(index), SelectedTabIndex);
         }
 
+        /// <summary>
+        /// Selektieren eines Tabs mit Page
+        /// </summary>
         public void SelectTab(TabPage page)
         {
             try
@@ -194,6 +231,9 @@ namespace MonoGameUi
                 TabIndexChanged.Invoke(this, page, SelectedTabIndex);
         }
 
+        /// <summary>
+        /// Event wenn der TabIndex sich ändert
+        /// </summary>
         public event SelectionChangedDelegate TabIndexChanged;
 
         public delegate void SelectionChangedDelegate(Control control, TabPage tab, int index);
