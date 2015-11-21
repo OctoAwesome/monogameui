@@ -103,7 +103,7 @@ namespace MonoGameUi
                 if (Orientation == Orientation.Vertical)
                 {
                     //Berechne den Wert des Sliders
-                    Value = (drawableKnobSpace.Height - localMousePos.Y) / (contentArea.Height / Range);
+                    Value = (contentArea.Height - localMousePos.Y) / (contentArea.Height / Range);
                     if (Value <= 0) Value = 0;                      //Wenn die Maus Position kleiner als 0 ist -> Value = 0
                     if (Value >= Range) Value = Range;              //Wenn die Maus Position größer als die Breite des Controls -> Value = Range
                 }
