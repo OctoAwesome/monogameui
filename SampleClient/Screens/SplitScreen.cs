@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGameUi;
+using System.IO;
 
 namespace SampleClient.Screens
 {
@@ -35,6 +37,10 @@ namespace SampleClient.Screens
             //Label
             Label label = new Label(manager) { Text = "Control Showcase" }; //Neues Label erzeugen
             panel.Controls.Add(label);                                      //Label zu Panel hinzufügen
+
+            Button tB = Button.TextButton(manager, "TEST");
+            tB.Background = new TextureBrush(LoadTexture2DFromFile("./test_texture_round.png", manager.GraphicsDevice), TextureBrushMode.Stretch);
+            panel.Controls.Add(tB);
 
             //Button
             Button button = Button.TextButton(manager, "Dummy Button"); //Neuen TextButton erzeugen
@@ -128,5 +134,15 @@ namespace SampleClient.Screens
             panel.Controls.Add(textbox);                                //Textbox zu Panel hinzufügen
 
         }
+
+        static Texture2D LoadTexture2DFromFile(string path, GraphicsDevice device)
+        {
+            using (Stream stream = File.OpenRead(path))
+            {
+                return Texture2D.FromStream(device, stream);
+            }
+        }
     }
+
+        
 }

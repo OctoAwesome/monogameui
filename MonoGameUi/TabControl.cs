@@ -151,8 +151,10 @@ namespace MonoGameUi
             tabPage = new ContentControl(manager);
             tabPage.HorizontalAlignment = HorizontalAlignment.Stretch;
             tabPage.VerticalAlignment = VerticalAlignment.Stretch;
+            tabPage.Margin = new Border(0, 10, 0, 10);
             tabPage.Background = TabPageBackground;
             tabControlStack.Controls.Add(tabPage);
+            tabPage.Margin = new Border(0, -50, 0, 0);
 
             ApplySkin(typeof(TabControl));
         }
@@ -221,14 +223,15 @@ namespace MonoGameUi
                 tabListStack.Controls.ElementAt(SelectedTabIndex).Background = TabBrush;
                 SelectedTabIndex = Pages.IndexOf(page);
             }
-            catch (Exception e) { }
+            finally
+            {
+                tabListStack.Controls.ElementAt(SelectedTabIndex).Background = TabActiveBrush;
+                tabPage.Content = Pages.ElementAt(SelectedTabIndex);
 
+                if (TabIndexChanged != null)
+                    TabIndexChanged.Invoke(this, page, SelectedTabIndex);
+            }
 
-            tabListStack.Controls.ElementAt(SelectedTabIndex).Background = TabActiveBrush;
-            tabPage.Content = Pages.ElementAt(SelectedTabIndex);
-
-            if (TabIndexChanged != null)
-                TabIndexChanged.Invoke(this, page, SelectedTabIndex);
         }
 
         /// <summary>
