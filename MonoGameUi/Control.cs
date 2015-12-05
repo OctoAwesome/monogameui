@@ -1129,7 +1129,7 @@ namespace MonoGameUi
                         HoveredChanged(this, args);
 
                     // Sound abspielen
-                    if (hoverSound != null && hovered == TreeState.Active)
+                    if (hoverSound != null && hovered == TreeState.Active && args.OldValue != TreeState.Passive)
                         hoverSound.Play();
                 }
             }
