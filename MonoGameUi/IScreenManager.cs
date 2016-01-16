@@ -90,6 +90,8 @@ namespace MonoGameUi
         /// Wechselt in den Free Mouse Mode.
         /// </summary>
         void FreeMouse();
+
+        event KeyEventBaseDelegate KeyDown;
     }
 
     /// <summary>

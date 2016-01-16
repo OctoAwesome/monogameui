@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -22,7 +23,19 @@ namespace SampleClient
 
         protected override void Initialize()
         {
-            Components.Add(new ScreenComponent(this));
+            ScreenComponent screenComponent = new ScreenComponent(this);
+            Components.Add(screenComponent);
+
+            //This only gets called if nothing else Handled the Press -> it is called last
+            screenComponent.KeyDown += (args) =>
+            {
+                if (args.Key != Keys.Tab)
+                {
+                    Console.WriteLine("Pressed: " + args.Key.ToString());
+                    args.Handled = true;
+                }
+            };
+
 
             base.Initialize();
         }

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Linq;
 
 namespace MonoGameUi
 {
@@ -96,6 +97,10 @@ namespace MonoGameUi
                 args.Character == '\u0003' ||
                 args.Character == '\u0016' ||
                 args.Character == '\u0018')
+                return;
+
+            //Escape ignorieren
+            if (args.Character == '\u001b')
                 return;
 
             if (SelectionStart != CursorPosition)
@@ -275,7 +280,35 @@ namespace MonoGameUi
                 args.Handled = true;
             }
 
+            args.Handled = true;
+
+            //Manche Keys weitergeben
+            if (ignoreKeys.Contains(args.Key))
+                args.Handled = false;
+
             base.OnKeyPress(args);
         }
+
+        Keys[] ignoreKeys =
+        {
+            Keys.Escape,
+            Keys.Tab,
+            Keys.F1,
+            Keys.F2,
+            Keys.F3,
+            Keys.F4,
+            Keys.F5,
+            Keys.F6,
+            Keys.F7,
+            Keys.F8,
+            Keys.F9,
+            Keys.F10,
+            Keys.F11,
+            Keys.F12,
+            Keys.End,
+            Keys.Pause
+        };
     }
+
+
 }

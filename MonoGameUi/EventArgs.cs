@@ -185,6 +185,12 @@ namespace MonoGameUi
     public delegate void KeyEventDelegate(Control sender, KeyEventArgs args);
 
     /// <summary>
+    /// Event Delegat für KeyDown im ScreenManager
+    /// </summary>
+    /// <param name="args">Eventargumente</param>
+    public delegate void KeyEventBaseDelegate(KeyEventArgs args);
+
+    /// <summary>
     /// Event Delegat für Texteingabe-Events
     /// </summary>
     /// <param name="sender">Aufrufendes Control</param>

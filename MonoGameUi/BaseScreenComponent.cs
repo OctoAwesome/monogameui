@@ -76,6 +76,7 @@ namespace MonoGameUi
                 if (Game.IsActive)
                 {
                     KeyTextEventArgs args = new KeyTextEventArgs() { Character = e.Character };
+                   
                     root.InternalKeyTextPress(args);
                 }
             };
@@ -285,6 +286,9 @@ namespace MonoGameUi
                             };
                             root.InternalKeyPress(args);
                             pressedKeys.Add(key, gameTime.TotalGameTime.TotalMilliseconds + 500);
+
+                            if (!args.Handled)
+                                KeyDown?.Invoke(args);
 
                             // Spezialfall Tab-Taste (falls nicht verarbeitet wurde)
                             if (key == Keys.Tab && !args.Handled)
@@ -569,5 +573,7 @@ namespace MonoGameUi
         {
             MouseMode = MouseMode.Free;
         }
+
+        public event KeyEventBaseDelegate KeyDown;
     }
 }
