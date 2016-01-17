@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGameUi;
 using System.IO;
@@ -123,14 +124,23 @@ namespace SampleClient.Screens
             Checkbox checkbox = new Checkbox(manager);
             panel.Controls.Add(checkbox);
 
+
             //Textbox   
             Textbox textbox = new Textbox(manager)                      //Neue TextBox erzeugen
             {
                 Background = new BorderBrush(Color.LightGray),          //Festlegen eines Backgrounds für ein Control
-                VerticalAlignment = VerticalAlignment.Stretch,          //100% Breite
+                HorizontalAlignment = HorizontalAlignment.Stretch,          //100% Breite
                 Text = "TEXTBOX!",                                      //Voreingestellter text
                 MinWidth = 100                                          //Eine Textbox kann ihre Größe automatisch anpassen
             };
+
+            Button clearTextbox = new Button(manager);
+            clearTextbox.LeftMouseClick += (s, e) =>
+            {
+                textbox.SelectionStart = 0;
+                textbox.Text = "";
+            };
+            panel.Controls.Add(clearTextbox);
             panel.Controls.Add(textbox);                                //Textbox zu Panel hinzufügen
 
         }

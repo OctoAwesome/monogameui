@@ -26,14 +26,19 @@ namespace SampleClient
             ScreenComponent screenComponent = new ScreenComponent(this);
             Components.Add(screenComponent);
 
-            //This only gets called if nothing else Handled the Press -> it is called last
             screenComponent.KeyDown += (args) =>
             {
-                if (args.Key != Keys.Tab)
-                {
-                    Console.WriteLine("Pressed: " + args.Key.ToString());
-                    args.Handled = true;
-                }
+              Console.WriteLine("Down: " + args.Key.ToString());
+            };
+
+            screenComponent.KeyPress += (args) =>
+            {
+                Console.WriteLine("Press: " + args.Key.ToString());
+            };
+
+            screenComponent.KeyUp += (args) =>
+            {
+                Console.WriteLine("Up: " + args.Key.ToString());
             };
 
 

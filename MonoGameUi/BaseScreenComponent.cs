@@ -277,6 +277,9 @@ namespace MonoGameUi
                             };
                             root.InternalKeyDown(args);
 
+                            if (!args.Handled)
+                                KeyDown?.Invoke(args);
+
                             args = new KeyEventArgs()
                             {
                                 Key = key,
@@ -287,8 +290,7 @@ namespace MonoGameUi
                             root.InternalKeyPress(args);
                             pressedKeys.Add(key, gameTime.TotalGameTime.TotalMilliseconds + 500);
 
-                            if (!args.Handled)
-                                KeyDown?.Invoke(args);
+
 
                             // Spezialfall Tab-Taste (falls nicht verarbeitet wurde)
                             if (key == Keys.Tab && !args.Handled)
@@ -310,6 +312,8 @@ namespace MonoGameUi
                                     Alt = alt
                                 };
                                 root.InternalKeyPress(args);
+                                if (!args.Handled)
+                                    KeyPress?.Invoke(args);
                                 pressedKeys[key] = gameTime.TotalGameTime.TotalMilliseconds + 50;
                             }
                         }
@@ -328,6 +332,10 @@ namespace MonoGameUi
                             };
                             root.InternalKeyUp(args);
                             pressedKeys.Remove(key);
+
+                            if (!args.Handled)
+                                KeyUp?.Invoke(args);
+
                         }
                     }
                 }
@@ -575,5 +583,7 @@ namespace MonoGameUi
         }
 
         public event KeyEventBaseDelegate KeyDown;
+        public event KeyEventBaseDelegate KeyPress;
+        public event KeyEventBaseDelegate KeyUp;
     }
 }
