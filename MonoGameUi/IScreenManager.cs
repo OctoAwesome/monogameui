@@ -92,6 +92,8 @@ namespace MonoGameUi
         void FreeMouse();
 
         event KeyEventBaseDelegate KeyDown;
+        event KeyEventBaseDelegate KeyPress;
+        event KeyEventBaseDelegate KeyUp;
     }
 
     /// <summary>
