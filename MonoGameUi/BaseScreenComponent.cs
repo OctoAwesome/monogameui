@@ -241,10 +241,14 @@ namespace MonoGameUi
                 }
 
                 // Potentieller Positionsreset
-                if (MouseMode == MouseMode.Captured)
-                    Mouse.SetPosition(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
-                else
+                if (MouseMode == MouseMode.Free)
+                {
                     lastMousePosition = mouse.Position;
+                }
+                else if (mousePosition.X != 0 || mousePosition.Y != 0)
+                {
+                    Mouse.SetPosition(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
+                }             
             }
 
             #endregion
