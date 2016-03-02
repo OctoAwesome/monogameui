@@ -80,6 +80,16 @@ namespace MonoGameUi
                     root.InternalKeyTextPress(args);
                 }
             };
+
+            Game.Window.ClientSizeChanged += (s, e) =>
+            {
+                ClientSizeChanged?.Invoke(s, e);
+            };
+
+
+
+
+
         }
 
         protected override void LoadContent()
@@ -589,5 +599,7 @@ namespace MonoGameUi
         public event KeyEventBaseDelegate KeyDown;
         public event KeyEventBaseDelegate KeyPress;
         public event KeyEventBaseDelegate KeyUp;
+
+        public event EventHandler ClientSizeChanged;
     }
 }

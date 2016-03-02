@@ -41,8 +41,26 @@ namespace SampleClient
                 Console.WriteLine("Up: " + args.Key.ToString());
             };
 
+            
+
 
             base.Initialize();
+        }
+
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+            KeyboardState state = Keyboard.GetState();
+            if(state.IsKeyDown(Keys.F11))
+            {
+                graphics.ToggleFullScreen();
+            }
+            if(state.IsKeyDown(Keys.F12))
+            {
+                graphics.PreferredBackBufferWidth = 1920;
+                graphics.PreferredBackBufferHeight = 1080;
+                graphics.ApplyChanges();
+            }
         }
     }
 }
