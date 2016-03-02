@@ -185,7 +185,7 @@ namespace MonoGameUi
 
             manager.ClientSizeChanged += (s, e) =>
             {
-                InvalidateDimensions();
+                OnResolutionChanged();
             };
 
             ApplySkin(typeof(Control));
@@ -1016,6 +1016,11 @@ namespace MonoGameUi
         {
             invalidDimensions = true;
             InvalidateDrawing();
+        }
+
+        public void OnResolutionChanged()
+        {
+            InvalidateDimensions();
         }
 
         /// <summary>
