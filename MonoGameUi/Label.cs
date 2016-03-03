@@ -15,7 +15,7 @@ namespace MonoGameUi
 
         private string text = string.Empty;
 
-        private event EventDelegate TextChanged;
+        public event EventDelegate TextChanged;
 
         private SpriteFont font = null;
 
