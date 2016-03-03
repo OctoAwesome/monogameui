@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 
 namespace MonoGameUi
@@ -94,6 +95,8 @@ namespace MonoGameUi
         event KeyEventBaseDelegate KeyDown;
         event KeyEventBaseDelegate KeyPress;
         event KeyEventBaseDelegate KeyUp;
+
+        event EventHandler ClientSizeChanged;
     }
 
     /// <summary>

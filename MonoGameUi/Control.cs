@@ -183,6 +183,11 @@ namespace MonoGameUi
             children.OnInsert += ControlCollectionInsert;
             children.OnRemove += ControlCollectionRemove;
 
+            manager.ClientSizeChanged += (s, e) =>
+            {
+                OnResolutionChanged();
+            };
+
             ApplySkin(typeof(Control));
         }
 
@@ -1011,6 +1016,11 @@ namespace MonoGameUi
         {
             invalidDimensions = true;
             InvalidateDrawing();
+        }
+
+        public void OnResolutionChanged()
+        {
+            InvalidateDimensions();
         }
 
         /// <summary>
