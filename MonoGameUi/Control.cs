@@ -1018,7 +1018,7 @@ namespace MonoGameUi
             InvalidateDrawing();
         }
 
-        public void OnResolutionChanged()
+        public virtual void OnResolutionChanged()
         {
             InvalidateDimensions();
         }
