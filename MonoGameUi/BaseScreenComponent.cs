@@ -76,9 +76,14 @@ namespace MonoGameUi
                 if (Game.IsActive)
                 {
                     KeyTextEventArgs args = new KeyTextEventArgs() { Character = e.Character };
-                   
+
                     root.InternalKeyTextPress(args);
                 }
+            };
+
+            Game.Window.ClientSizeChanged += (s, e) =>
+            {
+                ClientSizeChanged?.Invoke(s, e);
             };
         }
 
@@ -141,7 +146,7 @@ namespace MonoGameUi
                 Point mousePosition = mouse.Position;
                 if (MouseMode == MouseMode.Captured)
                     mousePosition = new Point(
-                        mousePosition.X - (GraphicsDevice.Viewport.Width / 2), 
+                        mousePosition.X - (GraphicsDevice.Viewport.Width / 2),
                         mousePosition.Y - (GraphicsDevice.Viewport.Height / 2));
 
                 MouseEventArgs moveArgs = new MouseEventArgs()
@@ -248,7 +253,7 @@ namespace MonoGameUi
                 else if (mousePosition.X != 0 || mousePosition.Y != 0)
                 {
                     Mouse.SetPosition(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
-                }             
+                }
             }
 
             #endregion
@@ -589,5 +594,7 @@ namespace MonoGameUi
         public event KeyEventBaseDelegate KeyDown;
         public event KeyEventBaseDelegate KeyPress;
         public event KeyEventBaseDelegate KeyUp;
+
+        public event EventHandler ClientSizeChanged;
     }
 }

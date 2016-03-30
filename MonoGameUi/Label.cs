@@ -15,6 +15,8 @@ namespace MonoGameUi
 
         private string text = string.Empty;
 
+        public event PropertyChangedDelegate<String> TextChanged;
+
         private SpriteFont font = null;
 
         private Color textColor = Color.Black;
@@ -35,6 +37,7 @@ namespace MonoGameUi
             {
                 if (text != value)
                 {
+                    TextChanged?.Invoke(this, new PropertyEventArgs<String>(text, value));
                     text = value;
                     InvalidateDimensions();
                 }
