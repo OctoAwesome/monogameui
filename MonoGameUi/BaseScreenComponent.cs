@@ -7,6 +7,9 @@ using System.Collections.Generic;
 
 namespace MonoGameUi
 {
+    /// <summary>
+    /// Basisklasse für alle MonoGame-Komponenten
+    /// </summary>
     public class BaseScreenComponent : DrawableGameComponent, IScreenManager
     {
         private ContainerControl root;
@@ -66,6 +69,10 @@ namespace MonoGameUi
             }
         }
 
+        /// <summary>
+        /// Erzeugt eine neue Instanz der Klasse BaseScreenComponent.
+        /// </summary>
+        /// <param name="game">Die aktuelle Game-Instanz.</param>
         public BaseScreenComponent(Game game)
             : base(game)
         {
@@ -87,6 +94,9 @@ namespace MonoGameUi
             };
         }
 
+        /// <summary>
+        /// Lädt die für MonoGameUI notwendigen Content-Dateien.
+        /// </summary>
         protected override void LoadContent()
         {
             Skin.Pix = new Texture2D(GraphicsDevice, 1, 1);
@@ -132,8 +142,12 @@ namespace MonoGameUi
 
         private Point lastMousePosition = Point.Zero;
 
-        Dictionary<Keys, double> pressedKeys = new Dictionary<Keys, double>();
+        private Dictionary<Keys, double> pressedKeys = new Dictionary<Keys, double>();
 
+        /// <summary>
+        /// Handling aller Eingaben, Mausbewegungen und Updaten aller Screens und Controls.
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
             #region Mouse Interaction
@@ -376,6 +390,10 @@ namespace MonoGameUi
             #endregion
         }
 
+        /// <summary>
+        /// Zeichnet Screens und Controls.
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
             root.PreDraw(gameTime);
@@ -418,6 +436,7 @@ namespace MonoGameUi
         /// Navigiert den Screen Manager zum angegebenen Screen.
         /// </summary>
         /// <param name="screen"></param>
+        /// <param name="parameter">Ein Parameter für den neuen Screen.</param>
         /// <returns>Gibt an ob die Navigation durchgeführt wurde.</returns>
         public bool NavigateToScreen(Screen screen, object parameter = null)
         {
@@ -591,10 +610,24 @@ namespace MonoGameUi
             MouseMode = MouseMode.Free;
         }
 
+        /// <summary>
+        /// Event, das aufgerufen wird, wenn eine Taste gedrückt wird.
+        /// </summary>
         public event KeyEventBaseDelegate KeyDown;
+
+        /// <summary>
+        /// Event, das aufgerufen wird, wenn eine Taste gedrückt ist.
+        /// </summary>
         public event KeyEventBaseDelegate KeyPress;
+
+        /// <summary>
+        /// Event, das aufgerufen wird, wenn eine taste losgelassen wird.
+        /// </summary>
         public event KeyEventBaseDelegate KeyUp;
 
+        /// <summary>
+        /// Event, das aufgerufen wird, wenn die Fenstergröße geändert wurde.
+        /// </summary>
         public event EventHandler ClientSizeChanged;
     }
 }

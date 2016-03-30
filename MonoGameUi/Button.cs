@@ -45,7 +45,10 @@ namespace MonoGameUi
             }
         }
 
-
+        /// <summary>
+        /// Wird aufgerufen, wenn mit der linken Maustaste auf das Steuerelement geklickt wird.
+        /// </summary>
+        /// <param name="args">Weitere Informationen zum Ereignis.</param>
         protected override void OnLeftMouseClick(MouseEventArgs args)
         {
             base.OnLeftMouseClick(args);
@@ -58,8 +61,15 @@ namespace MonoGameUi
             args.Handled = true;
         }
 
+        /// <summary>
+        /// Methode, die aufgerufen wird, nachdem der Click-EventHadler (falls vorhanden) ausgeführt wurde.
+        /// </summary>
+        /// <param name="args">Weitere Informationen zum Ereignis.</param>
         protected virtual void OnExecuted(EventArgs args) { }
 
+        /// <summary>
+        /// Event, das aufgerufen wird, nachdem der Click-EventHadler (falls vorhanden) ausgeführt wurde.
+        /// </summary>
         public event EventDelegate Executed;
 
         /// <summary>
