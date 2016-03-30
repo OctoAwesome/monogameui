@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace MonoGameUi
 {
+    /// <summary>
+    /// Basisinterface für erweiterte Listen für Controls
+    /// </summary>
     public interface IControlCollection : IList<Control>
     {
         /// <summary>

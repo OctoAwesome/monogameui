@@ -20,12 +20,26 @@ namespace MonoGameUi
     /// <typeparam name="T">Typ des Properties</typeparam>
     public class PropertyEventArgs<T> : EventArgs
     {
+        /// <summary>
+        /// Der alte Wert der Property
+        /// </summary>
         public T OldValue { get; set; }
 
+        /// <summary>
+        /// Der neue Wert der Property
+        /// </summary>
         public T NewValue { get; set; }
 
+        /// <summary>
+        /// Erzeugt eine neue Instaz der PropertyEventArgs-Klasse
+        /// </summary>
         public PropertyEventArgs() { }
 
+        /// <summary>
+        /// Erzeugt eine neue Instaz der PropertyEventArgs-Klasse
+        /// </summary>
+        /// <param name="oldValue">Der alte Wert</param>
+        /// <param name="newValue">Der neue Wert</param>
         public PropertyEventArgs(T oldValue, T newValue)
         {
             OldValue = oldValue;
@@ -53,8 +67,17 @@ namespace MonoGameUi
         /// </summary>
         public Point GlobalPosition { get; set; }
 
+        /// <summary>
+        /// Erzeugt eine neue Instanz der MouseEventArgs-Klasse
+        /// </summary>
         public MouseEventArgs() { }
 
+        /// <summary>
+        /// Erzeugt eine neue Instanz der MouseEventArgs-Klasse
+        /// </summary>
+        /// <param name="mouseMode">Der aktuelle Modus der Maus</param>
+        /// <param name="localPosition">Position des Mauspointers bezogen auf den Ursprung des aktuellen Controls</param>
+        /// <param name="globalPosition">Position des Mauspointers in globaler Screen-Koordinate</param>
         public MouseEventArgs(MouseMode mouseMode, Point localPosition, Point globalPosition)
         {
             MouseMode = mouseMode;
@@ -63,12 +86,25 @@ namespace MonoGameUi
         }
     }
 
+    /// <summary>
+    /// Event Arguments für Maus Scroll Events
+    /// </summary>
     public class MouseScrollEventArgs : MouseEventArgs
     {
+        /// <summary>
+        /// Gibt die  Anzahl der gescrollte Einheiten an.
+        /// </summary>
         public int Steps { get; set; }
 
+        /// <summary>
+        /// Erzeugt eine neue Instanz der MouseScrollEventArgs-Klasse.
+        /// </summary>
         public MouseScrollEventArgs() { }
 
+        /// <summary>
+        /// Erzeugt eine neue Instanz der MouseScrollEventArgs-Klasse.
+        /// </summary>
+        /// <param name="steps">Anzahl der gescrollten Einheiten</param>
         public MouseScrollEventArgs(int steps)
         {
             Steps = steps;
@@ -175,6 +211,11 @@ namespace MonoGameUi
     /// <param name="args">Eventargumente</param>
     public delegate void MouseEventDelegate(Control sender, MouseEventArgs args);
 
+    /// <summary>
+    /// Event-Delegat für Maus-Scroll-Events.
+    /// </summary>
+    /// <param name="sender">Aufrufendes Control</param>
+    /// <param name="args">Eventargumente</param>
     public delegate void MouseScrollEventDelegate(Control sender, MouseScrollEventArgs args);
 
     /// <summary>
@@ -201,10 +242,16 @@ namespace MonoGameUi
     /// Delegat für Events rum um Selektionsänderungen
     /// </summary>
     /// <param name="sender"></param>
-    /// <param name="args"></param>
+    /// <param name="args">Eventargumente</param>
     public delegate void SelectionDelegate<T>(Control sender, SelectionEventArgs<T> args);
 
     public delegate void CollectionDelegate(Control sender, CollectionEventArgs args);
 
+    /// <summary>
+    /// Event Delegat für PropertyChanged-Events
+    /// </summary>
+    /// <typeparam name="T">Typ der Property</typeparam>
+    /// <param name="sender">Aufrufendes Control</param>
+    /// <param name="args">Eventargumente</param>
     public delegate void PropertyChangedDelegate<T>(Control sender, PropertyEventArgs<T> args);
 }

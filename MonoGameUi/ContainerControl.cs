@@ -12,6 +12,11 @@ namespace MonoGameUi
         /// </summary>
         public IList<Control> Controls { get { return Children; } }
 
+        /// <summary>
+        /// Erzeugt eine neue Instanz der ContainerControl-Klasse.
+        /// </summary>
+        /// <param name="manager">Der <see cref="IScreenManager"/></param>
+        /// <param name="style">Der zu verwendende Style</param>
         public ContainerControl(IScreenManager manager, string style = "") :
             base(manager, style)
         {

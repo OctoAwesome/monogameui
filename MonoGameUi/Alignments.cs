@@ -27,7 +27,7 @@
     }
 
     /// <summary>
-    /// LIste der Möglichkeiten zum vertikalen Alignment.
+    /// Liste der Möglichkeiten zum vertikalen Alignment.
     /// </summary>
     public enum VerticalAlignment
     {

@@ -47,6 +47,11 @@ namespace MonoGameUi
             }
         }
 
+        /// <summary>
+        /// Erzeugt eine neue Instanz der Textbox-Klasse
+        /// </summary>
+        /// <param name="manager"></param>
+        /// <param name="style"></param>
         public Textbox(IScreenManager manager, string style = "")
             : base(manager, style)
         {

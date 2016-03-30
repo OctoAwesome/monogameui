@@ -1813,7 +1813,7 @@ namespace MonoGameUi
     }
 
     /// <summary>
-    /// Liste der möglichen Hover- & FokusStates
+    /// Liste der möglichen Hover- und FokusStates
     /// </summary>
     public enum TreeState
     {

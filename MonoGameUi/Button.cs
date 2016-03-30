@@ -10,6 +10,11 @@ namespace MonoGameUi
     /// </summary>
     public class Button : ContentControl
     {
+        /// <summary>
+        /// Erzeugt eine neue Instanz der Klasse Button.
+        /// </summary>
+        /// <param name="manager">Der <see cref="IScreenManager"/></param>
+        /// <param name="style">(Optional) der zu verwendende Style</param>
         public Button(IScreenManager manager, string style = "")
             : base(manager, style)
         {
@@ -19,6 +24,10 @@ namespace MonoGameUi
             ApplySkin(typeof(Button));
         }
 
+        /// <summary>
+        /// Wird aufgrefufen, wenn eine Taste gedrückt wird.
+        /// </summary>
+        /// <param name="args">Ein <see cref="KeyEventArgs"/>-Objekt mit weiteren Informationen zum Event</param>
         protected override void OnKeyPress(KeyEventArgs args)
         {
             base.OnKeyPress(args);
@@ -35,6 +44,7 @@ namespace MonoGameUi
                 args.Handled = true;
             }
         }
+
 
         protected override void OnLeftMouseClick(MouseEventArgs args)
         {
@@ -56,6 +66,8 @@ namespace MonoGameUi
         /// Initialisiert einen Standard-Button mit Text-Inhalt
         /// </summary>
         /// <param name="text">Enthaltener Text</param>
+        /// <param name="manager">Der <see cref="IScreenManager"/></param>
+        /// <param name="style">(Optional) Der zu verwendende Style</param>
         /// <returns>Button-Instanz</returns>
         public static Button TextButton(IScreenManager manager, string text, string style = "")
         {
