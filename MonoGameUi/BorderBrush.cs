@@ -68,12 +68,29 @@ namespace MonoGameUi
             }
         }
 
+        /// <summary>
+        /// Erzeugt eine neue Instanz der BorderBrush-Klasse
+        /// </summary>
+        /// <param name="backgroundColor">Die Hintergrundfarbe</param>
         public BorderBrush(Color backgroundColor) :
             this(backgroundColor, LineType.None, Color.Transparent) { }
 
+        /// <summary>
+        /// Erzeugt eine neue Instanz der BorderBrush-Klasse
+        /// </summary>
+        /// <param name="lineType">Der Typ der Umrandungslinie</param>
+        /// <param name="lineColor">Die Farbe der Umrandungslinie</param>
+        /// <param name="lineWidth">Die Dicke der Umrandungslinie</param>
         public BorderBrush(LineType lineType, Color lineColor, int lineWidth = 1)
             : this(Color.Transparent, lineType, lineColor, lineWidth) { }
 
+        /// <summary>
+        /// Erzeugt eine neue Instanz der BorderBrush-Klasse
+        /// </summary>
+        /// <param name="backgroundColor">Die Hintergrundfarbe</param>
+        /// <param name="lineType">Der Typ der Umrandungslinie</param>
+        /// <param name="lineColor">Die Farbe der Umrandungslinie</param>
+        /// <param name="lineWidth">Die Dicke der Umrandungslinie</param>
         public BorderBrush(Color backgroundColor, LineType lineType, Color lineColor, int lineWidth = 1)
         {
             BackgroundColor = backgroundColor;
@@ -123,6 +140,12 @@ namespace MonoGameUi
             }
         }
 
+        /// <summary>
+        /// Zeichnet mit der aktuellen BorderBrush-Instanz
+        /// </summary>
+        /// <param name="batch">Der (bereits gestartete) SpriteBatch</param>
+        /// <param name="area">Render-Bereich</param>
+        /// <param name="alpha">Alpha-Blending</param>
         public override void Draw(SpriteBatch batch, Rectangle area, float alpha)
         {
             batch.Draw(Skin.Pix, area, BackgroundColor * alpha);
@@ -146,10 +169,24 @@ namespace MonoGameUi
         }
     }
 
+    /// <summary>
+    /// Liste von möglichen Linientypen
+    /// </summary>
     public enum LineType
     {
+        /// <summary>
+        /// Keine Linie
+        /// </summary>
         None,
+
+        /// <summary>
+        /// Durchgängige Linie
+        /// </summary>
         Solid,
+
+        /// <summary>
+        /// Gepunktete Linie
+        /// </summary>
         Dotted,
     }
 }

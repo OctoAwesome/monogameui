@@ -25,6 +25,13 @@
         /// </summary>
         public int Bottom;
 
+        /// <summary>
+        /// Erstellt eine Border-Instanz mit den angegebenen Initialwerten.
+        /// </summary>
+        /// <param name="left">Abstand links</param>
+        /// <param name="top">Abstand oben</param>
+        /// <param name="right">Abstand rechts</param>
+        /// <param name="bottom">Abstand unten</param>
         public Border(int left, int top, int right, int bottom)
         {
             Left = left;
@@ -85,11 +92,20 @@
             };
         }
 
+        /// <summary>
+        /// Wandelt die aktuelle Border-Instanz in einen string um.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return string.Format("{0}/{1}/{2}/{3}", Left, Top, Right, Bottom);
         }
 
+        /// <summary>
+        /// Überprüft, ob die aktuelle Border-Instanz gleich der gegebenen ist.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public override bool Equals(object obj)
         {
             if (!(obj is Border))
@@ -103,6 +119,10 @@
                 other.Bottom == Bottom;
         }
 
+        /// <summary>
+        /// Gibt einen Hashwert zurück
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
             return Left + Right + Top + Bottom;

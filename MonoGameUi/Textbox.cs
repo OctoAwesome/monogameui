@@ -47,6 +47,11 @@ namespace MonoGameUi
             }
         }
 
+        /// <summary>
+        /// Erzeugt eine neue Instanz der Textbox-Klasse
+        /// </summary>
+        /// <param name="manager"></param>
+        /// <param name="style"></param>
         public Textbox(IScreenManager manager, string style = "")
             : base(manager, style)
         {
@@ -58,6 +63,13 @@ namespace MonoGameUi
             ApplySkin(typeof(Textbox));
         }
 
+        /// <summary>
+        /// Malt den Content des Controls
+        /// </summary>
+        /// <param name="batch">Spritebatch</param>
+        /// <param name="area">Bereich für den Content in absoluten Koordinaten</param>
+        /// <param name="gameTime">GameTime</param>
+        /// <param name="alpha">Die Transparenz des Controls.</param>
         protected override void OnDrawContent(SpriteBatch batch, Rectangle area, GameTime gameTime, float alpha)
         {
             // Selektion
@@ -118,6 +130,10 @@ namespace MonoGameUi
             args.Handled = true;
         }
 
+        /// <summary>
+        /// Wird aufgerufen, wenn eine Taste gedrückt ist.
+        /// </summary>
+        /// <param name="args">Zusätzliche Daten zum Event.</param>
         protected override void OnKeyPress(KeyEventArgs args)
         {
             // Ignorieren, wenn kein Fokus

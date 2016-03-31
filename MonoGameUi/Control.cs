@@ -272,6 +272,7 @@ namespace MonoGameUi
         /// </summary>
         /// <param name="batch">Spritebatch</param>
         /// <param name="gameTime">GameTime</param>
+        /// <param name="controlArea">Bereich für das Control in absoluten Koordinaten</param>
         protected virtual void OnDraw(SpriteBatch batch, Rectangle controlArea, GameTime gameTime)
         {
             // Background-Bereich ermitteln und zeichnen
@@ -301,6 +302,7 @@ namespace MonoGameUi
         /// <param name="batch">Spritebatch</param>
         /// <param name="backgroundArea">Bereich für den Background in absoluten Koordinaten</param>
         /// <param name="gameTime">GameTime</param>
+        /// <param name="alpha">Die Transparenz des Controls.</param>
         protected virtual void OnDrawBackground(SpriteBatch batch, Rectangle backgroundArea, GameTime gameTime, float alpha)
         {
             // Standard Background zeichnen
@@ -318,17 +320,18 @@ namespace MonoGameUi
         /// <param name="batch">Spritebatch</param>
         /// <param name="contentArea">Bereich für den Content in absoluten Koordinaten</param>
         /// <param name="gameTime">GameTime</param>
+        /// <param name="alpha">Die Transparenz des Controls.</param>
         protected virtual void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
         {
         }
 
         /// <summary>
-        /// Malt den Fokus Rahmen des Controls
+        /// Malt den Fokusrahmen des Controls
         /// </summary>
-        /// <param name="batch"></param>
-        /// <param name="contentArea"></param>
-        /// <param name="gameTime"></param>
-        /// <param name="alpha"></param>
+        /// <param name="batch">Spritebatch</param>
+        /// <param name="contentArea">Bereich für den Content in absoluten Koordinaten</param>
+        /// <param name="gameTime">GameTime</param>
+        /// <param name="alpha">Die Transparenz des Controls.</param>
         protected virtual void OnDrawFocusFrame(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
         {
             if (Skin.Current.FocusFrameBrush != null)
@@ -1012,12 +1015,18 @@ namespace MonoGameUi
             return new Point();
         }
 
+        /// <summary>
+        /// Teilt dem Steuerelement mit, dass seine Größe neu berechnet werden muss.
+        /// </summary>
         public void InvalidateDimensions()
         {
             invalidDimensions = true;
             InvalidateDrawing();
         }
 
+        /// <summary>
+        /// Wird aufgerufen, wenn die Auflösung des Fensters geändert wird.
+        /// </summary>
         public virtual void OnResolutionChanged()
         {
             InvalidateDimensions();
@@ -1395,12 +1404,20 @@ namespace MonoGameUi
 
         protected virtual void OnLeftMouseUp(MouseEventArgs args) { }
 
+        /// <summary>
+        /// Wird aufgerufen, wenn mit der linken Maustaste auf das Steuerelement geklickt wird.
+        /// </summary>
+        /// <param name="args">Weitere Informationen zum Ereignis.</param>
         protected virtual void OnLeftMouseClick(MouseEventArgs args) { }
 
         protected virtual void OnRightMouseDown(MouseEventArgs args) { }
 
         protected virtual void OnRightMouseUp(MouseEventArgs args) { }
 
+        /// <summary>
+        /// Wird aufgerufen, wenn mit der rechten Maustaste auf das Steuerelement geklickt wird.
+        /// </summary>
+        /// <param name="args">Weitere Informationen zum Ereignis.</param>
         protected virtual void OnRightMouseClick(MouseEventArgs args) { }
 
         protected virtual void OnMouseScroll(MouseScrollEventArgs args) { }
@@ -1509,10 +1526,22 @@ namespace MonoGameUi
             }
         }
 
+        /// <summary>
+        /// Wird aufgerufen, wenn eine Taste gedrückt wird.
+        /// </summary>
+        /// <param name="args">Zusätzliche Daten zum Event.</param>
         protected virtual void OnKeyDown(KeyEventArgs args) { }
 
+        /// <summary>
+        /// Wird aufgerufen, wenn eine Taste losgelassen wird.
+        /// </summary>
+        /// <param name="args">Zusätzliche Daten zum Event.</param>
         protected virtual void OnKeyUp(KeyEventArgs args) { }
 
+        /// <summary>
+        /// Wird aufgerufen, wenn eine Taste gedrückt ist.
+        /// </summary>
+        /// <param name="args">Zusätzliche Daten zum Event.</param>
         protected virtual void OnKeyPress(KeyEventArgs args) { }
 
         protected virtual void OnKeyTextPress(KeyTextEventArgs args) { }
@@ -1823,7 +1852,7 @@ namespace MonoGameUi
     }
 
     /// <summary>
-    /// Liste der möglichen Hover- & FokusStates
+    /// Liste der möglichen Hover- und FokusStates
     /// </summary>
     public enum TreeState
     {
