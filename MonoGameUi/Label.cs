@@ -37,7 +37,8 @@ namespace MonoGameUi
             {
                 if (text != value)
                 {
-                    TextChanged?.Invoke(this, new PropertyEventArgs<String>(text, value));
+                    if (TextChanged != null)
+                        TextChanged(this, new PropertyEventArgs<String>(text, value));
                     text = value;
                     InvalidateDimensions();
                 }

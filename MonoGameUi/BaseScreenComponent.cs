@@ -90,7 +90,8 @@ namespace MonoGameUi
 
             Game.Window.ClientSizeChanged += (s, e) =>
             {
-                ClientSizeChanged?.Invoke(s, e);
+                if (ClientSizeChanged != null)
+                    ClientSizeChanged(s, e);
             };
         }
 
@@ -300,8 +301,10 @@ namespace MonoGameUi
                             };
                             root.InternalKeyDown(args);
 
-                            if (!args.Handled)
-                                KeyDown?.Invoke(args);
+                            if (!args.Handled) {
+                                if (KeyDown != null)
+                                    KeyDown(args);
+                            }
 
                             args = new KeyEventArgs()
                             {
@@ -335,8 +338,10 @@ namespace MonoGameUi
                                     Alt = alt
                                 };
                                 root.InternalKeyPress(args);
-                                if (!args.Handled)
-                                    KeyPress?.Invoke(args);
+                                if (!args.Handled) {
+                                    if (KeyPress != null)
+                                        KeyPress(args);
+                                }
                                 pressedKeys[key] = gameTime.TotalGameTime.TotalMilliseconds + 50;
                             }
                         }
@@ -356,8 +361,10 @@ namespace MonoGameUi
                             root.InternalKeyUp(args);
                             pressedKeys.Remove(key);
 
-                            if (!args.Handled)
-                                KeyUp?.Invoke(args);
+                            if (!args.Handled) {
+                                if (KeyUp != null)
+                                    KeyUp(args);
+                            }
 
                         }
                     }
