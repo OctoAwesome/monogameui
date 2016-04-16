@@ -42,7 +42,7 @@ namespace MonoGameUi
             if (Selector.Parent == null) return;
 
             ScreenManager.Flyback(Selector);
-            this.SelectedItem = args.NewItem;
+            SelectedItem = args.NewItem;
             Selector.SelectedItem = null;
             Focus();
         }

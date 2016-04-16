@@ -1400,8 +1400,16 @@ namespace MonoGameUi
 
         protected virtual void OnMouseMove(MouseEventArgs args) { }
 
+        /// <summary>
+        /// Wird aufgerufen, wenn die linke Maustaste heruntergedrückt wird.
+        /// </summary>
+        /// <param name="args">Weitere Informationen zum Event.</param>
         protected virtual void OnLeftMouseDown(MouseEventArgs args) { }
 
+        /// <summary>
+        /// Wird aufgerufen, wenn die linke Maustaste losgelassen wird.
+        /// </summary>
+        /// <param name="args">Weitere Informationen zum Event.</param>
         protected virtual void OnLeftMouseUp(MouseEventArgs args) { }
 
         /// <summary>
@@ -1410,8 +1418,16 @@ namespace MonoGameUi
         /// <param name="args">Weitere Informationen zum Ereignis.</param>
         protected virtual void OnLeftMouseClick(MouseEventArgs args) { }
 
+        /// <summary>
+        /// Wird aufgerufen, wenn die rechte Maustaste heruntergedrückt wird.
+        /// </summary>
+        /// <param name="args">Weitere Informationen zum Event.</param>
         protected virtual void OnRightMouseDown(MouseEventArgs args) { }
 
+        /// <summary>
+        /// Wird aufgerufen, wenn die rechte Maustaste losgelassen wird.
+        /// </summary>
+        /// <param name="args">Weitere Informationen zum Event.</param>
         protected virtual void OnRightMouseUp(MouseEventArgs args) { }
 
         /// <summary>
@@ -1430,16 +1446,34 @@ namespace MonoGameUi
 
         public event MouseEventDelegate MouseMove;
 
+        /// <summary>
+        /// Wird aufgerufen, wenn die linke Maustaste heruntergedrückt wird.
+        /// </summary>
         public event MouseEventDelegate LeftMouseDown;
 
+        /// <summary>
+        /// Wird aufgerufen, wenn die linke Maustaste losgelassen wird.
+        /// </summary>
         public event MouseEventDelegate LeftMouseUp;
 
+        /// <summary>
+        /// Wird aufgerufen, wenn mit der linken Maustaste auf das Steuerelement geklickt wird.
+        /// </summary>
         public event MouseEventDelegate LeftMouseClick;
 
+        /// <summary>
+        /// Wird aufgerufen, wenn die rechte Maustaste heruntergedrückt wird.
+        /// </summary>
         public event MouseEventDelegate RightMouseDown;
 
+        /// <summary>
+        /// Wird aufgerufen, wenn die rechte Maustaste losgelassen wird.
+        /// </summary>
         public event MouseEventDelegate RightMouseUp;
 
+        /// <summary>
+        /// Wird aufgerufen, wenn mit der rechten Maustaste auf das Steuerelement geklickt wird.
+        /// </summary>
         public event MouseEventDelegate RightMouseClick;
 
         public event MouseScrollEventDelegate MouseScroll;
@@ -1546,10 +1580,19 @@ namespace MonoGameUi
 
         protected virtual void OnKeyTextPress(KeyTextEventArgs args) { }
 
+        /// <summary>
+        /// Wird aufgerufen, wenn eine Taste gedrückt wird.
+        /// </summary>
         public event KeyEventDelegate KeyDown;
 
+        /// <summary>
+        /// Wird aufgerufen, wenn eine Taste losgelassen wird.
+        /// </summary>
         public event KeyEventDelegate KeyUp;
 
+        /// <summary>
+        /// Wird aufgerufen, wenn eine Taste gedrückt ist.
+        /// </summary>
         public event KeyEventDelegate KeyPress;
 
         public event KeyTextEventDelegate KeyTextPress;
