@@ -146,10 +146,7 @@ namespace MonoGameUi
             };
             tabControlGrid.Columns.Add(new ColumnDefinition() {ResizeMode = ResizeMode.Parts, Width = 1});
             tabControlGrid.Rows.Add(new RowDefinition() {ResizeMode = ResizeMode.Auto});
-            tabControlGrid.Rows.Add(new RowDefinition()
-            {
-                ResizeMode = ResizeMode.Parts, Height = 1
-            });
+            tabControlGrid.Rows.Add(new RowDefinition() {ResizeMode = ResizeMode.Parts, Height =  1});
             Content = tabControlGrid;
             
 
@@ -162,10 +159,8 @@ namespace MonoGameUi
             tabPage = new ContentControl(manager);
             tabPage.HorizontalAlignment = HorizontalAlignment.Stretch;
             tabPage.VerticalAlignment = VerticalAlignment.Stretch;
-            tabPage.Margin = new Border(0, 10, 0, 10);
             tabPage.Background = TabPageBackground;
             tabControlGrid.AddControl(tabPage, 0, 1);
-            tabPage.Margin = new Border(0, -50, 0, 0);
 
             ApplySkin(typeof(TabControl));
         }
