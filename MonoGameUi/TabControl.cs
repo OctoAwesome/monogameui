@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
@@ -33,7 +34,8 @@ namespace MonoGameUi
         /// <summary>
         /// Die zur Darstellung benötigten Controls
         /// </summary>
-        private StackPanel tabControlStack, tabListStack;
+        private StackPanel tabListStack;
+        private Grid tabControlGrid;
         private ContentControl tabPage;
 
         /// <summary>
@@ -137,23 +139,32 @@ namespace MonoGameUi
             Pages.OnInsert += OnInsert;
             Pages.OnRemove += OnRemove;
 
-            tabControlStack = new StackPanel(manager);
-            tabControlStack.HorizontalAlignment = HorizontalAlignment.Stretch;
-            tabControlStack.VerticalAlignment = VerticalAlignment.Stretch;
-            Content = tabControlStack;
+            tabControlGrid = new Grid(manager)
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch
+            };
+            tabControlGrid.Columns.Add(new ColumnDefinition() {ResizeMode = ResizeMode.Parts, Width = 1});
+            tabControlGrid.Rows.Add(new RowDefinition() {ResizeMode = ResizeMode.Auto});
+            tabControlGrid.Rows.Add(new RowDefinition()
+            {
+                ResizeMode = ResizeMode.Parts, Height = 1
+            });
+            Content = tabControlGrid;
+            
 
             tabListStack = new StackPanel(manager);
             tabListStack.HorizontalAlignment = HorizontalAlignment.Stretch;
             tabListStack.Orientation = Orientation.Horizontal;
             tabListStack.Background = TabListBackground;
-            tabControlStack.Controls.Add(tabListStack);
+            tabControlGrid.AddControl(tabListStack, 0, 0);
 
             tabPage = new ContentControl(manager);
             tabPage.HorizontalAlignment = HorizontalAlignment.Stretch;
             tabPage.VerticalAlignment = VerticalAlignment.Stretch;
             tabPage.Margin = new Border(0, 10, 0, 10);
             tabPage.Background = TabPageBackground;
-            tabControlStack.Controls.Add(tabPage);
+            tabControlGrid.AddControl(tabPage, 0, 1);
             tabPage.Margin = new Border(0, -50, 0, 0);
 
             ApplySkin(typeof(TabControl));
