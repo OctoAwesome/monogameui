@@ -1,0 +1,5 @@
+# version format
+version: {build}
+
+build_script:
+    - ps: ./build 
