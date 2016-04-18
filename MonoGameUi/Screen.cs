@@ -1,5 +1,8 @@
 ﻿namespace MonoGameUi
 {
+    /// <summary>
+    /// Bildschirmseite zur Aufnahme von Controls.
+    /// </summary>
     public abstract class Screen : ContainerControl
     {
         private bool isVisibleScreen = false;
@@ -89,6 +92,10 @@
             }
         }
 
+        /// <summary>
+        /// Erzeugt einen neuen Screen.
+        /// </summary>
+        /// <param name="manager">Der verwendete <see cref="IScreenManager"/></param>
         public Screen(IScreenManager manager) : base(manager)
         {
             Manager = manager;

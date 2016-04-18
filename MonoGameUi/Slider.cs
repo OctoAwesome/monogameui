@@ -67,6 +67,11 @@ namespace MonoGameUi
         /// </summary>
         public event ValueChangedDelegate ValueChanged;
 
+        /// <summary>
+        /// Erzeugt einen neuen Slider.
+        /// </summary>
+        /// <param name="manager">Der verwendete <see cref="IScreenManager"/></param>
+        /// <param name="style">(Optional) Der zu verwendende Style.</param>
         public Slider(IScreenManager manager, string style = "")
             : base(manager, style)
         {
@@ -79,6 +84,13 @@ namespace MonoGameUi
             ApplySkin(typeof(Slider));
         }
 
+        /// <summary>
+        /// Malt den Content des Controls
+        /// </summary>
+        /// <param name="batch">Spritebatch</param>
+        /// <param name="contentArea">Bereich für den Content in absoluten Koordinaten</param>
+        /// <param name="gameTime">GameTime</param>
+        /// <param name="alpha">Die Transparenz des Controls.</param>
         protected override void OnDrawContent(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
         {
             //Berechnet die mögliche Zeichenfläche für den SliderKnob
@@ -141,18 +153,34 @@ namespace MonoGameUi
             SliderForegroundBrush.Draw(batch, sliderKnob, alpha);
         }
 
+        /// <summary>
+        /// Wird aufgerufen, wenn die linke Maustaste heruntergedrückt wird.
+        /// </summary>
+        /// <param name="args">Weitere Informationen zum Event.</param>
         protected override void OnLeftMouseDown(MouseEventArgs args)
         {
             mouseClickActive = true;
         }
 
+        /// <summary>
+        /// Wird aufgerufen, wenn die linke Maustaste losgelassen wird.
+        /// </summary>
+        /// <param name="args">Weitere Informationen zum Event.</param>
         protected override void OnLeftMouseUp(MouseEventArgs args)
         {
             mouseClickActive = false;
         }
 
+        /// <summary>
+        /// Delegat zur Änderung des Slider-Wertes.
+        /// </summary>
+        /// <param name="Value">Der neue Wert.</param>
         public delegate void ValueChangedDelegate(int Value);
 
+        /// <summary>
+        /// Wird aufgerufen, wenn eine Taste gedrückt ist.
+        /// </summary>
+        /// <param name="args">Zusätzliche Daten zum Event.</param>
         protected override void OnKeyPress(KeyEventArgs args)
         {
             if (Focused != TreeState.Active)

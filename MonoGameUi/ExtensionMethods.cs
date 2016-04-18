@@ -3,6 +3,9 @@ using Microsoft.Xna.Framework;
 
 namespace MonoGameUi
 {
+    /// <summary>
+    /// Stellt Hilfsmethoden als Erweiterungsmethoden bereit.
+    /// </summary>
     public static class ExtensionMethods
     {
         /// <summary>

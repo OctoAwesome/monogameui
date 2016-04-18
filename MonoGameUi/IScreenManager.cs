@@ -55,6 +55,7 @@ namespace MonoGameUi
         /// Navigiert den Screen Manager zum angegebenen Screen.
         /// </summary>
         /// <param name="screen"></param>
+        /// <param name="parameter">Parameter für den neuen Screen.</param>
         /// <returns>Gibt an ob die Navigation durchgeführt wurde.</returns>
         bool NavigateToScreen(Screen screen, object parameter = null);
 
@@ -92,28 +93,24 @@ namespace MonoGameUi
         /// </summary>
         void FreeMouse();
 
+        /// <summary>
+        /// Wird aufgerufen, wenn eine Taste gedrückt wird.
+        /// </summary>
         event KeyEventBaseDelegate KeyDown;
+
+        /// <summary>
+        /// Wird aufgerufen, wenn eine Taste gedrückt ist.
+        /// </summary>
         event KeyEventBaseDelegate KeyPress;
+
+        /// <summary>
+        /// Wird aufgerufen, wenn eine Taste losgelassen wird.
+        /// </summary>
         event KeyEventBaseDelegate KeyUp;
 
+        /// <summary>
+        /// Wird aufgerufen, wenn die Auflösung geändert wird, z.B. bei einem Window-Resize.
+        /// </summary>
         event EventHandler ClientSizeChanged;
-    }
-
-    /// <summary>
-    /// Liste der möglichen Mouse-Modi für den Screen.
-    /// </summary>
-    public enum MouseMode
-    {
-        /// <summary>
-        /// Der Mauszeiger wird im Zentrum gefangen und nach jeder Bewegung wieder zurück 
-        /// gesetzt. Er wird ausgeblendet und die Bewegungswerte innerhalb der Mouse-Events 
-        /// entsprechen dem Bewegungsdelta seit dem letzten Aufruf.
-        /// </summary>
-        Captured,
-
-        /// <summary>
-        /// Der Mauszeiger kann sich frei bewegen und wird ganz normal angezeigt.
-        /// </summary>
-        Free
     }
 }

@@ -70,6 +70,7 @@
     <Compile Include="Label.cs" />
     <Compile Include="Listbox.cs" />
     <Compile Include="ListControl.cs" />
+    <Compile Include="MouseMode.cs" />
     <Compile Include="NineTileBrush.cs" />
     <Compile Include="Orientation.cs" />
     <Compile Include="Panel.cs" />
