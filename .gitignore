@@ -10,6 +10,10 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+# Cake stuff
+[Tt]ools/
+[Oo]utput/
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
