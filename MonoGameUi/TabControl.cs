@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework;
 
 namespace MonoGameUi
 {
@@ -179,7 +178,7 @@ namespace MonoGameUi
             title.CanFocus = true;
             title.TabStop = true;
             title.KeyDown += (s, e) => {
-                if (e.Key == Microsoft.Xna.Framework.Input.Keys.Enter && title.Focused == TreeState.Active)
+                if (e.Key == engenious.Input.Keys.Enter && title.Focused == TreeState.Active)
                     SelectTab(Pages.IndexOf(item));
             };
             tabListStack.Controls.Add(title);

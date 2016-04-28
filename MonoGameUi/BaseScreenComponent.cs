@@ -1,9 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using engenious;
+using engenious.Graphics;
+using engenious.Content;
+using engenious.Input;
+
 
 namespace MonoGameUi
 {
@@ -78,17 +79,17 @@ namespace MonoGameUi
         {
             Content = game.Content;
 
-            Game.Window.TextInput += (s, e) =>
+            Game.KeyPress += (s, e) =>
             {
                 if (Game.IsActive)
                 {
-                    KeyTextEventArgs args = new KeyTextEventArgs() { Character = e.Character };
+                    KeyTextEventArgs args = new KeyTextEventArgs() { Character = e };
 
                     root.InternalKeyTextPress(args);
                 }
             };
 
-            Game.Window.ClientSizeChanged += (s, e) =>
+            Game.Resized += (s, e) =>
             {
                 if (ClientSizeChanged != null)
                     ClientSizeChanged(s, e);
@@ -158,7 +159,7 @@ namespace MonoGameUi
                 MouseState mouse = Mouse.GetState();
 
                 // Mausposition anhand des Mouse Modes ermitteln
-                Point mousePosition = mouse.Position;
+                Point mousePosition = new Point(mouse.X,mouse.Y);
                 if (MouseMode == MouseMode.Captured)
                     mousePosition = new Point(
                         mousePosition.X - (GraphicsDevice.Viewport.Width / 2),
@@ -263,7 +264,7 @@ namespace MonoGameUi
                 // Potentieller Positionsreset
                 if (MouseMode == MouseMode.Free)
                 {
-                    lastMousePosition = mouse.Position;
+                    lastMousePosition = new Point(mouse.X,mouse.Y);
                 }
                 else if (mousePosition.X != 0 || mousePosition.Y != 0)
                 {
@@ -391,8 +392,7 @@ namespace MonoGameUi
             string screentitle = ActiveScreen != null ? ActiveScreen.Title : string.Empty;
             string windowtitle = TitlePrefix + (string.IsNullOrEmpty(screentitle) ? "" : " - " + screentitle);
 
-            if (Game.Window != null && Game.Window.Title != windowtitle)
-                Game.Window.Title = windowtitle;
+            Game.Title = windowtitle;
 
             #endregion
         }

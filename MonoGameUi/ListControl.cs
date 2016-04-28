@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework.Input;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using engenious.Input;
 
 namespace MonoGameUi
 {

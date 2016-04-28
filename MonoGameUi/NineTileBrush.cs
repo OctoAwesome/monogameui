@@ -1,6 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
+﻿using System;
+using engenious;
+using engenious.Graphics;
 
 namespace MonoGameUi
 {
@@ -59,9 +59,9 @@ namespace MonoGameUi
 
             // Corners
             batch.Draw(UpperLeftTexture, new Rectangle(area.X, area.Y, UpperLeftTexture.Width, UpperLeftTexture.Height), color);
-            batch.Draw(UpperRightTexture, new Rectangle(area.X + area.Size.X - UpperRightTexture.Width, area.Y, UpperRightTexture.Width, UpperRightTexture.Height), color);
-            batch.Draw(LowerLeftTexture, new Rectangle(area.X, area.Y + area.Size.Y - LowerLeftTexture.Height, LowerLeftTexture.Width, LowerLeftTexture.Height), color);
-            batch.Draw(LowerRightTexture, new Rectangle(area.X + area.Size.X - LowerRightTexture.Width, area.Y + area.Size.Y - LowerRightTexture.Height, LowerRightTexture.Width, LowerRightTexture.Height), color);
+            batch.Draw(UpperRightTexture, new Rectangle(area.X + area.Size.Width - UpperRightTexture.Width, area.Y, UpperRightTexture.Width, UpperRightTexture.Height), color);
+            batch.Draw(LowerLeftTexture, new Rectangle(area.X, area.Y + area.Size.Height - LowerLeftTexture.Height, LowerLeftTexture.Width, LowerLeftTexture.Height), color);
+            batch.Draw(LowerRightTexture, new Rectangle(area.X + area.Size.Width - LowerRightTexture.Width, area.Y + area.Size.Height - LowerRightTexture.Height, LowerRightTexture.Width, LowerRightTexture.Height), color);
         }
 
         public static NineTileBrush FromSingleTexture(Texture2D texture, int cutX, int cutY)

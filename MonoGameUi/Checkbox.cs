@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using engenious;
+using engenious.Graphics;
 
 namespace MonoGameUi
 {
@@ -97,7 +97,7 @@ namespace MonoGameUi
         /// <param name="args">Zusätzliche Daten zum Event.</param>
         protected override void OnKeyDown(KeyEventArgs args)
         {
-            if (Focused == TreeState.Active && args.Key == Microsoft.Xna.Framework.Input.Keys.Enter)
+            if (Focused == TreeState.Active && args.Key == engenious.Input.Keys.Enter)
                 Checked = !Checked;
         }
 

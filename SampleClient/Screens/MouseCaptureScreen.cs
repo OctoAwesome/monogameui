@@ -1,6 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using MonoGameUi;
+﻿using MonoGameUi;
+using engenious;
+using engenious.Input;
 
 namespace SampleClient.Screens
 {
