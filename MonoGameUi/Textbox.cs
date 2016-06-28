@@ -251,8 +251,8 @@ namespace MonoGameUi
                 int to = Math.Max(SelectionStart, CursorPosition);
 
                 // Selektion kopieren
-                if (from == to) System.Windows.Forms.Clipboard.Clear();
-                else System.Windows.Forms.Clipboard.SetText(Text.Substring(from, to - from));
+                if (from == to) SystemSpecific.ClearClipboard();
+                else SystemSpecific.SetClipboardText(Text.Substring(from, to - from));
 
                 args.Handled = true;
             }
@@ -264,8 +264,8 @@ namespace MonoGameUi
                 int to = Math.Max(SelectionStart, CursorPosition);
 
                 // Selektion ausschneiden
-                if (from == to) System.Windows.Forms.Clipboard.Clear();
-                else System.Windows.Forms.Clipboard.SetText(Text.Substring(from, to - from));
+                if (from == to) SystemSpecific.ClearClipboard();
+                else SystemSpecific.SetClipboardText(Text.Substring(from, to - from));
 
                 CursorPosition = from;
                 SelectionStart = from;
@@ -288,7 +288,7 @@ namespace MonoGameUi
                 }
 
                 // Text einfügen und Cursor ans Ende setzen
-                string paste = System.Windows.Forms.Clipboard.GetText();
+                string paste = SystemSpecific.GetClipboardText();
                 Text = Text.Substring(0, CursorPosition) + paste + Text.Substring(CursorPosition);
                 CursorPosition += paste.Length;
                 SelectionStart = CursorPosition;
