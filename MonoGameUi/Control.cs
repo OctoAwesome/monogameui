@@ -1385,6 +1385,93 @@ namespace MonoGameUi
             }
         }
 
+        internal void InternalTouchDown(TouchEventArgs args)
+        {
+            // Ignorieren, falls nicht gehovered
+            if (Hovered == TreeState.None || !Visible || !Enabled) return;
+
+            // Fokusieren
+            Focus();
+
+            // Pressed-State aktivieren
+            Pressed = true;
+
+            // Children first (Order by Z-Order)
+            foreach (var child in Children.InZOrder())
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
+                child.InternalTouchDown(args);
+                if (args.Handled) break;
+            }
+
+            // Lokales Events
+            if (!args.Handled)
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
+                OnTouchDown(args);
+                if (TouchDown != null)
+                    TouchDown(this, args);
+            }
+        }
+
+        internal void InternalTouchMove(TouchEventArgs args)
+        {
+            // Ignorieren, falls nicht gehovered
+            if (Hovered == TreeState.None || !Visible || !Enabled) return;
+
+            // Fokusieren
+            Focus();
+
+            // Pressed-State aktivieren
+            Pressed = true;
+
+            // Children first (Order by Z-Order)
+            foreach (var child in Children.InZOrder())
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
+                child.InternalTouchMove(args);
+                if (args.Handled) break;
+            }
+
+            // Lokales Events
+            if (!args.Handled)
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
+                OnTouchMove(args);
+                if (TouchMove != null)
+                    TouchMove(this, args);
+            }
+        }
+
+        internal void InternalTouchUp(TouchEventArgs args)
+        {
+            // Ignorieren, falls nicht gehovered
+            if (Hovered == TreeState.None || !Visible || !Enabled) return;
+
+            // Fokusieren
+            Focus();
+
+            // Pressed-State aktivieren
+            Pressed = true;
+
+            // Children first (Order by Z-Order)
+            foreach (var child in Children.InZOrder())
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
+                child.InternalTouchUp(args);
+                if (args.Handled) break;
+            }
+
+            // Lokales Events
+            if (!args.Handled)
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
+                OnTouchUp(args);
+                if (TouchUp != null)
+                    TouchUp(this, args);
+            }
+        }
+
         private Point CalculateLocalPosition(Point global, Control control)
         {
             Point absolutePosition = control.AbsolutePosition;
@@ -1438,6 +1525,12 @@ namespace MonoGameUi
 
         protected virtual void OnMouseScroll(MouseScrollEventArgs args) { }
 
+        protected virtual void OnTouchDown(TouchEventArgs args) { }
+
+        protected virtual void OnTouchMove(TouchEventArgs args) { }
+
+        protected virtual void OnTouchUp(TouchEventArgs args) { }
+
         protected virtual void OnHoveredChanged(PropertyEventArgs<TreeState> args) { }
 
         public event MouseEventDelegate MouseEnter;
@@ -1477,6 +1570,12 @@ namespace MonoGameUi
         public event MouseEventDelegate RightMouseClick;
 
         public event MouseScrollEventDelegate MouseScroll;
+
+        public event TouchEventDelegate TouchDown;
+
+        public event TouchEventDelegate TouchMove;
+
+        public event TouchEventDelegate TouchUp;
 
         public event PropertyChangedDelegate<TreeState> HoveredChanged;
 

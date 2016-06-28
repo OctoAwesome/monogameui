@@ -112,6 +112,27 @@ namespace MonoGameUi
     }
 
     /// <summary>
+    /// Event Args für alle Touch-basierten Events.
+    /// </summary>
+    public class TouchEventArgs : EventArgs
+    {
+        /// <summary>
+        /// ID des Touch Points.
+        /// </summary>
+        public int TouchId { get; set; }
+
+        /// <summary>
+        /// Position des Mauspointers bezogen auf den Ursprung des aktuellen Controls
+        /// </summary>
+        public Point LocalPosition { get; set; }
+
+        /// <summary>
+        /// Position des Mauspointers in globaler Screen-Koordinate
+        /// </summary>
+        public Point GlobalPosition { get; set; }
+    }
+
+    /// <summary>
     /// Event Arguemnts für Tastatur-Events.
     /// </summary>
     public class KeyEventArgs : EventArgs
@@ -211,12 +232,20 @@ namespace MonoGameUi
     /// <param name="args">Eventargumente</param>
     public delegate void MouseEventDelegate(Control sender, MouseEventArgs args);
 
+    public delegate void MouseEventBaseDelegate(MouseEventArgs args);
+
     /// <summary>
     /// Event-Delegat für Maus-Scroll-Events.
     /// </summary>
     /// <param name="sender">Aufrufendes Control</param>
     /// <param name="args">Eventargumente</param>
     public delegate void MouseScrollEventDelegate(Control sender, MouseScrollEventArgs args);
+
+    public delegate void MouseScrollEventBaseDelegate(MouseScrollEventArgs args);
+
+    public delegate void TouchEventDelegate(Control control, TouchEventArgs args);
+
+    public delegate void TouchEventBaseDelegate(TouchEventArgs args);
 
     /// <summary>
     /// Event Delegat für Keyboard-Events.

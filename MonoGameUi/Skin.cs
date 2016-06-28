@@ -129,11 +129,11 @@ namespace MonoGameUi
             });
 
             // ListControl
-            ControlSkins.Add(typeof(ListControl<>), (c) =>
-            {
-                dynamic listControl = c;
-                listControl.SelectedItemBrush = Current.SelectedItemBrush;
-            });
+            //ControlSkins.Add(typeof(ListControl<>), (c) =>
+            //{
+            //    dynamic listControl = c;
+            //    listControl.SelectedItemBrush = Current.SelectedItemBrush;
+            //});
 
             // Listbox
             ControlSkins.Add(typeof(Listbox<>), (c) =>
@@ -142,12 +142,12 @@ namespace MonoGameUi
             });
 
             // Combobox
-            ControlSkins.Add(typeof(Combobox<>), (c) =>
-            {
-                dynamic comboBox = c;
-                comboBox.Background = new BorderBrush(Color.White);
+            //ControlSkins.Add(typeof(Combobox<>), (c) =>
+            //{
+            //    dynamic comboBox = c;
+            //    comboBox.Background = new BorderBrush(Color.White);
 
-            });
+            //});
 
             // Progressbar
             ControlSkins.Add(typeof(ProgressBar), (c) =>
