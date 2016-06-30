@@ -61,6 +61,18 @@ namespace MonoGameUi
             args.Handled = true;
         }
 
+        protected override void OnTouchUp(TouchEventArgs args)
+        {
+            base.OnTouchUp(args);
+
+            EventArgs e = new EventArgs();
+            OnExecuted(e);
+            if (Executed != null)
+                Executed(this, e);
+
+            args.Handled = true;
+        }
+
         /// <summary>
         /// Methode, die aufgerufen wird, nachdem der Click-EventHadler (falls vorhanden) ausgeführt wurde.
         /// </summary>
