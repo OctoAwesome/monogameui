@@ -1115,7 +1115,7 @@ namespace MonoGameUi
 
         #endregion
 
-        #region Mouse Management
+        #region Pointer Management
 
         private TreeState hovered = TreeState.None;
 

@@ -15,6 +15,22 @@ namespace MonoGameUi
     }
 
     /// <summary>
+    /// Basisklasse für alle Positionsbasierten Events (Maus, Touch)
+    /// </summary>
+    public class PointerEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Position des Mauspointers bezogen auf den Ursprung des aktuellen Controls
+        /// </summary>
+        public Point LocalPosition { get; set; }
+
+        /// <summary>
+        /// Position des Mauspointers in globaler Screen-Koordinate
+        /// </summary>
+        public Point GlobalPosition { get; set; }
+    }
+
+    /// <summary>
     /// Standard Event Args bei Property Changed Events.
     /// </summary>
     /// <typeparam name="T">Typ des Properties</typeparam>
@@ -50,22 +66,12 @@ namespace MonoGameUi
     /// <summary>
     /// Event Arguments für alle Mouse Events.
     /// </summary>
-    public class MouseEventArgs : EventArgs
+    public class MouseEventArgs : PointerEventArgs
     {
         /// <summary>
         /// Gibt den aktuellen Modus der Maus an.
         /// </summary>
         public MouseMode MouseMode { get; set; }
-
-        /// <summary>
-        /// Position des Mauspointers bezogen auf den Ursprung des aktuellen Controls
-        /// </summary>
-        public Point LocalPosition { get; set; }
-
-        /// <summary>
-        /// Position des Mauspointers in globaler Screen-Koordinate
-        /// </summary>
-        public Point GlobalPosition { get; set; }
 
         /// <summary>
         /// Erzeugt eine neue Instanz der MouseEventArgs-Klasse
@@ -114,22 +120,12 @@ namespace MonoGameUi
     /// <summary>
     /// Event Args für alle Touch-basierten Events.
     /// </summary>
-    public class TouchEventArgs : EventArgs
+    public class TouchEventArgs : PointerEventArgs
     {
         /// <summary>
         /// ID des Touch Points.
         /// </summary>
         public int TouchId { get; set; }
-
-        /// <summary>
-        /// Position des Mauspointers bezogen auf den Ursprung des aktuellen Controls
-        /// </summary>
-        public Point LocalPosition { get; set; }
-
-        /// <summary>
-        /// Position des Mauspointers in globaler Screen-Koordinate
-        /// </summary>
-        public Point GlobalPosition { get; set; }
     }
 
     /// <summary>
