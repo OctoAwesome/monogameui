@@ -181,7 +181,10 @@ namespace MonoGameUi
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-            #region Mouse Interaction
+            if (Game.IsActive)
+            {
+
+                #region Mouse Interaction
 
                 if (MouseEnabled)
                 {
@@ -331,9 +334,9 @@ namespace MonoGameUi
                     }
                 }
 
-            #endregion
+                #endregion
 
-            #region Keyboard Interaction
+                #region Keyboard Interaction
 
                 if (KeyboardEnabled)
                 {
@@ -434,9 +437,9 @@ namespace MonoGameUi
                     }
                 }
 
-            #endregion
+                #endregion
 
-            #region Touchpanel Interaction
+                #region Touchpanel Interaction
 
                 if (TouchEnabled)
                 {
@@ -485,7 +488,8 @@ namespace MonoGameUi
                     }
                 }
 
-            #endregion
+                #endregion
+            }
 
 #region Recalculate Sizes
 
