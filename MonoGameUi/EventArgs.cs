@@ -20,6 +20,11 @@ namespace MonoGameUi
     public class PointerEventArgs : EventArgs
     {
         /// <summary>
+        /// Gibt an, ob das Event 
+        /// </summary>
+        public bool Bubbled { get; set; }
+
+        /// <summary>
         /// Position des Mauspointers bezogen auf den Ursprung des aktuellen Controls
         /// </summary>
         public Point LocalPosition { get; set; }
