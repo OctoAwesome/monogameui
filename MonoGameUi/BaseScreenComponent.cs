@@ -52,6 +52,26 @@ namespace MonoGameUi
         public ContentManager Content { get; private set; }
 
         /// <summary>
+        /// Legt fest, ob es GamePad Support geben soll (nicht unterstützt bisher)
+        /// </summary>
+        public bool GamePadEnabled { get; set; }
+
+        /// <summary>
+        /// Legt fest, ob es Maus Support geben soll
+        /// </summary>
+        public bool MouseEnabled { get; set; }
+
+        /// <summary>
+        /// Legt fest, ob es Touch Support geben soll.
+        /// </summary>
+        public bool TouchEnabled { get; set; }
+
+        /// <summary>
+        /// Legt fest, ob es Keyboard Support geben soll.
+        /// </summary>
+        public bool KeyboardEnabled { get; set; }
+
+        /// <summary>
         /// Gibt den aktuellen Modus der Maus zurück.
         /// </summary>
         public MouseMode MouseMode
@@ -78,6 +98,11 @@ namespace MonoGameUi
             : base(game)
         {
             Content = game.Content;
+
+            KeyboardEnabled = true;
+            MouseEnabled = true;
+            GamePadEnabled = true;
+            TouchEnabled = true;
 
 #if !ANDROID
 
@@ -156,216 +181,192 @@ namespace MonoGameUi
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-#region Mouse Interaction
+            #region Mouse Interaction
 
-            if (Game.IsActive)
-            {
-                MouseState mouse = Mouse.GetState();
-
-                // Mausposition anhand des Mouse Modes ermitteln
-                Point mousePosition = mouse.Position;
-                if (MouseMode == MouseMode.Captured)
-                    mousePosition = new Point(
-                        mousePosition.X - (GraphicsDevice.Viewport.Width / 2),
-                        mousePosition.Y - (GraphicsDevice.Viewport.Height / 2));
-
-                MouseEventArgs moveArgs = new MouseEventArgs()
+                if (MouseEnabled)
                 {
-                    MouseMode = MouseMode,
-                    GlobalPosition = mousePosition,
-                    LocalPosition = mousePosition,
-                };
+                    MouseState mouse = Mouse.GetState();
 
-                root.InternalMouseMove(moveArgs);
-                if (!moveArgs.Handled && MouseMove != null)
-                    MouseMove(moveArgs);
+                    // Mausposition anhand des Mouse Modes ermitteln
+                    Point mousePosition = mouse.Position;
+                    if (MouseMode == MouseMode.Captured)
+                        mousePosition = new Point(
+                            mousePosition.X - (GraphicsDevice.Viewport.Width / 2),
+                            mousePosition.Y - (GraphicsDevice.Viewport.Height / 2));
 
-                // Linke Maustaste
-                if (mouse.LeftButton == ButtonState.Pressed)
-                {
-                    if (!lastLeftMouseButtonPressed)
-                    {
-                        MouseEventArgs leftDownArgs = new MouseEventArgs
-                        {
-                            MouseMode = MouseMode,
-                            GlobalPosition = mousePosition,
-                            LocalPosition = mousePosition
-                        };
-
-                        // Linke Maustaste wurde neu gedrückt
-                        root.InternalLeftMouseDown(leftDownArgs);
-                        if (!leftDownArgs.Handled && LeftMouseDown != null)
-                            LeftMouseDown(leftDownArgs);
-                    }
-                    lastLeftMouseButtonPressed = true;
-                }
-                else
-                {
-                    if (lastLeftMouseButtonPressed)
-                    {
-                        // Linke Maustaste wurde losgelassen
-                        MouseEventArgs leftClickArgs = new MouseEventArgs
-                        {
-                            MouseMode = MouseMode,
-                            GlobalPosition = mousePosition,
-                            LocalPosition = mousePosition
-                        };
-
-                        root.InternalLeftMouseClick(leftClickArgs);
-                        if (!leftClickArgs.Handled && LeftMouseClick != null)
-                            LeftMouseClick(leftClickArgs);
-
-                        MouseEventArgs leftUpArgs = new MouseEventArgs
-                        {
-                            MouseMode = MouseMode,
-                            GlobalPosition = mousePosition,
-                            LocalPosition = mousePosition
-                        };
-
-                        root.InternalLeftMouseUp(leftUpArgs);
-                        if (!leftUpArgs.Handled && LeftMouseUp != null)
-                            LeftMouseUp(leftUpArgs);
-                    }
-                    lastLeftMouseButtonPressed = false;
-                }
-
-                // Rechte Maustaste
-                if (mouse.RightButton == ButtonState.Pressed)
-                {
-                    if (!lastRightMouseButtonPressed)
-                    {
-                        // Rechte Maustaste neu gedrückt
-                        MouseEventArgs rightDownArgs = new MouseEventArgs
-                        {
-                            MouseMode = MouseMode,
-                            GlobalPosition = mousePosition,
-                            LocalPosition = mousePosition
-                        };
-
-                        root.InternalRightMouseDown(rightDownArgs);
-                        if (!rightDownArgs.Handled && RightMouseDown != null)
-                            RightMouseDown(rightDownArgs);
-                    }
-                    lastRightMouseButtonPressed = true;
-                }
-                else
-                {
-                    if (lastRightMouseButtonPressed)
-                    {
-                        // Rechte Maustaste losgelassen
-                        MouseEventArgs rightClickArgs = new MouseEventArgs
-                        {
-                            MouseMode = MouseMode,
-                            GlobalPosition = mousePosition,
-                            LocalPosition = mousePosition
-                        };
-                        root.InternalRightMouseClick(rightClickArgs);
-                        if (!rightClickArgs.Handled && RightMouseClick != null)
-                            RightMouseClick(rightClickArgs);
-
-                        MouseEventArgs rightUpArgs = new MouseEventArgs
-                        {
-                            MouseMode = MouseMode,
-                            GlobalPosition = mousePosition,
-                            LocalPosition = mousePosition
-                        };
-                        root.InternalRightMouseUp(rightUpArgs);
-                        if (!rightUpArgs.Handled && RightMouseUp != null)
-                            RightMouseUp(rightUpArgs);
-                    }
-                    lastRightMouseButtonPressed = false;
-                }
-
-                // Mousewheel
-                if (lastMouseWheelValue != mouse.ScrollWheelValue)
-                {
-                    int diff = (mouse.ScrollWheelValue - lastMouseWheelValue);
-
-                    MouseScrollEventArgs scrollArgs = new MouseScrollEventArgs
+                    MouseEventArgs moveArgs = new MouseEventArgs()
                     {
                         MouseMode = MouseMode,
                         GlobalPosition = mousePosition,
                         LocalPosition = mousePosition,
-                        Steps = diff
                     };
-                    root.InternalMouseScroll(scrollArgs);
-                    if (!scrollArgs.Handled && MouseScroll != null)
-                        MouseScroll(scrollArgs);
 
-                    lastMouseWheelValue = mouse.ScrollWheelValue;
-                }
+                    root.InternalMouseMove(moveArgs);
+                    if (!moveArgs.Handled && MouseMove != null)
+                        MouseMove(moveArgs);
 
-                // Potentieller Positionsreset
-                if (MouseMode == MouseMode.Free)
-                {
-                    lastMousePosition = mouse.Position;
-                }
-                else if (mousePosition.X != 0 || mousePosition.Y != 0)
-                {
-                    Mouse.SetPosition(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
-                }
-            }
-
-#endregion
-
-#region Keyboard Interaction
-
-            if (Game.IsActive)
-            {
-                KeyboardState keyboard = Keyboard.GetState();
-
-                bool shift = keyboard.IsKeyDown(Keys.LeftShift) | keyboard.IsKeyDown(Keys.RightShift);
-                bool ctrl = keyboard.IsKeyDown(Keys.LeftControl) | keyboard.IsKeyDown(Keys.RightControl);
-                bool alt = keyboard.IsKeyDown(Keys.LeftAlt) | keyboard.IsKeyDown(Keys.RightAlt);
-
-                KeyEventArgs args;
-                foreach (Keys key in Enum.GetValues(typeof(Keys)))
-                {
-                    if (keyboard.IsKeyDown(key))
+                    // Linke Maustaste
+                    if (mouse.LeftButton == ButtonState.Pressed)
                     {
-                        if (!pressedKeys.ContainsKey(key))
+                        if (!lastLeftMouseButtonPressed)
                         {
-                            // Taste ist neu
-
-                            args = new KeyEventArgs()
+                            MouseEventArgs leftDownArgs = new MouseEventArgs
                             {
-                                Key = key,
-                                Shift = shift,
-                                Ctrl = ctrl,
-                                Alt = alt
+                                MouseMode = MouseMode,
+                                GlobalPosition = mousePosition,
+                                LocalPosition = mousePosition
                             };
-                            root.InternalKeyDown(args);
 
-                            if (!args.Handled)
-                            {
-                                if (KeyDown != null)
-                                    KeyDown(args);
-                            }
-
-                            args = new KeyEventArgs()
-                            {
-                                Key = key,
-                                Shift = shift,
-                                Ctrl = ctrl,
-                                Alt = alt
-                            };
-                            root.InternalKeyPress(args);
-                            pressedKeys.Add(key, gameTime.TotalGameTime.TotalMilliseconds + 500);
-
-
-
-                            // Spezialfall Tab-Taste (falls nicht verarbeitet wurde)
-                            if (key == Keys.Tab && !args.Handled)
-                            {
-                                if (shift) root.InternalTabbedBackward();
-                                else root.InternalTabbedForward();
-                            }
+                            // Linke Maustaste wurde neu gedrückt
+                            root.InternalLeftMouseDown(leftDownArgs);
+                            if (!leftDownArgs.Handled && LeftMouseDown != null)
+                                LeftMouseDown(leftDownArgs);
                         }
-                        else
+                        lastLeftMouseButtonPressed = true;
+                    }
+                    else
+                    {
+                        if (lastLeftMouseButtonPressed)
                         {
-                            // Taste ist immernoch gedrückt
-                            if (pressedKeys[key] <= gameTime.TotalGameTime.TotalMilliseconds)
+                            // Linke Maustaste wurde losgelassen
+                            MouseEventArgs leftClickArgs = new MouseEventArgs
                             {
+                                MouseMode = MouseMode,
+                                GlobalPosition = mousePosition,
+                                LocalPosition = mousePosition
+                            };
+
+                            root.InternalLeftMouseClick(leftClickArgs);
+                            if (!leftClickArgs.Handled && LeftMouseClick != null)
+                                LeftMouseClick(leftClickArgs);
+
+                            MouseEventArgs leftUpArgs = new MouseEventArgs
+                            {
+                                MouseMode = MouseMode,
+                                GlobalPosition = mousePosition,
+                                LocalPosition = mousePosition
+                            };
+
+                            root.InternalLeftMouseUp(leftUpArgs);
+                            if (!leftUpArgs.Handled && LeftMouseUp != null)
+                                LeftMouseUp(leftUpArgs);
+                        }
+                        lastLeftMouseButtonPressed = false;
+                    }
+
+                    // Rechte Maustaste
+                    if (mouse.RightButton == ButtonState.Pressed)
+                    {
+                        if (!lastRightMouseButtonPressed)
+                        {
+                            // Rechte Maustaste neu gedrückt
+                            MouseEventArgs rightDownArgs = new MouseEventArgs
+                            {
+                                MouseMode = MouseMode,
+                                GlobalPosition = mousePosition,
+                                LocalPosition = mousePosition
+                            };
+
+                            root.InternalRightMouseDown(rightDownArgs);
+                            if (!rightDownArgs.Handled && RightMouseDown != null)
+                                RightMouseDown(rightDownArgs);
+                        }
+                        lastRightMouseButtonPressed = true;
+                    }
+                    else
+                    {
+                        if (lastRightMouseButtonPressed)
+                        {
+                            // Rechte Maustaste losgelassen
+                            MouseEventArgs rightClickArgs = new MouseEventArgs
+                            {
+                                MouseMode = MouseMode,
+                                GlobalPosition = mousePosition,
+                                LocalPosition = mousePosition
+                            };
+                            root.InternalRightMouseClick(rightClickArgs);
+                            if (!rightClickArgs.Handled && RightMouseClick != null)
+                                RightMouseClick(rightClickArgs);
+
+                            MouseEventArgs rightUpArgs = new MouseEventArgs
+                            {
+                                MouseMode = MouseMode,
+                                GlobalPosition = mousePosition,
+                                LocalPosition = mousePosition
+                            };
+                            root.InternalRightMouseUp(rightUpArgs);
+                            if (!rightUpArgs.Handled && RightMouseUp != null)
+                                RightMouseUp(rightUpArgs);
+                        }
+                        lastRightMouseButtonPressed = false;
+                    }
+
+                    // Mousewheel
+                    if (lastMouseWheelValue != mouse.ScrollWheelValue)
+                    {
+                        int diff = (mouse.ScrollWheelValue - lastMouseWheelValue);
+
+                        MouseScrollEventArgs scrollArgs = new MouseScrollEventArgs
+                        {
+                            MouseMode = MouseMode,
+                            GlobalPosition = mousePosition,
+                            LocalPosition = mousePosition,
+                            Steps = diff
+                        };
+                        root.InternalMouseScroll(scrollArgs);
+                        if (!scrollArgs.Handled && MouseScroll != null)
+                            MouseScroll(scrollArgs);
+
+                        lastMouseWheelValue = mouse.ScrollWheelValue;
+                    }
+
+                    // Potentieller Positionsreset
+                    if (MouseMode == MouseMode.Free)
+                    {
+                        lastMousePosition = mouse.Position;
+                    }
+                    else if (mousePosition.X != 0 || mousePosition.Y != 0)
+                    {
+                        Mouse.SetPosition(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
+                    }
+                }
+
+            #endregion
+
+            #region Keyboard Interaction
+
+                if (KeyboardEnabled)
+                {
+                    KeyboardState keyboard = Keyboard.GetState();
+
+                    bool shift = keyboard.IsKeyDown(Keys.LeftShift) | keyboard.IsKeyDown(Keys.RightShift);
+                    bool ctrl = keyboard.IsKeyDown(Keys.LeftControl) | keyboard.IsKeyDown(Keys.RightControl);
+                    bool alt = keyboard.IsKeyDown(Keys.LeftAlt) | keyboard.IsKeyDown(Keys.RightAlt);
+
+                    KeyEventArgs args;
+                    foreach (Keys key in Enum.GetValues(typeof(Keys)))
+                    {
+                        if (keyboard.IsKeyDown(key))
+                        {
+                            if (!pressedKeys.ContainsKey(key))
+                            {
+                                // Taste ist neu
+
+                                args = new KeyEventArgs()
+                                {
+                                    Key = key,
+                                    Shift = shift,
+                                    Ctrl = ctrl,
+                                    Alt = alt
+                                };
+                                root.InternalKeyDown(args);
+
+                                if (!args.Handled)
+                                {
+                                    if (KeyDown != null)
+                                        KeyDown(args);
+                                }
+
                                 args = new KeyEventArgs()
                                 {
                                     Key = key,
@@ -374,80 +375,117 @@ namespace MonoGameUi
                                     Alt = alt
                                 };
                                 root.InternalKeyPress(args);
+                                pressedKeys.Add(key, gameTime.TotalGameTime.TotalMilliseconds + 500);
+
+
+
+                                // Spezialfall Tab-Taste (falls nicht verarbeitet wurde)
+                                if (key == Keys.Tab && !args.Handled)
+                                {
+                                    if (shift) root.InternalTabbedBackward();
+                                    else root.InternalTabbedForward();
+                                }
+                            }
+                            else
+                            {
+                                // Taste ist immernoch gedrückt
+                                if (pressedKeys[key] <= gameTime.TotalGameTime.TotalMilliseconds)
+                                {
+                                    args = new KeyEventArgs()
+                                    {
+                                        Key = key,
+                                        Shift = shift,
+                                        Ctrl = ctrl,
+                                        Alt = alt
+                                    };
+                                    root.InternalKeyPress(args);
+                                    if (!args.Handled)
+                                    {
+                                        if (KeyPress != null)
+                                            KeyPress(args);
+                                    }
+                                    pressedKeys[key] = gameTime.TotalGameTime.TotalMilliseconds + 50;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (pressedKeys.ContainsKey(key))
+                            {
+                                // Taste losgelassen
+                                args = new KeyEventArgs()
+                                {
+                                    Key = key,
+                                    Shift = shift,
+                                    Ctrl = ctrl,
+                                    Alt = alt
+                                };
+                                root.InternalKeyUp(args);
+                                pressedKeys.Remove(key);
+
                                 if (!args.Handled)
                                 {
-                                    if (KeyPress != null)
-                                        KeyPress(args);
+                                    if (KeyUp != null)
+                                        KeyUp(args);
                                 }
-                                pressedKeys[key] = gameTime.TotalGameTime.TotalMilliseconds + 50;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (pressedKeys.ContainsKey(key))
-                        {
-                            // Taste losgelassen
-                            args = new KeyEventArgs()
-                            {
-                                Key = key,
-                                Shift = shift,
-                                Ctrl = ctrl,
-                                Alt = alt
-                            };
-                            root.InternalKeyUp(args);
-                            pressedKeys.Remove(key);
 
-                            if (!args.Handled)
-                            {
-                                if (KeyUp != null)
-                                    KeyUp(args);
                             }
-
                         }
                     }
                 }
-            }
 
-#endregion
+            #endregion
 
-#region Touchpanel Interaction
+            #region Touchpanel Interaction
 
-            if (Game.IsActive)
-            {
-                TouchCollection touchPoints = TouchPanel.GetState();
-                foreach (var touchPoint in touchPoints)
+                if (TouchEnabled)
                 {
-                    Point point = touchPoint.Position.ToPoint();
-                    TouchEventArgs args = new TouchEventArgs()
+                    TouchCollection touchPoints = TouchPanel.GetState();
+                    foreach (var touchPoint in touchPoints)
                     {
-                        TouchId = touchPoint.Id,
-                        GlobalPosition = point,
-                        LocalPosition = point
-                    };
+                        Point point = touchPoint.Position.ToPoint();
+                        TouchEventArgs args = new TouchEventArgs()
+                        {
+                            TouchId = touchPoint.Id,
+                            GlobalPosition = point,
+                            LocalPosition = point
+                        };
 
-                    switch (touchPoint.State)
-                    {
-                        case TouchLocationState.Pressed:
-                            root.InternalTouchDown(args);
-                            if (!args.Handled && TouchDown != null)
-                                TouchDown(args);
-                            break;
-                        case TouchLocationState.Moved:
-                            root.InternalTouchMove(args);
-                            if (!args.Handled && TouchMove != null)
-                                TouchMove(args);
-                            break;
-                        case TouchLocationState.Released:
-                            root.InternalTouchUp(args);
-                            if (!args.Handled && TouchUp != null)
-                                TouchUp(args);
-                            break;
+                        switch (touchPoint.State)
+                        {
+                            case TouchLocationState.Pressed:
+                                root.InternalTouchDown(args);
+                                if (!args.Handled && TouchDown != null)
+                                    TouchDown(args);
+                                break;
+                            case TouchLocationState.Moved:
+                                root.InternalTouchMove(args);
+                                if (!args.Handled && TouchMove != null)
+                                    TouchMove(args);
+                                break;
+                            case TouchLocationState.Released:
+
+                                // Linke Maustaste wurde losgelassen
+                                TouchEventArgs tapArgs = new TouchEventArgs
+                                {
+                                    TouchId = touchPoint.Id,
+                                    GlobalPosition = point,
+                                    LocalPosition = point
+                                };
+
+                                root.InternalTouchTap(tapArgs);
+                                if (!tapArgs.Handled && TouchTap != null)
+                                    TouchTap(tapArgs);
+
+                                root.InternalTouchUp(args);
+                                if (!args.Handled && TouchUp != null)
+                                    TouchUp(args);
+                                break;
+                        }
                     }
                 }
-            }
 
-#endregion
+            #endregion
 
 #region Recalculate Sizes
 
@@ -714,6 +752,8 @@ namespace MonoGameUi
         public event TouchEventBaseDelegate TouchMove;
 
         public event TouchEventBaseDelegate TouchUp;
+
+        public event TouchEventBaseDelegate TouchTap;
 
         /// <summary>
         /// Event, das aufgerufen wird, wenn eine Taste gedrückt wird.

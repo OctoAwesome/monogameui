@@ -61,9 +61,14 @@ namespace MonoGameUi
             args.Handled = true;
         }
 
-        protected override void OnTouchUp(TouchEventArgs args)
+        protected override void OnTouchDown(TouchEventArgs args)
         {
-            base.OnTouchUp(args);
+            base.OnTouchDown(args);
+        }
+
+        protected override void OnTouchTap(TouchEventArgs args)
+        {
+            base.OnTouchTap(args);
 
             EventArgs e = new EventArgs();
             OnExecuted(e);

@@ -1524,6 +1524,46 @@ namespace MonoGameUi
             }
         }
 
+        internal bool InternalTouchTap(TouchEventArgs args)
+        {
+            // Ignorieren, falls nicht im Control-Bereich
+            Point size = ActualSize;
+            if (args.LocalPosition.X < 0 || args.LocalPosition.X >= size.X ||
+                args.LocalPosition.Y < 0 || args.LocalPosition.Y >= size.Y)
+                return false;
+
+            // Ignorieren, falls nicht gehovered
+            if (!Visible) return false;
+
+            // Ignorieren, falls ausgeschaltet
+            if (!Enabled) return true;
+
+            // Fokusieren
+            Focus();
+
+            // Pressed-State aktivieren
+            Pressed = true;
+
+            // Children first (Order by Z-Order)
+            foreach (var child in Children.InZOrder())
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
+                args.Bubbled |= child.InternalTouchTap(args);
+                if (args.Handled) break;
+            }
+
+            // Lokales Events
+            if (!args.Handled)
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
+                OnTouchTap(args);
+                if (TouchTap != null)
+                    TouchTap(this, args);
+            }
+
+            return Background != null;
+        }
+
         private Point CalculateLocalPosition(Point global, Control control)
         {
             Point absolutePosition = control.AbsolutePosition;
@@ -1583,6 +1623,8 @@ namespace MonoGameUi
 
         protected virtual void OnTouchUp(TouchEventArgs args) { }
 
+        protected virtual void OnTouchTap(TouchEventArgs args) { }
+
         protected virtual void OnHoveredChanged(PropertyEventArgs<TreeState> args) { }
 
         public event MouseEventDelegate MouseEnter;
@@ -1628,6 +1670,8 @@ namespace MonoGameUi
         public event TouchEventDelegate TouchMove;
 
         public event TouchEventDelegate TouchUp;
+
+        public event TouchEventDelegate TouchTap;
 
         public event PropertyChangedDelegate<TreeState> HoveredChanged;
 
