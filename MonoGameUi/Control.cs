@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Audio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace MonoGameUi
 {
@@ -198,7 +199,8 @@ namespace MonoGameUi
                 Skin.Current.ControlSkins != null)
             {
                 // Generische Datentypen
-                if (type.IsGenericType && Skin.Current.ControlSkins.ContainsKey(type.GetGenericTypeDefinition()))
+                TypeInfo info = type.GetTypeInfo();
+                if (info.IsGenericType && Skin.Current.ControlSkins.ContainsKey(type.GetGenericTypeDefinition()))
                     Skin.Current.ControlSkins[type.GetGenericTypeDefinition()](this);
 
                 // Konkrete Datentypen
@@ -1445,8 +1447,14 @@ namespace MonoGameUi
 
         internal void InternalTouchUp(TouchEventArgs args)
         {
-            // Ignorieren, falls nicht gehovered
-            if (Hovered == TreeState.None || !Visible || !Enabled) return;
+            // Ignorieren, falls nicht im Control-Bereich
+            Point size = ActualSize;
+            if (args.LocalPosition.X < 0 || args.LocalPosition.X >= size.X ||
+                args.LocalPosition.Y < 0 || args.LocalPosition.Y >= size.Y)
+                return;
+
+            // Unsichtbare und deaktiverte Controls ignorieren
+            if (!Visible || !Enabled) return;
 
             // Fokusieren
             Focus();
