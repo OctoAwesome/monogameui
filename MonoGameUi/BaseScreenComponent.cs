@@ -79,6 +79,8 @@ namespace MonoGameUi
         {
             Content = game.Content;
 
+#if !ANDROID
+
             Game.Window.TextInput += (s, e) =>
             {
                 if (Game.IsActive)
@@ -88,6 +90,8 @@ namespace MonoGameUi
                     root.InternalKeyTextPress(args);
                 }
             };
+
+#endif
 
             Game.Window.ClientSizeChanged += (s, e) =>
             {
@@ -152,7 +156,7 @@ namespace MonoGameUi
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-            #region Mouse Interaction
+#region Mouse Interaction
 
             if (Game.IsActive)
             {
@@ -302,9 +306,9 @@ namespace MonoGameUi
                 }
             }
 
-            #endregion
+#endregion
 
-            #region Keyboard Interaction
+#region Keyboard Interaction
 
             if (Game.IsActive)
             {
@@ -405,9 +409,9 @@ namespace MonoGameUi
                 }
             }
 
-            #endregion
+#endregion
 
-            #region Touchpanel Interaction
+#region Touchpanel Interaction
 
             if (Game.IsActive)
             {
@@ -443,9 +447,9 @@ namespace MonoGameUi
                 }
             }
 
-            #endregion
+#endregion
 
-            #region Recalculate Sizes
+#region Recalculate Sizes
 
             if (root.HasInvalidDimensions())
             {
@@ -456,9 +460,9 @@ namespace MonoGameUi
 
             root.Update(gameTime);
 
-            #endregion
+#endregion
 
-            #region Form anpassen
+#region Form anpassen
 
             string screentitle = ActiveScreen != null ? ActiveScreen.Title : string.Empty;
             string windowtitle = TitlePrefix + (string.IsNullOrEmpty(screentitle) ? "" : " - " + screentitle);
@@ -466,7 +470,7 @@ namespace MonoGameUi
             if (Game.Window != null && Game.Window.Title != windowtitle)
                 Game.Window.Title = windowtitle;
 
-            #endregion
+#endregion
         }
 
         /// <summary>
