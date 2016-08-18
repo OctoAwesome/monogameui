@@ -15,7 +15,7 @@ namespace MonoGameUi
         /// </summary>
         /// <param name="manager">Der <see cref="IScreenManager"/></param>
         /// <param name="style">(Optional) der zu verwendende Style</param>
-        public Button(IScreenManager manager, string style = "")
+        public Button(BaseScreenComponent manager, string style = "")
             : base(manager, style)
         {
             TabStop = true;
@@ -96,7 +96,7 @@ namespace MonoGameUi
         /// <param name="manager">Der <see cref="IScreenManager"/></param>
         /// <param name="style">(Optional) Der zu verwendende Style</param>
         /// <returns>Button-Instanz</returns>
-        public static Button TextButton(IScreenManager manager, string text, string style = "")
+        public static Button TextButton(BaseScreenComponent manager, string text, string style = "")
         {
             return new Button(manager, style)
             {

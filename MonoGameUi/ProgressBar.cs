@@ -118,7 +118,7 @@ namespace MonoGameUi
             }
         }
 
-        public ProgressBar(IScreenManager manager, string style = "") :
+        public ProgressBar(BaseScreenComponent manager, string style = "") :
             base(manager, style)
         {
             ApplySkin(typeof(ProgressBar));

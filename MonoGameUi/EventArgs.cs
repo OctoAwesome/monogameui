@@ -15,6 +15,14 @@ namespace MonoGameUi
     }
 
     /// <summary>
+    /// Basisklasse für alle DragDrop Events
+    /// </summary>
+    public class DragEventArgs : EventArgs
+    {
+        public object DragObject { get; set; }
+    }
+
+    /// <summary>
     /// Basisklasse für alle Positionsbasierten Events (Maus, Touch)
     /// </summary>
     public class PointerEventArgs : EventArgs
@@ -225,6 +233,8 @@ namespace MonoGameUi
     /// <param name="sender"></param>
     /// <param name="args"></param>
     public delegate void EventDelegate(Control sender, EventArgs args);
+
+    public delegate void DragEventDelegate(DragEventArgs args);
 
     /// <summary>
     /// Event Delegat für Maus-Events.

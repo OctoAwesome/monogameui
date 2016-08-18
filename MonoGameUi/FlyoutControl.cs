@@ -9,7 +9,7 @@ namespace MonoGameUi
 {
     internal sealed class FlyoutControl : CanvasControl
     {
-        internal FlyoutControl(IScreenManager manager) : base(manager) {
+        internal FlyoutControl(BaseScreenComponent manager) : base(manager) {
             ApplySkin(typeof(FlyoutControl));
         }
 

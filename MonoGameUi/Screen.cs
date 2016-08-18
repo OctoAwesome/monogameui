@@ -12,7 +12,7 @@
         /// <summary>
         /// Gibt die Referenz auf den aktuellen Screen-Manager zurück.
         /// </summary>
-        public IScreenManager Manager { get; private set; }
+        public BaseScreenComponent Manager { get; private set; }
 
         /// <summary>
         /// Gibt den Titel des Screens zurück. Der Manager übernimmt diesen Titel 
@@ -96,7 +96,7 @@
         /// Erzeugt einen neuen Screen.
         /// </summary>
         /// <param name="manager">Der verwendete <see cref="IScreenManager"/></param>
-        public Screen(IScreenManager manager) : base(manager)
+        public Screen(BaseScreenComponent manager) : base(manager)
         {
             Manager = manager;
             IsOverlay = false;

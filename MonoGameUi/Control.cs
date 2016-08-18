@@ -32,7 +32,7 @@ namespace MonoGameUi
         /// <summary>
         /// Referenz auf den aktuellen Screen Manager
         /// </summary>
-        public IScreenManager ScreenManager { get; private set; }
+        public BaseScreenComponent ScreenManager { get; private set; }
 
         /// <summary>
         /// Sound der beim Klicken abgespielt wird
@@ -172,7 +172,7 @@ namespace MonoGameUi
         /// </summary>
         public string Style { get; private set; }
 
-        public Control(IScreenManager manager, string style = "")
+        public Control(BaseScreenComponent manager, string style = "")
         {
             if (manager == null)
                 throw new ArgumentNullException("manager");
@@ -1186,7 +1186,7 @@ namespace MonoGameUi
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
                 bool handled = child.InternalMouseMove(args);
                 passive |= handled;
-                args.Bubbled |= handled;
+                args.Bubbled = handled || args.Bubbled;
             }
 
             // Ermitteln ob hovered ist (Aktive & Passive)
@@ -1216,6 +1216,10 @@ namespace MonoGameUi
                         MouseLeave(this, args);
                 }
             }
+
+            // Drop Candidate ermitteln
+            if (Hovered == TreeState.Active)
+                ScreenManager.SetDropCandidate(this);
 
             // Event für Mausbewegung
             OnMouseMove(args);
@@ -1254,7 +1258,7 @@ namespace MonoGameUi
             foreach (var child in Children.InZOrder())
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
-                args.Bubbled |= child.InternalLeftMouseDown(args);
+                args.Bubbled = child.InternalLeftMouseDown(args) || args.Bubbled;
                 if (args.Handled) break;
             }
 
@@ -1304,9 +1308,13 @@ namespace MonoGameUi
             foreach (var child in Children.InZOrder())
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
-                args.Bubbled |= child.InternalLeftMouseClick(args);
+                args.Bubbled = child.InternalLeftMouseClick(args) || args.Bubbled;
                 if (args.Handled) break;
             }
+
+            // Control ist das oberste -> Drag Kandidat
+            if (!args.Bubbled)
+                ScreenManager.SetDragCandidate(this);
 
             // Lokales Events
             if (!args.Handled)
@@ -1344,7 +1352,7 @@ namespace MonoGameUi
             foreach (var child in Children.InZOrder())
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
-                args.Bubbled |= child.InternalRightMouseDown(args);
+                args.Bubbled = child.InternalRightMouseDown(args) || args.Bubbled;
                 if (args.Handled) break;
             }
 
@@ -1394,7 +1402,7 @@ namespace MonoGameUi
             foreach (var child in Children.InZOrder())
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
-                args.Bubbled |= child.InternalRightMouseClick(args);
+                args.Bubbled = child.InternalRightMouseClick(args) || args.Bubbled;
                 if (args.Handled) break;
             }
 
@@ -1428,7 +1436,7 @@ namespace MonoGameUi
             foreach (var child in Children.InZOrder())
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
-                args.Bubbled |= child.InternalMouseScroll(args);
+                args.Bubbled = child.InternalMouseScroll(args) || args.Bubbled;
                 if (args.Handled) break;
             }
 
@@ -1468,7 +1476,7 @@ namespace MonoGameUi
             foreach (var child in Children.InZOrder())
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
-                args.Bubbled |= child.InternalTouchDown(args);
+                args.Bubbled = child.InternalTouchDown(args) || args.Bubbled;
                 if (args.Handled) break;
             }
 
@@ -1548,7 +1556,7 @@ namespace MonoGameUi
             foreach (var child in Children.InZOrder())
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
-                args.Bubbled |= child.InternalTouchTap(args);
+                args.Bubbled = child.InternalTouchTap(args) || args.Bubbled;
                 if (args.Handled) break;
             }
 
@@ -2085,6 +2093,32 @@ namespace MonoGameUi
         public event EventDelegate GotFocus;
 
         public event EventDelegate LostFocus;
+
+        #endregion
+
+        #region Drag & Drop
+
+        internal void InternalStartDrag(DragEventArgs args)
+        {
+            OnStartDrag(args);
+            if (StartDrag != null)
+                StartDrag(args);
+        }
+
+        internal void InternalEndDrop(DragEventArgs args)
+        {
+            OnEndDrop(args);
+            if (EndDrop != null)
+                EndDrop(args);
+        }
+
+        protected virtual void OnStartDrag(DragEventArgs args) { }
+
+        protected virtual void OnEndDrop(DragEventArgs args) { }
+
+        public event DragEventDelegate StartDrag;
+
+        public event DragEventDelegate EndDrop;
 
         #endregion
     }

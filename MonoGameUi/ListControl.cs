@@ -72,7 +72,7 @@ namespace MonoGameUi
         /// Standard Konstruktor für das List-Control.
         /// </summary>
         /// <param name="manager"></param>
-        public ListControl(IScreenManager manager, string style = "")
+        public ListControl(BaseScreenComponent manager, string style = "")
             : base(manager, style)
         {
             CanFocus = true;

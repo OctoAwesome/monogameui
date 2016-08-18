@@ -41,7 +41,7 @@ namespace MonoGameUi
         /// Erzeugt eine neue Instanz der Klasse StackPanel.
         /// </summary>
         /// <param name="manager">Der <see cref="IScreenManager"/></param>
-        public StackPanel(IScreenManager manager) : base(manager)
+        public StackPanel(BaseScreenComponent manager) : base(manager)
         {
             ApplySkin(typeof(StackPanel));
         }

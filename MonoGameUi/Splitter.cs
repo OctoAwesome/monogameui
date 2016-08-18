@@ -327,7 +327,7 @@ namespace MonoGameUi
         /// </summary>
         public Brush SplitterBrushVertical { get; set; }
 
-        public Splitter(IScreenManager manager, string style = "")
+        public Splitter(BaseScreenComponent manager, string style = "")
             : base(manager, style)
         {
             CanFocus = true;

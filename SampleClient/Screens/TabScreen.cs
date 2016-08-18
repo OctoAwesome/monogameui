@@ -9,7 +9,7 @@ namespace SampleClient.Screens
 {
     class TabScreen : Screen
     {
-        public TabScreen(IScreenManager manager) : base(manager)
+        public TabScreen(BaseScreenComponent manager) : base(manager)
         {
             //Create Tab Pages
             TabPage tabPage = new TabPage(manager, "Tab 1");

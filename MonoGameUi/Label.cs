@@ -126,7 +126,7 @@ namespace MonoGameUi
             }
         }
 
-        public Label(IScreenManager manager, string style = "") :
+        public Label(BaseScreenComponent manager, string style = "") :
             base(manager, style)
         {
             ApplySkin(typeof(Label));

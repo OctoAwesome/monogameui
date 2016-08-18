@@ -52,7 +52,7 @@ namespace MonoGameUi
         /// </summary>
         /// <param name="manager"></param>
         /// <param name="style"></param>
-        public Textbox(IScreenManager manager, string style = "")
+        public Textbox(BaseScreenComponent manager, string style = "")
             : base(manager, style)
         {
             TextColor = Color.Black;

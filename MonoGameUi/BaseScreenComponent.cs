@@ -11,7 +11,7 @@ namespace MonoGameUi
     /// <summary>
     /// Basisklasse für alle MonoGame-Komponenten
     /// </summary>
-    public class BaseScreenComponent : DrawableGameComponent, IScreenManager
+    public class BaseScreenComponent : DrawableGameComponent
     {
         private ContainerControl root;
 
@@ -197,16 +197,29 @@ namespace MonoGameUi
                             mousePosition.X - (GraphicsDevice.Viewport.Width / 2),
                             mousePosition.Y - (GraphicsDevice.Viewport.Height / 2));
 
-                    MouseEventArgs moveArgs = new MouseEventArgs()
+                    // Mouse Move
+                    if (mousePosition != lastMousePosition)
                     {
-                        MouseMode = MouseMode,
-                        GlobalPosition = mousePosition,
-                        LocalPosition = mousePosition,
-                    };
+                        MouseEventArgs moveArgs = new MouseEventArgs()
+                        {
+                            MouseMode = MouseMode,
+                            GlobalPosition = mousePosition,
+                            LocalPosition = mousePosition,
+                        };
 
-                    root.InternalMouseMove(moveArgs);
-                    if (!moveArgs.Handled && MouseMove != null)
-                        MouseMove(moveArgs);
+                        root.InternalMouseMove(moveArgs);
+                        if (!moveArgs.Handled && MouseMove != null)
+                            MouseMove(moveArgs);
+
+                        // Start Drag Handling
+                        if (mouse.LeftButton == ButtonState.Pressed && 
+                            dragCandidate != null && 
+                            dragArgs == null)
+                        {
+                            dragArgs = new DragEventArgs();
+                            dragCandidate.InternalStartDrag(dragArgs);
+                        }
+                    }
 
                     // Linke Maustaste
                     if (mouse.LeftButton == ButtonState.Pressed)
@@ -231,6 +244,16 @@ namespace MonoGameUi
                     {
                         if (lastLeftMouseButtonPressed)
                         {
+                            if (dropCandidate != null && 
+                                dragArgs != null && 
+                                dragArgs.Handled)
+                            {
+                                dropCandidate.InternalEndDrop(dragArgs);
+                            }
+
+                            // Drag Candidate löschen
+                            SetDragCandidate(null);
+
                             // Linke Maustaste wurde losgelassen
                             MouseEventArgs leftClickArgs = new MouseEventArgs
                             {
@@ -514,6 +537,30 @@ namespace MonoGameUi
 
 #endregion
         }
+
+        #region Drag&Drop Behavior
+
+        private Control dragCandidate = null;
+
+        private Control dropCandidate = null;
+
+        private DragEventArgs dragArgs = null;
+
+        internal void SetDragCandidate(Control control)
+        {
+            dragCandidate = control;
+            dragArgs = null;
+        }
+
+        internal void SetDropCandidate(Control control)
+        {
+            if (lastLeftMouseButtonPressed)
+                dropCandidate = control;
+            else
+                dropCandidate = null;
+        }
+
+        #endregion
 
         /// <summary>
         /// Zeichnet Screens und Controls.

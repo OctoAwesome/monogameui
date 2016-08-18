@@ -10,7 +10,7 @@ namespace MonoGameUi
     {
         private Dictionary<Control, Point> positions = new Dictionary<Control, Point>();
 
-        public CanvasControl(IScreenManager manager, string style = "")
+        public CanvasControl(BaseScreenComponent manager, string style = "")
             : base(manager, style)
         {
             ApplySkin(typeof(CanvasControl));

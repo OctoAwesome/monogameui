@@ -118,9 +118,6 @@ namespace MonoGameUi
             }
         }
 
-
-        IScreenManager Manager;
-
         /// <summary>
         /// Der Index des aktiven Tabs
         /// </summary>
@@ -130,11 +127,8 @@ namespace MonoGameUi
         /// Base Constructor
         /// </summary>
         /// <param name="manager">ScreenManager</param>
-        public TabControl(IScreenManager manager) : base(manager)
+        public TabControl(BaseScreenComponent manager) : base(manager)
         { 
-
-            Manager = manager;
-
             Pages = new ItemCollection<TabPage>();
             Pages.OnInsert += OnInsert;
             Pages.OnRemove += OnRemove;
@@ -170,7 +164,7 @@ namespace MonoGameUi
         /// </summary>
         private void OnInsert(TabPage item, int index)
         {
-            Label title = new Label(Manager);
+            Label title = new Label(ScreenManager);
             title.Text = item.Title;
             title.Padding = Border.All(10);
             title.Background = TabBrush;

@@ -8,7 +8,7 @@ namespace SampleClient.Screens
 {
     internal class SplitScreen : Screen
     {
-        public SplitScreen(IScreenManager manager) : base(manager)
+        public SplitScreen(BaseScreenComponent manager) : base(manager)
         {
             Background = new BorderBrush(Color.Gray);                       //Hintergrundfarbe festlegen
 

@@ -67,7 +67,7 @@ namespace MonoGameUi
             return null;
         }
 
-        public Listbox(IScreenManager manager)
+        public Listbox(BaseScreenComponent manager)
             : base(manager)
         {
             ScrollContainer = new ScrollContainer(manager)

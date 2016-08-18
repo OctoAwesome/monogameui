@@ -13,7 +13,7 @@ namespace MonoGameUi
 
         private ContentControl mainControl;
 
-        public Combobox(IScreenManager manager)
+        public Combobox(BaseScreenComponent manager)
             : base(manager)
         {
             mainControl = new ContentControl(manager)

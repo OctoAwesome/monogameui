@@ -10,7 +10,7 @@ namespace SampleClient.Screens
 
         private Label output;
 
-        public MouseCaptureScreen(IScreenManager manager) : base(manager)
+        public MouseCaptureScreen(BaseScreenComponent manager) : base(manager)
         {
             DefaultMouseMode = MouseMode.Captured;
 

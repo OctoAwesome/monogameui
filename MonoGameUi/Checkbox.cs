@@ -52,7 +52,7 @@ namespace MonoGameUi
         /// Erzeugt eine neue Instanz der Klasse Checkbox
         /// </summary>
         /// <param name="manager">Der verwendete <see cref="IScreenManager"/></param>
-        public Checkbox(IScreenManager manager) : base(manager)
+        public Checkbox(BaseScreenComponent manager) : base(manager)
         {
             CanFocus = true;
             TabStop = true;
