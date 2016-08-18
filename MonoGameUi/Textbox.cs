@@ -72,6 +72,11 @@ namespace MonoGameUi
         /// <param name="alpha">Die Transparenz des Controls.</param>
         protected override void OnDrawContent(SpriteBatch batch, Rectangle area, GameTime gameTime, float alpha)
         {
+
+            if (CursorPosition > Text.Length)
+                CursorPosition = Text.Length;
+            if (SelectionStart > Text.Length)
+                SelectionStart = CursorPosition;
             // Selektion
             if (SelectionStart != CursorPosition)
             {

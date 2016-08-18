@@ -126,7 +126,7 @@ namespace SampleClient.Screens
 
 
             //Textbox   
-            Textbox textbox = new Textbox(manager)                      //Neue TextBox erzeugen
+            textbox = new Textbox(manager)                      //Neue TextBox erzeugen
             {
                 Background = new BorderBrush(Color.LightGray),          //Festlegen eines Backgrounds für ein Control
                 HorizontalAlignment = HorizontalAlignment.Stretch,          //100% Breite
@@ -151,6 +151,15 @@ namespace SampleClient.Screens
             {
                 return Texture2D.FromStream(device, stream);
             }
+        }
+
+        protected override void OnKeyDown(KeyEventArgs args)
+        {
+            if (args.Key == Microsoft.Xna.Framework.Input.Keys.RightAlt)
+            {
+                textbox.Text = "";
+            }
+                       base.OnKeyDown(args);
         }
     }
 
