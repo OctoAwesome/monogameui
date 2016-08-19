@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGameUi;
 using System;
 
@@ -10,8 +11,12 @@ namespace SampleClient.Screens
 
         private Brush dragTargetBrush = new BorderBrush(Color.Yellow);
 
+        private Texture2D dragIcon;
+
         public DragDropScreen(BaseScreenComponent manager) : base(manager)
         {
+            dragIcon = manager.Content.Load<Texture2D>("drag");
+
             Grid grid = new Grid(manager)
             {
                 Width = 600,
@@ -38,6 +43,7 @@ namespace SampleClient.Screens
                 args.Handled = true;
                 args.Content = "Button 1";
                 args.Sender = button1;
+                args.Icon = dragIcon;
             };
             Button button2 = Button.TextButton(manager, "Button 2");
             Button button3 = Button.TextButton(manager, "Button 3");
@@ -46,6 +52,7 @@ namespace SampleClient.Screens
                 args.Handled = true;
                 args.Content = "Button 3";
                 args.Sender = button3;
+                args.Icon = dragIcon;
             };
             Button button4 = Button.TextButton(manager, "Button 4");
             buttons.Controls.Add(button1);

@@ -591,6 +591,14 @@ namespace MonoGameUi
         {
             root.PreDraw(gameTime);
             root.Draw(batch, GraphicsDevice.Viewport.Bounds, gameTime);
+
+            // Drag Overlay
+            if (DraggingArgs != null && DraggingArgs.Handled && DraggingArgs.Icon != null)
+            {
+                batch.Begin();
+                batch.Draw(DraggingArgs.Icon, new Vector2(lastMousePosition.X, lastMousePosition.Y), Color.White);
+                batch.End();
+            }
         }
 
         private List<Screen> historyStack = new List<Screen>();
