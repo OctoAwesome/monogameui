@@ -77,7 +77,6 @@
     <Compile Include="FlyoutControl.cs" />
     <Compile Include="Grid.cs" />
     <Compile Include="Image.cs" />
-    <Compile Include="IScreenManager.cs" />
     <Compile Include="ItemCollection.cs" />
     <Compile Include="Label.cs" />
     <Compile Include="Listbox.cs" />
