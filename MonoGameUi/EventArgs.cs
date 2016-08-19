@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace MonoGameUi
@@ -17,9 +18,22 @@ namespace MonoGameUi
     /// <summary>
     /// Basisklasse für alle DragDrop Events
     /// </summary>
-    public class DragEventArgs : EventArgs
+    public class DragEventArgs : MouseEventArgs
     {
-        public object DragObject { get; set; }
+        /// <summary>
+        /// Optionales Feld um das sendende Control einzufügen.
+        /// </summary>
+        public Control Sender { get; set; }
+
+        /// <summary>
+        /// Optionales Icon, das während des Drag-Vorgangs angezeigt werden soll.
+        /// </summary>
+        public Texture2D Icon { get; set; }
+
+        /// <summary>
+        /// Content, der gedraggt wird.
+        /// </summary>
+        public object Content { get; set; }
     }
 
     /// <summary>

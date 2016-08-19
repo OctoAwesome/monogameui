@@ -8,6 +8,8 @@ namespace SampleClient.Screens
 {
     internal class SplitScreen : Screen
     {
+        private Textbox textbox;
+
         public SplitScreen(BaseScreenComponent manager) : base(manager)
         {
             Background = new BorderBrush(Color.Gray);                       //Hintergrundfarbe festlegen

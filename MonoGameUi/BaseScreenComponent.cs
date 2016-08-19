@@ -52,6 +52,11 @@ namespace MonoGameUi
         public ContentManager Content { get; private set; }
 
         /// <summary>
+        /// Gibt an, ob gerade ein Drag-Vorgang im Gange ist.
+        /// </summary>
+        public bool Dragging { get { return DraggingArgs != null && DraggingArgs.Handled; } }
+
+        /// <summary>
         /// Legt fest, ob es GamePad Support geben soll (nicht unterstützt bisher)
         /// </summary>
         public bool GamePadEnabled { get; set; }
@@ -173,6 +178,8 @@ namespace MonoGameUi
 
         private Point lastMousePosition = Point.Zero;
 
+        internal DragEventArgs DraggingArgs { get; private set; }
+
         private Dictionary<Keys, double> pressedKeys = new Dictionary<Keys, double>();
 
         /// <summary>
@@ -212,12 +219,39 @@ namespace MonoGameUi
                             MouseMove(moveArgs);
 
                         // Start Drag Handling
-                        if (mouse.LeftButton == ButtonState.Pressed && 
-                            dragCandidate != null && 
-                            dragArgs == null)
+                        if (mouse.LeftButton == ButtonState.Pressed &&
+                            DraggingArgs == null)
                         {
-                            dragArgs = new DragEventArgs();
-                            dragCandidate.InternalStartDrag(dragArgs);
+                            DraggingArgs = new DragEventArgs()
+                            {
+                                MouseMode = MouseMode,
+                                GlobalPosition = mousePosition,
+                                LocalPosition = mousePosition,
+                            };
+
+                            root.InternalStartDrag(DraggingArgs);
+                            if (!DraggingArgs.Handled && StartDrag != null)
+                                StartDrag(DraggingArgs);
+                        }
+
+                        // Drop hovered
+                        if (mouse.LeftButton == ButtonState.Pressed &&
+                            DraggingArgs != null &&
+                            DraggingArgs.Handled)
+                        {
+                            DragEventArgs args = new DragEventArgs()
+                            {
+                                MouseMode = MouseMode,
+                                GlobalPosition = mousePosition,
+                                LocalPosition = mousePosition,
+                                Content = DraggingArgs.Content,
+                                Icon = DraggingArgs.Icon,
+                                Sender = DraggingArgs.Sender
+                            };
+
+                            root.InternalDropHover(args);
+                            if (!args.Handled && DropHover != null)
+                                DropHover(args);
                         }
                     }
 
@@ -244,15 +278,26 @@ namespace MonoGameUi
                     {
                         if (lastLeftMouseButtonPressed)
                         {
-                            if (dropCandidate != null && 
-                                dragArgs != null && 
-                                dragArgs.Handled)
+                            // Handle Drop
+                            if (DraggingArgs != null && DraggingArgs.Handled)
                             {
-                                dropCandidate.InternalEndDrop(dragArgs);
+                                DragEventArgs args = new DragEventArgs()
+                                {
+                                    MouseMode = MouseMode,
+                                    GlobalPosition = mousePosition,
+                                    LocalPosition = mousePosition,
+                                    Content = DraggingArgs.Content,
+                                    Icon = DraggingArgs.Icon,
+                                    Sender = DraggingArgs.Sender
+                                };
+
+                                root.InternalEndDrop(args);
+                                if (!args.Handled && EndDrop != null)
+                                    EndDrop(args);
                             }
 
-                            // Drag Candidate löschen
-                            SetDragCandidate(null);
+                            // Discard Dragging Infos
+                            DraggingArgs = null;
 
                             // Linke Maustaste wurde losgelassen
                             MouseEventArgs leftClickArgs = new MouseEventArgs
@@ -514,7 +559,7 @@ namespace MonoGameUi
                 #endregion
             }
 
-#region Recalculate Sizes
+            #region Recalculate Sizes
 
             if (root.HasInvalidDimensions())
             {
@@ -525,9 +570,9 @@ namespace MonoGameUi
 
             root.Update(gameTime);
 
-#endregion
+            #endregion
 
-#region Form anpassen
+            #region Form anpassen
 
             string screentitle = ActiveScreen != null ? ActiveScreen.Title : string.Empty;
             string windowtitle = TitlePrefix + (string.IsNullOrEmpty(screentitle) ? "" : " - " + screentitle);
@@ -535,32 +580,8 @@ namespace MonoGameUi
             if (Game.Window != null && Game.Window.Title != windowtitle)
                 Game.Window.Title = windowtitle;
 
-#endregion
+            #endregion
         }
-
-        #region Drag&Drop Behavior
-
-        private Control dragCandidate = null;
-
-        private Control dropCandidate = null;
-
-        private DragEventArgs dragArgs = null;
-
-        internal void SetDragCandidate(Control control)
-        {
-            dragCandidate = control;
-            dragArgs = null;
-        }
-
-        internal void SetDropCandidate(Control control)
-        {
-            if (lastLeftMouseButtonPressed)
-                dropCandidate = control;
-            else
-                dropCandidate = null;
-        }
-
-        #endregion
 
         /// <summary>
         /// Zeichnet Screens und Controls.
@@ -783,6 +804,12 @@ namespace MonoGameUi
         }
 
         public event MouseEventBaseDelegate MouseMove;
+
+        public event DragEventDelegate StartDrag;
+
+        public event DragEventDelegate DropHover;
+
+        public event DragEventDelegate EndDrop;
 
         public event MouseEventBaseDelegate LeftMouseUp;
 

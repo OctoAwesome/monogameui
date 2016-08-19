@@ -1,15 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using MonoGameUi;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SampleClient.Screens
 {
     internal sealed class DragDropScreen : Screen
     {
+        private Brush defaultBrush = new BorderBrush(Color.LightYellow);
+
+        private Brush dragTargetBrush = new BorderBrush(Color.Yellow);
+
         public DragDropScreen(BaseScreenComponent manager) : base(manager)
         {
             Grid grid = new Grid(manager)
@@ -36,12 +36,17 @@ namespace SampleClient.Screens
             button1.StartDrag += (args) =>
             {
                 args.Handled = true;
-                args.DragObject = "Button 1";
-                Console.WriteLine("Start Drag");
+                args.Content = "Button 1";
+                args.Sender = button1;
             };
             Button button2 = Button.TextButton(manager, "Button 2");
             Button button3 = Button.TextButton(manager, "Button 3");
-            button3.StartDrag += (args) => { args.Handled = true; args.DragObject = "Button 3"; };
+            button3.StartDrag += (args) =>
+            {
+                args.Handled = true;
+                args.Content = "Button 3";
+                args.Sender = button3;
+            };
             Button button4 = Button.TextButton(manager, "Button 4");
             buttons.Controls.Add(button1);
             buttons.Controls.Add(button2);
@@ -54,13 +59,31 @@ namespace SampleClient.Screens
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
-                Background = new BorderBrush(Color.White)
+                Background = defaultBrush
             };
+
+            Label output = new Label(manager)
+            {
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+
+            panel.Controls.Add(output);
 
             panel.EndDrop += (args) =>
             {
                 args.Handled = true;
-                Console.WriteLine(args.DragObject);
+                output.Text = args.Content.ToString();
+            };
+
+            panel.DropEnter += (args) =>
+            {
+                panel.Background = dragTargetBrush;
+            };
+
+            panel.DropLeave += (args) =>
+            {
+                panel.Background = defaultBrush;
             };
 
             grid.AddControl(panel, 1, 0);

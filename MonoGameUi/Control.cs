@@ -1121,6 +1121,8 @@ namespace MonoGameUi
 
         private TreeState hovered = TreeState.None;
 
+        private bool dropHovered = false;
+
         private bool pressed = false;
 
         /// <summary>
@@ -1217,10 +1219,6 @@ namespace MonoGameUi
                 }
             }
 
-            // Drop Candidate ermitteln
-            if (Hovered == TreeState.Active)
-                ScreenManager.SetDropCandidate(this);
-
             // Event für Mausbewegung
             OnMouseMove(args);
             if (MouseMove != null)
@@ -1311,10 +1309,6 @@ namespace MonoGameUi
                 args.Bubbled = child.InternalLeftMouseClick(args) || args.Bubbled;
                 if (args.Handled) break;
             }
-
-            // Control ist das oberste -> Drag Kandidat
-            if (!args.Bubbled)
-                ScreenManager.SetDragCandidate(this);
 
             // Lokales Events
             if (!args.Handled)
@@ -2098,25 +2092,145 @@ namespace MonoGameUi
 
         #region Drag & Drop
 
-        internal void InternalStartDrag(DragEventArgs args)
+        internal bool InternalStartDrag(DragEventArgs args)
         {
-            OnStartDrag(args);
-            if (StartDrag != null)
-                StartDrag(args);
+            // Ignorieren, falls nicht im Control-Bereich
+            Point size = ActualSize;
+            if (args.LocalPosition.X < 0 || args.LocalPosition.X >= size.X ||
+                args.LocalPosition.Y < 0 || args.LocalPosition.Y >= size.Y)
+                return false;
+
+            // Ignorieren, falls nicht gehovered
+            if (!Visible) return false;
+
+            // Ignorieren, falls ausgeschaltet
+            if (!Enabled) return true;
+
+            // Children first (Order by Z-Order)
+            foreach (var child in Children.InZOrder())
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
+                args.Bubbled = child.InternalStartDrag(args) || args.Bubbled;
+                if (args.Handled) break;
+            }
+
+            // Bubble up
+            if (!args.Handled)
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
+                OnStartDrag(args);
+                if (StartDrag != null)
+                    StartDrag(args);
+            }
+
+            return Background != null;
         }
 
-        internal void InternalEndDrop(DragEventArgs args)
+        internal bool InternalDropHover(DragEventArgs args)
         {
-            OnEndDrop(args);
-            if (EndDrop != null)
-                EndDrop(args);
+            // Children first (Order by Z-Order)
+            bool passive = false;
+            foreach (var child in Children.InZOrder())
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
+                bool handled = child.InternalDropHover(args);
+                passive |= handled;
+                args.Bubbled = handled || args.Bubbled;
+            }
+
+            args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
+            bool hovered =
+                args.LocalPosition.X >= 0 &&
+                args.LocalPosition.Y >= 0 &&
+                args.LocalPosition.X < ActualSize.X &&
+                args.LocalPosition.Y < ActualSize.Y;
+
+            // Wenn sich der DropHover Status verändert hat
+            if ((hovered && ScreenManager.Dragging) != dropHovered)
+            {
+                if (dropHovered)
+                {
+                    OnDropLeave(args);
+                    if (DropLeave != null)
+                        DropLeave(args);
+                }
+                else
+                {
+                    OnDropEnter(args);
+                    if (DropEnter != null)
+                        DropEnter(args);
+                }
+            }
+
+            OnDropMove(args);
+            if (DropMove != null)
+                DropMove(args);
+
+            dropHovered = hovered && ScreenManager.Dragging;
+
+            return hovered;
+        }
+
+        internal bool InternalEndDrop(DragEventArgs args)
+        {
+            // Ignorieren, falls nicht im Control-Bereich
+            Point size = ActualSize;
+            if (args.LocalPosition.X < 0 || args.LocalPosition.X >= size.X ||
+                args.LocalPosition.Y < 0 || args.LocalPosition.Y >= size.Y)
+                return false;
+
+            // Ignorieren, falls nicht gehovered
+            if (!Visible) return false;
+
+            // Ignorieren, falls ausgeschaltet
+            if (!Enabled) return true;
+
+            // Children first (Order by Z-Order)
+            foreach (var child in Children.InZOrder())
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
+                args.Bubbled = child.InternalEndDrop(args) || args.Bubbled;
+                if (args.Handled) break;
+            }
+
+            // Bubble up
+            if (!args.Handled)
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
+                OnEndDrop(args);
+                if (EndDrop != null)
+                    EndDrop(args);
+            }
+
+            // Leave
+            if (dropHovered)
+            {
+                OnDropLeave(args);
+                if (DropLeave != null)
+                    DropLeave(args);
+                dropHovered = false;
+            }
+
+            return Background != null;
         }
 
         protected virtual void OnStartDrag(DragEventArgs args) { }
 
+        protected virtual void OnDropMove(DragEventArgs args) { }
+
+        protected virtual void OnDropEnter(DragEventArgs args) { }
+
+        protected virtual void OnDropLeave(DragEventArgs args) { }
+
         protected virtual void OnEndDrop(DragEventArgs args) { }
 
         public event DragEventDelegate StartDrag;
+
+        public event DragEventDelegate DropMove;
+
+        public event DragEventDelegate DropEnter;
+
+        public event DragEventDelegate DropLeave;
 
         public event DragEventDelegate EndDrop;
 
