@@ -13,7 +13,10 @@ namespace MonoGameUi
     /// </summary>
     public class BaseScreenComponent : DrawableGameComponent
     {
-        public const int DOUBLECLICKDELAY = 500;
+        /// <summary>
+        /// Maximaler Standard Delay zwischen zwei Clicks innerhalb eines Double Clicks.
+        /// </summary>
+        public const int DEFAULTDOUBLECLICKDELAY = 500;
 
         private ContainerControl root;
 
@@ -79,6 +82,11 @@ namespace MonoGameUi
         public bool KeyboardEnabled { get; set; }
 
         /// <summary>
+        /// Gibt den maximalen Zeitraum in Millisekunden zwischen zwei Clicks an um einen Double Click auszulösen oder legt diesen fest.
+        /// </summary>
+        public int DoubleClickDelay { get; set; }
+
+        /// <summary>
         /// Gibt den aktuellen Modus der Maus zurück.
         /// </summary>
         public MouseMode MouseMode
@@ -110,6 +118,7 @@ namespace MonoGameUi
             MouseEnabled = true;
             GamePadEnabled = true;
             TouchEnabled = true;
+            DoubleClickDelay = DEFAULTDOUBLECLICKDELAY;
 
 #if !ANDROID
 
@@ -323,7 +332,7 @@ namespace MonoGameUi
                                 LeftMouseClick(leftClickArgs);
 
                             if (lastLeftClick.HasValue &&
-                                gameTime.TotalGameTime - lastLeftClick.Value < TimeSpan.FromMilliseconds(DOUBLECLICKDELAY))
+                                gameTime.TotalGameTime - lastLeftClick.Value < TimeSpan.FromMilliseconds(DoubleClickDelay))
                             {
                                 // Double Left Click
                                 MouseEventArgs leftDoubleClickArgs = new MouseEventArgs
@@ -394,7 +403,7 @@ namespace MonoGameUi
                                 RightMouseClick(rightClickArgs);
 
                             if (lastRightClick.HasValue &&
-                                gameTime.TotalGameTime - lastRightClick.Value < TimeSpan.FromMilliseconds(DOUBLECLICKDELAY))
+                                gameTime.TotalGameTime - lastRightClick.Value < TimeSpan.FromMilliseconds(DoubleClickDelay))
                             {
                                 // Double Left Click
                                 MouseEventArgs rightDoubleClickArgs = new MouseEventArgs
@@ -666,7 +675,7 @@ namespace MonoGameUi
                                     TouchTap(tapArgs);
 
                                 if (lastTouchTap.HasValue &&
-                                gameTime.TotalGameTime - lastLeftClick.Value < TimeSpan.FromMilliseconds(DOUBLECLICKDELAY))
+                                gameTime.TotalGameTime - lastLeftClick.Value < TimeSpan.FromMilliseconds(DoubleClickDelay))
                                 {
                                     // Double Tap
                                     TouchEventArgs doubleTapArgs = new TouchEventArgs
