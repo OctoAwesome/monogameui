@@ -31,6 +31,11 @@ namespace MonoGameUi
         public Texture2D Icon { get; set; }
 
         /// <summary>
+        /// Angabe der Größe des Icons, das beim Drag-Vorgang angezeigt wird.
+        /// </summary>
+        public Point IconSize { get; set; }
+
+        /// <summary>
         /// Content, der gedraggt wird.
         /// </summary>
         public object Content { get; set; }

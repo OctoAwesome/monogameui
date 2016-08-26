@@ -596,7 +596,10 @@ namespace MonoGameUi
             if (DraggingArgs != null && DraggingArgs.Handled && DraggingArgs.Icon != null)
             {
                 batch.Begin();
-                batch.Draw(DraggingArgs.Icon, new Vector2(lastMousePosition.X, lastMousePosition.Y), Color.White);
+                if (DraggingArgs.IconSize != Point.Zero)
+                    batch.Draw(DraggingArgs.Icon, new Rectangle(lastMousePosition, DraggingArgs.IconSize), Color.White);
+                else
+                    batch.Draw(DraggingArgs.Icon, new Vector2(lastMousePosition.X, lastMousePosition.Y), Color.White);
                 batch.End();
             }
         }

@@ -44,6 +44,7 @@ namespace SampleClient.Screens
                 args.Content = "Button 1";
                 args.Sender = button1;
                 args.Icon = dragIcon;
+                args.IconSize = new Point(16, 16);
             };
             Button button2 = Button.TextButton(manager, "Button 2");
             Button button3 = Button.TextButton(manager, "Button 3");
