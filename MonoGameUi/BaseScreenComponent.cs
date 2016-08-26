@@ -13,6 +13,8 @@ namespace MonoGameUi
     /// </summary>
     public class BaseScreenComponent : DrawableGameComponent
     {
+        public const int DOUBLECLICKDELAY = 500;
+
         private ContainerControl root;
 
         private FlyoutControl flyout;
@@ -178,6 +180,12 @@ namespace MonoGameUi
 
         private Point lastMousePosition = Point.Zero;
 
+        private TimeSpan? lastLeftClick = null;
+
+        private TimeSpan? lastRightClick = null;
+
+        private TimeSpan? lastTouchTap = null;
+
         private int? draggingId = null;
 
         internal DragEventArgs DraggingArgs { get; private set; }
@@ -314,6 +322,29 @@ namespace MonoGameUi
                             if (!leftClickArgs.Handled && LeftMouseClick != null)
                                 LeftMouseClick(leftClickArgs);
 
+                            if (lastLeftClick.HasValue &&
+                                gameTime.TotalGameTime - lastLeftClick.Value < TimeSpan.FromMilliseconds(DOUBLECLICKDELAY))
+                            {
+                                // Double Left Click
+                                MouseEventArgs leftDoubleClickArgs = new MouseEventArgs
+                                {
+                                    MouseMode = MouseMode,
+                                    GlobalPosition = mousePosition,
+                                    LocalPosition = mousePosition
+                                };
+
+                                root.InternalLeftMouseDoubleClick(leftDoubleClickArgs);
+                                if (!leftDoubleClickArgs.Handled && LeftMouseDoubleClick != null)
+                                    LeftMouseDoubleClick(leftDoubleClickArgs);
+
+                                lastLeftClick = null;
+                            }
+                            else
+                            {
+                                lastLeftClick = gameTime.TotalGameTime;
+                            }
+
+                            // Mouse Up
                             MouseEventArgs leftUpArgs = new MouseEventArgs
                             {
                                 MouseMode = MouseMode,
@@ -361,6 +392,28 @@ namespace MonoGameUi
                             root.InternalRightMouseClick(rightClickArgs);
                             if (!rightClickArgs.Handled && RightMouseClick != null)
                                 RightMouseClick(rightClickArgs);
+
+                            if (lastRightClick.HasValue &&
+                                gameTime.TotalGameTime - lastRightClick.Value < TimeSpan.FromMilliseconds(DOUBLECLICKDELAY))
+                            {
+                                // Double Left Click
+                                MouseEventArgs rightDoubleClickArgs = new MouseEventArgs
+                                {
+                                    MouseMode = MouseMode,
+                                    GlobalPosition = mousePosition,
+                                    LocalPosition = mousePosition
+                                };
+
+                                root.InternalRightMouseDoubleClick(rightDoubleClickArgs);
+                                if (!rightDoubleClickArgs.Handled && RightMouseDoubleClick != null)
+                                    RightMouseDoubleClick(rightDoubleClickArgs);
+
+                                lastRightClick = null;
+                            }
+                            else
+                            {
+                                lastRightClick = gameTime.TotalGameTime;
+                            }
 
                             MouseEventArgs rightUpArgs = new MouseEventArgs
                             {
@@ -578,7 +631,7 @@ namespace MonoGameUi
                             case TouchLocationState.Released:
 
                                 // Handle Drop
-                                if (DraggingArgs != null && 
+                                if (DraggingArgs != null &&
                                     draggingId == touchPoint.Id &&
                                     DraggingArgs.Handled)
                                 {
@@ -611,6 +664,28 @@ namespace MonoGameUi
                                 root.InternalTouchTap(tapArgs);
                                 if (!tapArgs.Handled && TouchTap != null)
                                     TouchTap(tapArgs);
+
+                                if (lastTouchTap.HasValue &&
+                                gameTime.TotalGameTime - lastLeftClick.Value < TimeSpan.FromMilliseconds(DOUBLECLICKDELAY))
+                                {
+                                    // Double Tap
+                                    TouchEventArgs doubleTapArgs = new TouchEventArgs
+                                    {
+                                        TouchId = touchPoint.Id,
+                                        GlobalPosition = point,
+                                        LocalPosition = point
+                                    };
+
+                                    root.InternalTouchDoubleTap(doubleTapArgs);
+                                    if (!doubleTapArgs.Handled && TouchDoubleTap != null)
+                                        TouchDoubleTap(doubleTapArgs);
+
+                                    lastTouchTap = null;
+                                }
+                                else
+                                {
+                                    lastTouchTap = gameTime.TotalGameTime;
+                                }
 
                                 root.InternalTouchUp(args);
                                 if (!args.Handled && TouchUp != null)
@@ -892,11 +967,15 @@ namespace MonoGameUi
 
         public event MouseEventBaseDelegate LeftMouseClick;
 
+        public event MouseEventBaseDelegate LeftMouseDoubleClick;
+
         public event MouseEventBaseDelegate RightMouseUp;
 
         public event MouseEventBaseDelegate RightMouseDown;
 
         public event MouseEventBaseDelegate RightMouseClick;
+
+        public event MouseEventBaseDelegate RightMouseDoubleClick;
 
         public event MouseScrollEventBaseDelegate MouseScroll;
 
@@ -907,6 +986,8 @@ namespace MonoGameUi
         public event TouchEventBaseDelegate TouchUp;
 
         public event TouchEventBaseDelegate TouchTap;
+
+        public event TouchEventBaseDelegate TouchDoubleTap;
 
         /// <summary>
         /// Event, das aufgerufen wird, wenn eine Taste gedrückt wird.

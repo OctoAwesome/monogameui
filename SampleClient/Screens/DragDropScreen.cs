@@ -15,6 +15,12 @@ namespace SampleClient.Screens
 
         public DragDropScreen(BaseScreenComponent manager) : base(manager)
         {
+            Button backButton = Button.TextButton(manager, "Back");
+            backButton.HorizontalAlignment = HorizontalAlignment.Left;
+            backButton.VerticalAlignment = VerticalAlignment.Top;
+            backButton.LeftMouseClick += (s, e) => { manager.NavigateBack(); };
+            Controls.Add(backButton);
+
             dragIcon = manager.Content.Load<Texture2D>("drag");
 
             Grid grid = new Grid(manager)

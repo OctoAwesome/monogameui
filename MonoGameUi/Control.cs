@@ -1326,6 +1326,44 @@ namespace MonoGameUi
             return Background != null;
         }
 
+        internal bool InternalLeftMouseDoubleClick(MouseEventArgs args)
+        {
+            // Ignorieren, falls nicht im Control-Bereich
+            Point size = ActualSize;
+            if (args.LocalPosition.X < 0 || args.LocalPosition.X >= size.X ||
+                args.LocalPosition.Y < 0 || args.LocalPosition.Y >= size.Y)
+                return false;
+
+            // Ignorieren, falls nicht gehovered
+            if (!Visible) return false;
+
+            // Ignorieren, falls ausgeschaltet
+            if (!Enabled) return true;
+
+            // Children first (Order by Z-Order)
+            foreach (var child in Children.InZOrder())
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
+                args.Bubbled = child.InternalLeftMouseDoubleClick(args) || args.Bubbled;
+                if (args.Handled) break;
+            }
+
+            // Lokales Events
+            if (!args.Handled)
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
+                OnLeftMouseDoubleClick(args);
+                if (LeftMouseDoubleClick != null)
+                    LeftMouseDoubleClick(this, args);
+            }
+
+            // Click-Sound abspielen
+            if (clickSound != null)
+                clickSound.Play();
+
+            return Background != null;
+        }
+
         internal bool InternalRightMouseDown(MouseEventArgs args)
         {
             // Ignorieren, falls nicht im Control-Bereich
@@ -1407,6 +1445,40 @@ namespace MonoGameUi
                 OnRightMouseClick(args);
                 if (RightMouseClick != null)
                     RightMouseClick(this, args);
+            }
+
+            return Background != null;
+        }
+
+        internal bool InternalRightMouseDoubleClick(MouseEventArgs args)
+        {
+            // Ignorieren, falls nicht im Control-Bereich
+            Point size = ActualSize;
+            if (args.LocalPosition.X < 0 || args.LocalPosition.X >= size.X ||
+                args.LocalPosition.Y < 0 || args.LocalPosition.Y >= size.Y)
+                return false;
+
+            // Ignorieren, falls nicht gehovered
+            if (!Visible) return false;
+
+            // Ignorieren, falls ausgeschaltet
+            if (!Enabled) return true;
+
+            // Children first (Order by Z-Order)
+            foreach (var child in Children.InZOrder())
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
+                args.Bubbled = child.InternalRightMouseDoubleClick(args) || args.Bubbled;
+                if (args.Handled) break;
+            }
+
+            // Lokales Events
+            if (!args.Handled)
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
+                OnRightMouseDoubleClick(args);
+                if (RightMouseDoubleClick != null)
+                    RightMouseDoubleClick(this, args);
             }
 
             return Background != null;
@@ -1566,6 +1638,46 @@ namespace MonoGameUi
             return Background != null;
         }
 
+        internal bool InternalTouchDoubleTap(TouchEventArgs args)
+        {
+            // Ignorieren, falls nicht im Control-Bereich
+            Point size = ActualSize;
+            if (args.LocalPosition.X < 0 || args.LocalPosition.X >= size.X ||
+                args.LocalPosition.Y < 0 || args.LocalPosition.Y >= size.Y)
+                return false;
+
+            // Ignorieren, falls nicht gehovered
+            if (!Visible) return false;
+
+            // Ignorieren, falls ausgeschaltet
+            if (!Enabled) return true;
+
+            // Fokusieren
+            Focus();
+
+            // Pressed-State aktivieren
+            Pressed = true;
+
+            // Children first (Order by Z-Order)
+            foreach (var child in Children.InZOrder())
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
+                args.Bubbled = child.InternalTouchDoubleTap(args) || args.Bubbled;
+                if (args.Handled) break;
+            }
+
+            // Lokales Events
+            if (!args.Handled)
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
+                OnTouchDoubleTap(args);
+                if (TouchDoubleTap != null)
+                    TouchDoubleTap(this, args);
+            }
+
+            return Background != null;
+        }
+
         private Point CalculateLocalPosition(Point global, Control control)
         {
             Point absolutePosition = control.AbsolutePosition;
@@ -1599,6 +1711,8 @@ namespace MonoGameUi
         /// <param name="args">Weitere Informationen zum Ereignis.</param>
         protected virtual void OnLeftMouseClick(MouseEventArgs args) { }
 
+        protected virtual void OnLeftMouseDoubleClick(MouseEventArgs args) { }
+
         /// <summary>
         /// Wird aufgerufen, wenn die rechte Maustaste heruntergedrückt wird.
         /// </summary>
@@ -1617,6 +1731,8 @@ namespace MonoGameUi
         /// <param name="args">Weitere Informationen zum Ereignis.</param>
         protected virtual void OnRightMouseClick(MouseEventArgs args) { }
 
+        protected virtual void OnRightMouseDoubleClick(MouseEventArgs args) { }
+
         protected virtual void OnMouseScroll(MouseScrollEventArgs args) { }
 
         protected virtual void OnTouchDown(TouchEventArgs args) { }
@@ -1626,6 +1742,8 @@ namespace MonoGameUi
         protected virtual void OnTouchUp(TouchEventArgs args) { }
 
         protected virtual void OnTouchTap(TouchEventArgs args) { }
+
+        protected virtual void OnTouchDoubleTap(TouchEventArgs args) { }
 
         protected virtual void OnHoveredChanged(PropertyEventArgs<TreeState> args) { }
 
@@ -1650,6 +1768,8 @@ namespace MonoGameUi
         /// </summary>
         public event MouseEventDelegate LeftMouseClick;
 
+        public event MouseEventDelegate LeftMouseDoubleClick;
+
         /// <summary>
         /// Wird aufgerufen, wenn die rechte Maustaste heruntergedrückt wird.
         /// </summary>
@@ -1665,6 +1785,8 @@ namespace MonoGameUi
         /// </summary>
         public event MouseEventDelegate RightMouseClick;
 
+        public event MouseEventDelegate RightMouseDoubleClick;
+
         public event MouseScrollEventDelegate MouseScroll;
 
         public event TouchEventDelegate TouchDown;
@@ -1674,6 +1796,8 @@ namespace MonoGameUi
         public event TouchEventDelegate TouchUp;
 
         public event TouchEventDelegate TouchTap;
+
+        public event TouchEventDelegate TouchDoubleTap;
 
         public event PropertyChangedDelegate<TreeState> HoveredChanged;
 
