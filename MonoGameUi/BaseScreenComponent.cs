@@ -178,6 +178,8 @@ namespace MonoGameUi
 
         private Point lastMousePosition = Point.Zero;
 
+        private int? draggingId = null;
+
         internal DragEventArgs DraggingArgs { get; private set; }
 
         private Dictionary<Keys, double> pressedKeys = new Dictionary<Keys, double>();
@@ -224,24 +226,25 @@ namespace MonoGameUi
                         {
                             DraggingArgs = new DragEventArgs()
                             {
-                                MouseMode = MouseMode,
                                 GlobalPosition = mousePosition,
                                 LocalPosition = mousePosition,
                             };
+
+                            draggingId = null;
 
                             root.InternalStartDrag(DraggingArgs);
                             if (!DraggingArgs.Handled && StartDrag != null)
                                 StartDrag(DraggingArgs);
                         }
 
-                        // Drop hovered
+                        // Drop move
                         if (mouse.LeftButton == ButtonState.Pressed &&
                             DraggingArgs != null &&
+                            draggingId == null &&
                             DraggingArgs.Handled)
                         {
                             DragEventArgs args = new DragEventArgs()
                             {
-                                MouseMode = MouseMode,
                                 GlobalPosition = mousePosition,
                                 LocalPosition = mousePosition,
                                 Content = DraggingArgs.Content,
@@ -249,9 +252,9 @@ namespace MonoGameUi
                                 Sender = DraggingArgs.Sender
                             };
 
-                            root.InternalDropHover(args);
-                            if (!args.Handled && DropHover != null)
-                                DropHover(args);
+                            root.InternalDropMove(args);
+                            if (!args.Handled && DropMove != null)
+                                DropMove(args);
                         }
                     }
 
@@ -283,7 +286,6 @@ namespace MonoGameUi
                             {
                                 DragEventArgs args = new DragEventArgs()
                                 {
-                                    MouseMode = MouseMode,
                                     GlobalPosition = mousePosition,
                                     LocalPosition = mousePosition,
                                     Content = DraggingArgs.Content,
@@ -298,6 +300,7 @@ namespace MonoGameUi
 
                             // Discard Dragging Infos
                             DraggingArgs = null;
+                            draggingId = null;
 
                             // Linke Maustaste wurde losgelassen
                             MouseEventArgs leftClickArgs = new MouseEventArgs
@@ -530,11 +533,72 @@ namespace MonoGameUi
                                     TouchDown(args);
                                 break;
                             case TouchLocationState.Moved:
+
+                                // Touch Move
                                 root.InternalTouchMove(args);
                                 if (!args.Handled && TouchMove != null)
                                     TouchMove(args);
+
+                                // Start Dragging
+                                if (DraggingArgs == null)
+                                {
+                                    DraggingArgs = new DragEventArgs()
+                                    {
+                                        GlobalPosition = point,
+                                        LocalPosition = point,
+                                    };
+
+                                    draggingId = touchPoint.Id;
+
+                                    root.InternalStartDrag(DraggingArgs);
+                                    if (!DraggingArgs.Handled && StartDrag != null)
+                                        StartDrag(DraggingArgs);
+                                }
+
+                                // Drop move
+                                if (DraggingArgs != null &&
+                                    draggingId == touchPoint.Id &&
+                                    DraggingArgs.Handled)
+                                {
+                                    DragEventArgs moveArgs = new DragEventArgs()
+                                    {
+                                        GlobalPosition = point,
+                                        LocalPosition = point,
+                                        Content = DraggingArgs.Content,
+                                        Icon = DraggingArgs.Icon,
+                                        Sender = DraggingArgs.Sender
+                                    };
+
+                                    root.InternalDropMove(moveArgs);
+                                    if (!args.Handled && DropMove != null)
+                                        DropMove(moveArgs);
+                                }
+
                                 break;
                             case TouchLocationState.Released:
+
+                                // Handle Drop
+                                if (DraggingArgs != null && 
+                                    draggingId == touchPoint.Id &&
+                                    DraggingArgs.Handled)
+                                {
+                                    DragEventArgs dropArgs = new DragEventArgs()
+                                    {
+                                        GlobalPosition = point,
+                                        LocalPosition = point,
+                                        Content = DraggingArgs.Content,
+                                        Icon = DraggingArgs.Icon,
+                                        Sender = DraggingArgs.Sender
+                                    };
+
+                                    root.InternalEndDrop(dropArgs);
+                                    if (!args.Handled && EndDrop != null)
+                                        EndDrop(dropArgs);
+                                }
+
+                                // Discard Dragging Infos
+                                DraggingArgs = null;
+                                draggingId = null;
 
                                 // Linke Maustaste wurde losgelassen
                                 TouchEventArgs tapArgs = new TouchEventArgs
@@ -818,7 +882,7 @@ namespace MonoGameUi
 
         public event DragEventDelegate StartDrag;
 
-        public event DragEventDelegate DropHover;
+        public event DragEventDelegate DropMove;
 
         public event DragEventDelegate EndDrop;
 

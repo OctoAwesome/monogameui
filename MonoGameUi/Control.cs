@@ -2126,14 +2126,14 @@ namespace MonoGameUi
             return Background != null;
         }
 
-        internal bool InternalDropHover(DragEventArgs args)
+        internal bool InternalDropMove(DragEventArgs args)
         {
             // Children first (Order by Z-Order)
             bool passive = false;
             foreach (var child in Children.InZOrder())
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
-                bool handled = child.InternalDropHover(args);
+                bool handled = child.InternalDropMove(args);
                 passive |= handled;
                 args.Bubbled = handled || args.Bubbled;
             }

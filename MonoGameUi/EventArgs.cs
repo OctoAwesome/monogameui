@@ -18,7 +18,7 @@ namespace MonoGameUi
     /// <summary>
     /// Basisklasse für alle DragDrop Events
     /// </summary>
-    public class DragEventArgs : MouseEventArgs
+    public class DragEventArgs : PointerEventArgs
     {
         /// <summary>
         /// Optionales Feld um das sendende Control einzufügen.
