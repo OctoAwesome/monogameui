@@ -52,7 +52,7 @@ namespace MonoGameUi
         /// </summary>
         /// <param name="manager"></param>
         /// <param name="style"></param>
-        public Textbox(IScreenManager manager, string style = "")
+        public Textbox(BaseScreenComponent manager, string style = "")
             : base(manager, style)
         {
             TextColor = Color.Black;
@@ -72,6 +72,11 @@ namespace MonoGameUi
         /// <param name="alpha">Die Transparenz des Controls.</param>
         protected override void OnDrawContent(SpriteBatch batch, Rectangle area, GameTime gameTime, float alpha)
         {
+
+            if (CursorPosition > Text.Length)
+                CursorPosition = Text.Length;
+            if (SelectionStart > Text.Length)
+                SelectionStart = CursorPosition;
             // Selektion
             if (SelectionStart != CursorPosition)
             {
@@ -251,8 +256,8 @@ namespace MonoGameUi
                 int to = Math.Max(SelectionStart, CursorPosition);
 
                 // Selektion kopieren
-                if (from == to) System.Windows.Forms.Clipboard.Clear();
-                else System.Windows.Forms.Clipboard.SetText(Text.Substring(from, to - from));
+                if (from == to) SystemSpecific.ClearClipboard();
+                else SystemSpecific.SetClipboardText(Text.Substring(from, to - from));
 
                 args.Handled = true;
             }
@@ -264,8 +269,8 @@ namespace MonoGameUi
                 int to = Math.Max(SelectionStart, CursorPosition);
 
                 // Selektion ausschneiden
-                if (from == to) System.Windows.Forms.Clipboard.Clear();
-                else System.Windows.Forms.Clipboard.SetText(Text.Substring(from, to - from));
+                if (from == to) SystemSpecific.ClearClipboard();
+                else SystemSpecific.SetClipboardText(Text.Substring(from, to - from));
 
                 CursorPosition = from;
                 SelectionStart = from;
@@ -288,7 +293,7 @@ namespace MonoGameUi
                 }
 
                 // Text einfügen und Cursor ans Ende setzen
-                string paste = System.Windows.Forms.Clipboard.GetText();
+                string paste = SystemSpecific.GetClipboardText();
                 Text = Text.Substring(0, CursorPosition) + paste + Text.Substring(CursorPosition);
                 CursorPosition += paste.Length;
                 SelectionStart = CursorPosition;

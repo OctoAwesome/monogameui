@@ -9,7 +9,7 @@ namespace MonoGameUi
     {
         public string Title;
 
-        public TabPage(IScreenManager manager, string title) : base(manager)
+        public TabPage(BaseScreenComponent manager, string title) : base(manager)
         {
             Title = title;
         }

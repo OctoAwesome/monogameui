@@ -72,7 +72,7 @@ namespace MonoGameUi
         /// </summary>
         /// <param name="manager">Der verwendete <see cref="IScreenManager"/></param>
         /// <param name="style">(Optional) Der zu verwendende Style.</param>
-        public Slider(IScreenManager manager, string style = "")
+        public Slider(BaseScreenComponent manager, string style = "")
             : base(manager, style)
         {
             CanFocus = true;

@@ -12,6 +12,8 @@
     <MonoGamePlatform>Windows</MonoGamePlatform>
     <MonoGameContentBuilderExe>
     </MonoGameContentBuilderExe>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
@@ -43,6 +45,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScreenComponent.cs" />
+    <Compile Include="Screens\DragDropScreen.cs" />
     <Compile Include="Screens\MouseCaptureScreen.cs" />
     <Compile Include="Screens\SplitScreen.cs" />
     <Compile Include="Screens\StartScreen.cs" />
@@ -62,6 +65,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\BoldFont.png" />
+    <Content Include="Content\drag.png" />
+    <Content Include="Content\GameFont.png" />
+    <Content Include="Content\HeadlineFont.png" />
     <Content Include="test_texture_round.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -70,18 +77,17 @@
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <MonoGameContentReference Include="Content\Content.mgcb" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\MonoGameUi\MonoGameUi.csproj">
       <Project>{9E89B217-8424-4FCB-B365-3A01F61CD44F}</Project>
       <Name>MonoGameUi</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Content\BoldFont.spritefont" />
-    <None Include="Content\GameFont.spritefont" />
-    <None Include="Content\HeadlineFont.spritefont" />
+    <None Include="app.config" />
+    <None Include="Content\BoldFont.fnt" />
+    <None Include="Content\Content.ecp" />
+    <None Include="Content\GameFont.fnt" />
+    <None Include="Content\HeadlineFont.fnt" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

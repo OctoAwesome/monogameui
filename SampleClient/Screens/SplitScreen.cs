@@ -3,13 +3,15 @@ using MonoGameUi;
 using System.IO;
 using engenious;
 using engenious.Graphics;
-
+using engenious.Input;
 
 namespace SampleClient.Screens
 {
     internal class SplitScreen : Screen
     {
-        public SplitScreen(IScreenManager manager) : base(manager)
+        private Textbox textbox;
+
+        public SplitScreen(BaseScreenComponent manager) : base(manager)
         {
             Background = new BorderBrush(Color.Gray);                       //Hintergrundfarbe festlegen
 
@@ -127,7 +129,7 @@ namespace SampleClient.Screens
 
 
             //Textbox   
-            Textbox textbox = new Textbox(manager)                      //Neue TextBox erzeugen
+            textbox = new Textbox(manager)                      //Neue TextBox erzeugen
             {
                 Background = new BorderBrush(Color.LightGray),          //Festlegen eines Backgrounds für ein Control
                 HorizontalAlignment = HorizontalAlignment.Stretch,          //100% Breite
@@ -152,6 +154,15 @@ namespace SampleClient.Screens
             {
                 return Texture2D.FromStream(device, stream);
             }
+        }
+
+        protected override void OnKeyDown(KeyEventArgs args)
+        {
+            if (args.Key == Keys.RightAlt)
+            {
+                textbox.Text = "";
+            }
+                       base.OnKeyDown(args);
         }
     }
 

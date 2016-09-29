@@ -13,7 +13,7 @@ namespace MonoGameUi
 
         public List<RowDefinition> Rows { get; private set; }
 
-        public Grid(IScreenManager manager, string style = "") :
+        public Grid(BaseScreenComponent manager, string style = "") :
             base(manager, style)
         {
             Columns = new List<ColumnDefinition>();

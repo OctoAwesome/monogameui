@@ -21,7 +21,7 @@ namespace MonoGameUi
             }
         }
 
-        public ContentControl(IScreenManager manager, string style = "") :
+        public ContentControl(BaseScreenComponent manager, string style = "") :
             base(manager, style)
         {
             ApplySkin(typeof(ContentControl));

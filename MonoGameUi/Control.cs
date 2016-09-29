@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using engenious;
 using engenious.Graphics;
+using System.Reflection;
 
 namespace MonoGameUi
 {
@@ -30,7 +31,7 @@ namespace MonoGameUi
         /// <summary>
         /// Referenz auf den aktuellen Screen Manager
         /// </summary>
-        public IScreenManager ScreenManager { get; private set; }
+        public BaseScreenComponent ScreenManager { get; private set; }
 
         /// <summary>
         /// Sound der beim Klicken abgespielt wird
@@ -170,7 +171,7 @@ namespace MonoGameUi
         /// </summary>
         public string Style { get; private set; }
 
-        public Control(IScreenManager manager, string style = "")
+        public Control(BaseScreenComponent manager, string style = "")
         {
             if (manager == null)
                 throw new ArgumentNullException("manager");
@@ -197,7 +198,8 @@ namespace MonoGameUi
                 Skin.Current.ControlSkins != null)
             {
                 // Generische Datentypen
-                if (type.IsGenericType && Skin.Current.ControlSkins.ContainsKey(type.GetGenericTypeDefinition()))
+                TypeInfo info = type.GetTypeInfo();
+                if (info.IsGenericType && Skin.Current.ControlSkins.ContainsKey(type.GetGenericTypeDefinition()))
                     Skin.Current.ControlSkins[type.GetGenericTypeDefinition()](this);
 
                 // Konkrete Datentypen
@@ -1114,9 +1116,11 @@ namespace MonoGameUi
 
         #endregion
 
-        #region Mouse Management
+        #region Pointer Management
 
         private TreeState hovered = TreeState.None;
+
+        private bool dropHovered = false;
 
         private bool pressed = false;
 
@@ -1181,7 +1185,9 @@ namespace MonoGameUi
             foreach (var child in Children.InZOrder())
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
-                passive |= child.InternalMouseMove(args);
+                bool handled = child.InternalMouseMove(args);
+                passive |= handled;
+                args.Bubbled = handled || args.Bubbled;
             }
 
             // Ermitteln ob hovered ist (Aktive & Passive)
@@ -1225,10 +1231,19 @@ namespace MonoGameUi
             return hovered;
         }
 
-        internal void InternalLeftMouseDown(MouseEventArgs args)
+        internal bool InternalLeftMouseDown(MouseEventArgs args)
         {
+            // Ignorieren, falls nicht im Control-Bereich
+            Point size = ActualSize;
+            if (args.LocalPosition.X < 0 || args.LocalPosition.X >= size.X ||
+                args.LocalPosition.Y < 0 || args.LocalPosition.Y >= size.Y)
+                return false;
+
             // Ignorieren, falls nicht gehovered
-            if (Hovered == TreeState.None || !Visible || !Enabled) return;
+            if (!Visible) return false;
+
+            // Ignorieren, falls ausgeschaltet
+            if (!Enabled) return true;
 
             // Fokusieren
             Focus();
@@ -1240,7 +1255,7 @@ namespace MonoGameUi
             foreach (var child in Children.InZOrder())
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
-                child.InternalLeftMouseDown(args);
+                args.Bubbled = child.InternalLeftMouseDown(args) || args.Bubbled;
                 if (args.Handled) break;
             }
 
@@ -1252,6 +1267,8 @@ namespace MonoGameUi
                 if (LeftMouseDown != null)
                     LeftMouseDown(this, args);
             }
+
+            return Background != null;
         }
 
         internal void InternalLeftMouseUp(MouseEventArgs args)
@@ -1270,16 +1287,25 @@ namespace MonoGameUi
                 LeftMouseUp(this, args);
         }
 
-        internal void InternalLeftMouseClick(MouseEventArgs args)
+        internal bool InternalLeftMouseClick(MouseEventArgs args)
         {
+            // Ignorieren, falls nicht im Control-Bereich
+            Point size = ActualSize;
+            if (args.LocalPosition.X < 0 || args.LocalPosition.X >= size.X ||
+                args.LocalPosition.Y < 0 || args.LocalPosition.Y >= size.Y)
+                return false;
+
             // Ignorieren, falls nicht gehovered
-            if (Hovered == TreeState.None || !Visible || !Enabled) return;
+            if (!Visible) return false;
+
+            // Ignorieren, falls ausgeschaltet
+            if (!Enabled) return true;
 
             // Children first (Order by Z-Order)
             foreach (var child in Children.InZOrder())
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
-                child.InternalLeftMouseClick(args);
+                args.Bubbled = child.InternalLeftMouseClick(args) || args.Bubbled;
                 if (args.Handled) break;
             }
 
@@ -1295,12 +1321,61 @@ namespace MonoGameUi
             // Click-Sound abspielen
             //if (clickSound != null)
             //    clickSound.Play();
+
+            return Background != null;
         }
 
-        internal void InternalRightMouseDown(MouseEventArgs args)
+        internal bool InternalLeftMouseDoubleClick(MouseEventArgs args)
         {
+            // Ignorieren, falls nicht im Control-Bereich
+            Point size = ActualSize;
+            if (args.LocalPosition.X < 0 || args.LocalPosition.X >= size.X ||
+                args.LocalPosition.Y < 0 || args.LocalPosition.Y >= size.Y)
+                return false;
+
             // Ignorieren, falls nicht gehovered
-            if (Hovered == TreeState.None || !Visible || !Enabled) return;
+            if (!Visible) return false;
+
+            // Ignorieren, falls ausgeschaltet
+            if (!Enabled) return true;
+
+            // Children first (Order by Z-Order)
+            foreach (var child in Children.InZOrder())
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
+                args.Bubbled = child.InternalLeftMouseDoubleClick(args) || args.Bubbled;
+                if (args.Handled) break;
+            }
+
+            // Lokales Events
+            if (!args.Handled)
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
+                OnLeftMouseDoubleClick(args);
+                if (LeftMouseDoubleClick != null)
+                    LeftMouseDoubleClick(this, args);
+            }
+
+            // Click-Sound abspielen
+            //if (clickSound != null)
+            //    clickSound.Play();
+
+            return Background != null;
+        }
+
+        internal bool InternalRightMouseDown(MouseEventArgs args)
+        {
+            // Ignorieren, falls nicht im Control-Bereich
+            Point size = ActualSize;
+            if (args.LocalPosition.X < 0 || args.LocalPosition.X >= size.X ||
+                args.LocalPosition.Y < 0 || args.LocalPosition.Y >= size.Y)
+                return false;
+
+            // Ignorieren, falls nicht gehovered
+            if (!Visible) return false;
+
+            // Ignorieren, falls ausgeschaltet
+            if (!Enabled) return true;
 
             Focus();
 
@@ -1308,7 +1383,7 @@ namespace MonoGameUi
             foreach (var child in Children.InZOrder())
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
-                child.InternalRightMouseDown(args);
+                args.Bubbled = child.InternalRightMouseDown(args) || args.Bubbled;
                 if (args.Handled) break;
             }
 
@@ -1320,6 +1395,8 @@ namespace MonoGameUi
                 if (RightMouseDown != null)
                     RightMouseDown(this, args);
             }
+
+            return Background != null;
         }
 
         internal void InternalRightMouseUp(MouseEventArgs args)
@@ -1338,16 +1415,25 @@ namespace MonoGameUi
                 RightMouseUp(this, args);
         }
 
-        internal void InternalRightMouseClick(MouseEventArgs args)
+        internal bool InternalRightMouseClick(MouseEventArgs args)
         {
+            // Ignorieren, falls nicht im Control-Bereich
+            Point size = ActualSize;
+            if (args.LocalPosition.X < 0 || args.LocalPosition.X >= size.X ||
+                args.LocalPosition.Y < 0 || args.LocalPosition.Y >= size.Y)
+                return false;
+
             // Ignorieren, falls nicht gehovered
-            if (Hovered == TreeState.None || !Visible || !Enabled) return;
+            if (!Visible) return false;
+
+            // Ignorieren, falls ausgeschaltet
+            if (!Enabled) return true;
 
             // Children first (Order by Z-Order)
             foreach (var child in Children.InZOrder())
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
-                child.InternalRightMouseClick(args);
+                args.Bubbled = child.InternalRightMouseClick(args) || args.Bubbled;
                 if (args.Handled) break;
             }
 
@@ -1359,18 +1445,63 @@ namespace MonoGameUi
                 if (RightMouseClick != null)
                     RightMouseClick(this, args);
             }
+
+            return Background != null;
         }
 
-        internal void InternalMouseScroll(MouseScrollEventArgs args)
+        internal bool InternalRightMouseDoubleClick(MouseEventArgs args)
         {
+            // Ignorieren, falls nicht im Control-Bereich
+            Point size = ActualSize;
+            if (args.LocalPosition.X < 0 || args.LocalPosition.X >= size.X ||
+                args.LocalPosition.Y < 0 || args.LocalPosition.Y >= size.Y)
+                return false;
+
             // Ignorieren, falls nicht gehovered
-            if (Hovered == TreeState.None || !Visible || !Enabled) return;
+            if (!Visible) return false;
+
+            // Ignorieren, falls ausgeschaltet
+            if (!Enabled) return true;
 
             // Children first (Order by Z-Order)
             foreach (var child in Children.InZOrder())
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
-                child.InternalMouseScroll(args);
+                args.Bubbled = child.InternalRightMouseDoubleClick(args) || args.Bubbled;
+                if (args.Handled) break;
+            }
+
+            // Lokales Events
+            if (!args.Handled)
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
+                OnRightMouseDoubleClick(args);
+                if (RightMouseDoubleClick != null)
+                    RightMouseDoubleClick(this, args);
+            }
+
+            return Background != null;
+        }
+
+        internal bool InternalMouseScroll(MouseScrollEventArgs args)
+        {
+            // Ignorieren, falls nicht im Control-Bereich
+            Point size = ActualSize;
+            if (args.LocalPosition.X < 0 || args.LocalPosition.X >= size.X ||
+                args.LocalPosition.Y < 0 || args.LocalPosition.Y >= size.Y)
+                return false;
+
+            // Ignorieren, falls nicht gehovered
+            if (!Visible) return false;
+
+            // Ignorieren, falls ausgeschaltet
+            if (!Enabled) return true;
+
+            // Children first (Order by Z-Order)
+            foreach (var child in Children.InZOrder())
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
+                args.Bubbled = child.InternalMouseScroll(args) || args.Bubbled;
                 if (args.Handled) break;
             }
 
@@ -1382,6 +1513,168 @@ namespace MonoGameUi
                 if (MouseScroll != null)
                     MouseScroll(this, args);
             }
+
+            return Background != null;
+        }
+
+        internal bool InternalTouchDown(TouchEventArgs args)
+        {
+            // Ignorieren, falls nicht im Control-Bereich
+            Point size = ActualSize;
+            if (args.LocalPosition.X < 0 || args.LocalPosition.X >= size.X ||
+                args.LocalPosition.Y < 0 || args.LocalPosition.Y >= size.Y)
+                return false;
+
+            // Ignorieren, falls nicht gehovered
+            if (!Visible) return false;
+
+            // Ignorieren, falls ausgeschaltet
+            if (!Enabled) return true;
+
+            // Fokusieren
+            Focus();
+
+            // Pressed-State aktivieren
+            Pressed = true;
+
+            // Children first (Order by Z-Order)
+            foreach (var child in Children.InZOrder())
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
+                args.Bubbled = child.InternalTouchDown(args) || args.Bubbled;
+                if (args.Handled) break;
+            }
+
+            // Lokales Events
+            if (!args.Handled)
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
+                OnTouchDown(args);
+                if (TouchDown != null)
+                    TouchDown(this, args);
+            }
+
+            return Background != null;
+        }
+
+        internal void InternalTouchMove(TouchEventArgs args)
+        {
+            // Children first (Order by Z-Order)
+            foreach (var child in Children.InZOrder())
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
+                child.InternalTouchMove(args);
+                if (args.Handled) break;
+            }
+
+            // Lokales Events
+            if (!args.Handled)
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
+                OnTouchMove(args);
+                if (TouchMove != null)
+                    TouchMove(this, args);
+            }
+        }
+
+        internal void InternalTouchUp(TouchEventArgs args)
+        {
+            // Children first (Order by Z-Order)
+            foreach (var child in Children.InZOrder())
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
+                child.InternalTouchUp(args);
+                if (args.Handled) break;
+            }
+
+            // Lokales Events
+            if (!args.Handled)
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
+                OnTouchUp(args);
+                if (TouchUp != null)
+                    TouchUp(this, args);
+            }
+        }
+
+        internal bool InternalTouchTap(TouchEventArgs args)
+        {
+            // Ignorieren, falls nicht im Control-Bereich
+            Point size = ActualSize;
+            if (args.LocalPosition.X < 0 || args.LocalPosition.X >= size.X ||
+                args.LocalPosition.Y < 0 || args.LocalPosition.Y >= size.Y)
+                return false;
+
+            // Ignorieren, falls nicht gehovered
+            if (!Visible) return false;
+
+            // Ignorieren, falls ausgeschaltet
+            if (!Enabled) return true;
+
+            // Fokusieren
+            Focus();
+
+            // Pressed-State aktivieren
+            Pressed = true;
+
+            // Children first (Order by Z-Order)
+            foreach (var child in Children.InZOrder())
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
+                args.Bubbled = child.InternalTouchTap(args) || args.Bubbled;
+                if (args.Handled) break;
+            }
+
+            // Lokales Events
+            if (!args.Handled)
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
+                OnTouchTap(args);
+                if (TouchTap != null)
+                    TouchTap(this, args);
+            }
+
+            return Background != null;
+        }
+
+        internal bool InternalTouchDoubleTap(TouchEventArgs args)
+        {
+            // Ignorieren, falls nicht im Control-Bereich
+            Point size = ActualSize;
+            if (args.LocalPosition.X < 0 || args.LocalPosition.X >= size.X ||
+                args.LocalPosition.Y < 0 || args.LocalPosition.Y >= size.Y)
+                return false;
+
+            // Ignorieren, falls nicht gehovered
+            if (!Visible) return false;
+
+            // Ignorieren, falls ausgeschaltet
+            if (!Enabled) return true;
+
+            // Fokusieren
+            Focus();
+
+            // Pressed-State aktivieren
+            Pressed = true;
+
+            // Children first (Order by Z-Order)
+            foreach (var child in Children.InZOrder())
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
+                args.Bubbled = child.InternalTouchDoubleTap(args) || args.Bubbled;
+                if (args.Handled) break;
+            }
+
+            // Lokales Events
+            if (!args.Handled)
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
+                OnTouchDoubleTap(args);
+                if (TouchDoubleTap != null)
+                    TouchDoubleTap(this, args);
+            }
+
+            return Background != null;
         }
 
         private Point CalculateLocalPosition(Point global, Control control)
@@ -1417,6 +1710,8 @@ namespace MonoGameUi
         /// <param name="args">Weitere Informationen zum Ereignis.</param>
         protected virtual void OnLeftMouseClick(MouseEventArgs args) { }
 
+        protected virtual void OnLeftMouseDoubleClick(MouseEventArgs args) { }
+
         /// <summary>
         /// Wird aufgerufen, wenn die rechte Maustaste heruntergedrückt wird.
         /// </summary>
@@ -1435,7 +1730,19 @@ namespace MonoGameUi
         /// <param name="args">Weitere Informationen zum Ereignis.</param>
         protected virtual void OnRightMouseClick(MouseEventArgs args) { }
 
+        protected virtual void OnRightMouseDoubleClick(MouseEventArgs args) { }
+
         protected virtual void OnMouseScroll(MouseScrollEventArgs args) { }
+
+        protected virtual void OnTouchDown(TouchEventArgs args) { }
+
+        protected virtual void OnTouchMove(TouchEventArgs args) { }
+
+        protected virtual void OnTouchUp(TouchEventArgs args) { }
+
+        protected virtual void OnTouchTap(TouchEventArgs args) { }
+
+        protected virtual void OnTouchDoubleTap(TouchEventArgs args) { }
 
         protected virtual void OnHoveredChanged(PropertyEventArgs<TreeState> args) { }
 
@@ -1460,6 +1767,8 @@ namespace MonoGameUi
         /// </summary>
         public event MouseEventDelegate LeftMouseClick;
 
+        public event MouseEventDelegate LeftMouseDoubleClick;
+
         /// <summary>
         /// Wird aufgerufen, wenn die rechte Maustaste heruntergedrückt wird.
         /// </summary>
@@ -1475,7 +1784,19 @@ namespace MonoGameUi
         /// </summary>
         public event MouseEventDelegate RightMouseClick;
 
+        public event MouseEventDelegate RightMouseDoubleClick;
+
         public event MouseScrollEventDelegate MouseScroll;
+
+        public event TouchEventDelegate TouchDown;
+
+        public event TouchEventDelegate TouchMove;
+
+        public event TouchEventDelegate TouchUp;
+
+        public event TouchEventDelegate TouchTap;
+
+        public event TouchEventDelegate TouchDoubleTap;
 
         public event PropertyChangedDelegate<TreeState> HoveredChanged;
 
@@ -1889,6 +2210,152 @@ namespace MonoGameUi
         public event EventDelegate GotFocus;
 
         public event EventDelegate LostFocus;
+
+        #endregion
+
+        #region Drag & Drop
+
+        internal bool InternalStartDrag(DragEventArgs args)
+        {
+            // Ignorieren, falls nicht im Control-Bereich
+            Point size = ActualSize;
+            if (args.LocalPosition.X < 0 || args.LocalPosition.X >= size.X ||
+                args.LocalPosition.Y < 0 || args.LocalPosition.Y >= size.Y)
+                return false;
+
+            // Ignorieren, falls nicht gehovered
+            if (!Visible) return false;
+
+            // Ignorieren, falls ausgeschaltet
+            if (!Enabled) return true;
+
+            // Children first (Order by Z-Order)
+            foreach (var child in Children.InZOrder())
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
+                args.Bubbled = child.InternalStartDrag(args) || args.Bubbled;
+                if (args.Handled) break;
+            }
+
+            // Bubble up
+            if (!args.Handled)
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
+                OnStartDrag(args);
+                if (StartDrag != null)
+                    StartDrag(args);
+            }
+
+            return Background != null;
+        }
+
+        internal bool InternalDropMove(DragEventArgs args)
+        {
+            // Children first (Order by Z-Order)
+            bool passive = false;
+            foreach (var child in Children.InZOrder())
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
+                bool handled = child.InternalDropMove(args);
+                passive |= handled;
+                args.Bubbled = handled || args.Bubbled;
+            }
+
+            args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
+            bool hovered =
+                args.LocalPosition.X >= 0 &&
+                args.LocalPosition.Y >= 0 &&
+                args.LocalPosition.X < ActualSize.X &&
+                args.LocalPosition.Y < ActualSize.Y;
+
+            // Wenn sich der DropHover Status verändert hat
+            if ((hovered && ScreenManager.Dragging) != dropHovered)
+            {
+                if (dropHovered)
+                {
+                    OnDropLeave(args);
+                    if (DropLeave != null)
+                        DropLeave(args);
+                }
+                else
+                {
+                    OnDropEnter(args);
+                    if (DropEnter != null)
+                        DropEnter(args);
+                }
+            }
+
+            OnDropMove(args);
+            if (DropMove != null)
+                DropMove(args);
+
+            dropHovered = hovered && ScreenManager.Dragging;
+
+            return hovered;
+        }
+
+        internal bool InternalEndDrop(DragEventArgs args)
+        {
+            // Ignorieren, falls nicht im Control-Bereich
+            Point size = ActualSize;
+            if (args.LocalPosition.X < 0 || args.LocalPosition.X >= size.X ||
+                args.LocalPosition.Y < 0 || args.LocalPosition.Y >= size.Y)
+                return false;
+
+            // Ignorieren, falls nicht gehovered
+            if (!Visible) return false;
+
+            // Ignorieren, falls ausgeschaltet
+            if (!Enabled) return true;
+
+            // Children first (Order by Z-Order)
+            foreach (var child in Children.InZOrder())
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
+                args.Bubbled = child.InternalEndDrop(args) || args.Bubbled;
+                if (args.Handled) break;
+            }
+
+            // Bubble up
+            if (!args.Handled)
+            {
+                args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, this);
+                OnEndDrop(args);
+                if (EndDrop != null)
+                    EndDrop(args);
+            }
+
+            // Leave
+            if (dropHovered)
+            {
+                OnDropLeave(args);
+                if (DropLeave != null)
+                    DropLeave(args);
+                dropHovered = false;
+            }
+
+            return Background != null;
+        }
+
+        protected virtual void OnStartDrag(DragEventArgs args) { }
+
+        protected virtual void OnDropMove(DragEventArgs args) { }
+
+        protected virtual void OnDropEnter(DragEventArgs args) { }
+
+        protected virtual void OnDropLeave(DragEventArgs args) { }
+
+        protected virtual void OnEndDrop(DragEventArgs args) { }
+
+        public event DragEventDelegate StartDrag;
+
+        public event DragEventDelegate DropMove;
+
+        public event DragEventDelegate DropEnter;
+
+        public event DragEventDelegate DropLeave;
+
+        public event DragEventDelegate EndDrop;
 
         #endregion
     }

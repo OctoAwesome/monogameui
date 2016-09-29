@@ -19,6 +19,7 @@ namespace SampleClient
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            Window.AllowUserResizing = true;
         }
 
         protected override void Initialize()

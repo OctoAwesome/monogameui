@@ -6,14 +6,18 @@
   <Contents>
     <ContentFile>
       <Name>BoldFont.fnt</Name>
-      <Processor />
+      <Processor>FontProcessor</Processor>
     </ContentFile>
     <ContentFile>
       <Name>GameFont.fnt</Name>
-      <Processor />
+      <Processor>FontProcessor</Processor>
     </ContentFile>
     <ContentFile>
       <Name>HeadlineFont.fnt</Name>
+      <Processor>FontProcessor</Processor>
+    </ContentFile>
+    <ContentFile>
+      <Name>drag.png</Name>
       <Processor />
     </ContentFile>
   </Contents>

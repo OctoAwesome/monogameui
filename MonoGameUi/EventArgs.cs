@@ -1,4 +1,5 @@
 ﻿using engenious;
+using engenious.Graphics;
 using engenious.Input;
 
 
@@ -13,6 +14,53 @@ namespace MonoGameUi
         /// Gibt an ob das Event bereits verarbeitet wurde oder legt dies fest.
         /// </summary>
         public bool Handled { get; set; }
+    }
+
+    /// <summary>
+    /// Basisklasse für alle DragDrop Events
+    /// </summary>
+    public class DragEventArgs : PointerEventArgs
+    {
+        /// <summary>
+        /// Optionales Feld um das sendende Control einzufügen.
+        /// </summary>
+        public Control Sender { get; set; }
+
+        /// <summary>
+        /// Optionales Icon, das während des Drag-Vorgangs angezeigt werden soll.
+        /// </summary>
+        public Texture2D Icon { get; set; }
+
+        /// <summary>
+        /// Angabe der Größe des Icons, das beim Drag-Vorgang angezeigt wird.
+        /// </summary>
+        public Point IconSize { get; set; }
+
+        /// <summary>
+        /// Content, der gedraggt wird.
+        /// </summary>
+        public object Content { get; set; }
+    }
+
+    /// <summary>
+    /// Basisklasse für alle Positionsbasierten Events (Maus, Touch)
+    /// </summary>
+    public class PointerEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Gibt an, ob das Event 
+        /// </summary>
+        public bool Bubbled { get; set; }
+
+        /// <summary>
+        /// Position des Mauspointers bezogen auf den Ursprung des aktuellen Controls
+        /// </summary>
+        public Point LocalPosition { get; set; }
+
+        /// <summary>
+        /// Position des Mauspointers in globaler Screen-Koordinate
+        /// </summary>
+        public Point GlobalPosition { get; set; }
     }
 
     /// <summary>
@@ -51,22 +99,12 @@ namespace MonoGameUi
     /// <summary>
     /// Event Arguments für alle Mouse Events.
     /// </summary>
-    public class MouseEventArgs : EventArgs
+    public class MouseEventArgs : PointerEventArgs
     {
         /// <summary>
         /// Gibt den aktuellen Modus der Maus an.
         /// </summary>
         public MouseMode MouseMode { get; set; }
-
-        /// <summary>
-        /// Position des Mauspointers bezogen auf den Ursprung des aktuellen Controls
-        /// </summary>
-        public Point LocalPosition { get; set; }
-
-        /// <summary>
-        /// Position des Mauspointers in globaler Screen-Koordinate
-        /// </summary>
-        public Point GlobalPosition { get; set; }
 
         /// <summary>
         /// Erzeugt eine neue Instanz der MouseEventArgs-Klasse
@@ -110,6 +148,17 @@ namespace MonoGameUi
         {
             Steps = steps;
         }
+    }
+
+    /// <summary>
+    /// Event Args für alle Touch-basierten Events.
+    /// </summary>
+    public class TouchEventArgs : PointerEventArgs
+    {
+        /// <summary>
+        /// ID des Touch Points.
+        /// </summary>
+        public int TouchId { get; set; }
     }
 
     /// <summary>
@@ -205,6 +254,8 @@ namespace MonoGameUi
     /// <param name="args"></param>
     public delegate void EventDelegate(Control sender, EventArgs args);
 
+    public delegate void DragEventDelegate(DragEventArgs args);
+
     /// <summary>
     /// Event Delegat für Maus-Events.
     /// </summary>
@@ -212,12 +263,20 @@ namespace MonoGameUi
     /// <param name="args">Eventargumente</param>
     public delegate void MouseEventDelegate(Control sender, MouseEventArgs args);
 
+    public delegate void MouseEventBaseDelegate(MouseEventArgs args);
+
     /// <summary>
     /// Event-Delegat für Maus-Scroll-Events.
     /// </summary>
     /// <param name="sender">Aufrufendes Control</param>
     /// <param name="args">Eventargumente</param>
     public delegate void MouseScrollEventDelegate(Control sender, MouseScrollEventArgs args);
+
+    public delegate void MouseScrollEventBaseDelegate(MouseScrollEventArgs args);
+
+    public delegate void TouchEventDelegate(Control control, TouchEventArgs args);
+
+    public delegate void TouchEventBaseDelegate(TouchEventArgs args);
 
     /// <summary>
     /// Event Delegat für Keyboard-Events.

@@ -5,7 +5,7 @@ namespace SampleClient.Screens
 {
     internal class StartScreen : Screen
     {
-        public StartScreen(IScreenManager manager) : base(manager)
+        public StartScreen(BaseScreenComponent manager) : base(manager)
         {
             Background = new BorderBrush(Color.DarkRed);
 
@@ -28,6 +28,10 @@ namespace SampleClient.Screens
             Button tabDemoScreen = Button.TextButton(manager, "Tab Demo", "special");
             tabDemoScreen.LeftMouseClick += (s, e) => manager.NavigateToScreen(new TabScreen(manager));
             stack.Controls.Add(tabDemoScreen);
+
+            Button dragDropScreen = Button.TextButton(manager, "Drag & Drop", "special");
+            dragDropScreen.LeftMouseClick += (s, e) => manager.NavigateToScreen(new DragDropScreen(manager));
+            stack.Controls.Add(dragDropScreen);
         }
     }
 }

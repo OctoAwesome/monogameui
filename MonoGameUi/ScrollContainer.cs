@@ -463,7 +463,7 @@ namespace MonoGameUi
             }
         }
 
-        public ScrollContainer(IScreenManager manager)
+        public ScrollContainer(BaseScreenComponent manager)
             : base(manager)
         {
             HorizontalScrollbarEnabled = false;

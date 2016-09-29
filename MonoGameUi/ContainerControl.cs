@@ -17,7 +17,7 @@ namespace MonoGameUi
         /// </summary>
         /// <param name="manager">Der <see cref="IScreenManager"/></param>
         /// <param name="style">Der zu verwendende Style</param>
-        public ContainerControl(IScreenManager manager, string style = "") :
+        public ContainerControl(BaseScreenComponent manager, string style = "") :
             base(manager, style)
         {
             ApplySkin(typeof(ContainerControl));
