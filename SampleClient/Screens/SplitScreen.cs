@@ -136,14 +136,24 @@ namespace SampleClient.Screens
                 MinWidth = 100                                          //Eine Textbox kann ihre Größe automatisch anpassen
             };
 
-            Button clearTextbox = new Button(manager);
+            Button clearTextbox = Button.TextButton(manager, "Clear Textbox");
             clearTextbox.LeftMouseClick += (s, e) =>
             {
                 textbox.SelectionStart = 0;
                 textbox.Text = "";
             };
+
+            Button disableControls = Button.TextButton(manager, "Toggle Controls disabled");
+            disableControls.LeftMouseClick += (s, e) =>
+            {
+                foreach (var c in panel.Controls)
+                {
+                    c.Enabled = !c.Enabled;
+                }
+            };
             panel.Controls.Add(clearTextbox);
             panel.Controls.Add(textbox);                                //Textbox zu Panel hinzufügen
+            panel.Controls.Add(disableControls);
 
         }
 

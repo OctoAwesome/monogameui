@@ -61,6 +61,8 @@ namespace MonoGameUi
 
             SelectedItemBrush = new BorderBrush(Color.Red);
 
+            DisabledBrush = new BorderBrush(Color.White * 0.4f);
+
             // =============
             // Skin-Methoden
             // =============
@@ -298,6 +300,11 @@ namespace MonoGameUi
         /// Standard-Brush für die Progress-Bar
         /// </summary>
         public Brush ProgressBarBrush { get; set; }
+
+        /// <summary>
+        /// Brush, die über deaktivierte Controls gemalt wird.
+        /// </summary>
+        public Brush DisabledBrush { get; set; }
 
         #endregion
 

@@ -296,6 +296,9 @@ namespace MonoGameUi
             // Fokus-Frame
             if (Focused == TreeState.Active)
                 OnDrawFocusFrame(batch, controlWithMargin, gameTime, AbsoluteAlpha);
+
+            if (!Enabled)
+                OnDrawDisabled(batch, controlWithMargin, gameTime, AbsoluteAlpha);
         }
 
         /// <summary>
@@ -308,9 +311,9 @@ namespace MonoGameUi
         protected virtual void OnDrawBackground(SpriteBatch batch, Rectangle backgroundArea, GameTime gameTime, float alpha)
         {
             // Standard Background zeichnen
-            if (Pressed && PressedBackground != null)
+            if (Pressed && PressedBackground != null && Enabled)
                 PressedBackground.Draw(batch, backgroundArea, alpha);
-            else if (Hovered != TreeState.None && HoveredBackground != null)
+            else if (Hovered != TreeState.None && HoveredBackground != null && Enabled)
                 HoveredBackground.Draw(batch, backgroundArea, alpha);
             else if (Background != null)
                 Background.Draw(batch, backgroundArea, alpha);
@@ -338,6 +341,19 @@ namespace MonoGameUi
         {
             if (Skin.Current.FocusFrameBrush != null)
                 Skin.Current.FocusFrameBrush.Draw(batch, contentArea, AbsoluteAlpha);
+        }
+
+        /// <summary>
+        /// Malt den deaktivierten Zustand des Controls
+        /// </summary>
+        /// <param name="batch">Spritebatch</param>
+        /// <param name="contentArea">Bereich für den Content in absoluten Koordinaten</param>
+        /// <param name="gameTime">GameTime</param>
+        /// <param name="alpha">Die Transparenz des Controls.</param>
+        protected virtual void OnDrawDisabled(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
+        {
+            if (Skin.Current.DisabledBrush != null)
+                Skin.Current.DisabledBrush.Draw(batch, contentArea, alpha);
         }
 
         public void InvalidateDrawing()
