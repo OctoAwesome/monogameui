@@ -132,6 +132,13 @@ namespace MonoGameUi
             ApplySkin(typeof(Label));
         }
 
+        /// <summary>
+        /// Malt den Content des Controls
+        /// </summary>
+        /// <param name="batch">Spritebatch</param>
+        /// <param name="area">Bereich für den Content in absoluten Koordinaten</param>
+        /// <param name="gameTime">GameTime</param>
+        /// <param name="alpha">Die Transparenz des Controls.</param>
         protected override void OnDrawContent(SpriteBatch batch, Rectangle area, GameTime gameTime, float alpha)
         {
             // Rahmenbedingungen fürs Rendern checken
@@ -188,6 +195,22 @@ namespace MonoGameUi
             }
         }
 
+        /// <summary>
+        /// Malt den deaktivierten Zustand des Controls
+        /// </summary>
+        /// <param name="batch">Spritebatch</param>
+        /// <param name="contentArea">Bereich für den Content in absoluten Koordinaten</param>
+        /// <param name="gameTime">GameTime</param>
+        /// <param name="alpha">Die Transparenz des Controls.</param>
+        protected override void OnDrawDisabled(SpriteBatch batch, Rectangle contentArea, GameTime gameTime, float alpha)
+        {
+            // Kein weißer Hintergrund für Lables
+        }
+
+        /// <summary>
+        /// Ist für die Berechnung des Client-Contents zuständig und erleichtert das automatische Alignment.
+        /// </summary>
+        /// <returns></returns>
         public override Point CalculcateRequiredClientSpace(Point available)
         {
             if (Font == null) return Point.Zero;
