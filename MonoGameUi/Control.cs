@@ -222,7 +222,7 @@ namespace MonoGameUi
         {
             HandleTransitions(gameTime);
             OnUpdate(gameTime);
-            foreach (var child in Children.AgainstZOrdner())
+            foreach (var child in Children.AgainstZOrder)
                 child.Update(gameTime);
         }
 
@@ -231,11 +231,13 @@ namespace MonoGameUi
         public void PreDraw(GameTime gameTime)
         {
             OnPreDraw(gameTime);
-            foreach (var child in Children.AgainstZOrdner())
+            foreach (var child in Children.AgainstZOrder)
                 child.PreDraw(gameTime);
         }
 
         protected virtual void OnPreDraw(GameTime gameTime) { }
+
+        private readonly RasterizerState _rasterizerState = new RasterizerState {ScissorTestEnable = true};
 
         /// <summary>
         /// Zeichenauruf für das Control (SpriteBatch ist bereits aktiviert)
@@ -252,11 +254,11 @@ namespace MonoGameUi
 
             // Scissor-Filter aktivieren
             batch.GraphicsDevice.ScissorRectangle = localRenderMask.Transform(AbsoluteTransformation);
-            batch.Begin(rasterizerState: new RasterizerState() { ScissorTestEnable = true }, samplerState: SamplerState.LinearWrap, transformMatrix: AbsoluteTransformation);
+            batch.Begin(rasterizerState: _rasterizerState, samplerState: SamplerState.LinearWrap, transformMatrix: AbsoluteTransformation);
             OnDraw(batch, controlArea, gameTime);
             batch.End();
 
-            foreach (var child in Children.AgainstZOrdner())
+            foreach (var child in Children.AgainstZOrder)
             {
                 Rectangle clientArea = ActualClientArea;
                 clientArea.Location += AbsolutePosition;
@@ -479,6 +481,7 @@ namespace MonoGameUi
             }
         }
 
+        private Control[] _rootPath;
         /// <summary>
         /// Liefert den Control-Path von Root zum aktuellen Control.
         /// </summary>
@@ -486,20 +489,26 @@ namespace MonoGameUi
         {
             get
             {
-                // Collect Path
-                List<Control> result = new List<Control>();
-                Control pointer = this;
-                do
+                if (PathDirty)
                 {
-                    result.Add(pointer);
-                    pointer = pointer.Parent;
-                } while (pointer != null);
+                    // Collect Path
+                    List<Control> result = new List<Control>();
+                    Control pointer = this;
+                    do
+                    {
+                        result.Add(pointer);
+                        pointer = pointer.Parent;
+                    } while (pointer != null);
 
-                // Invertieren
-                Control[] path = new Control[result.Count];
-                for (int i = 0; i < result.Count; i++)
-                    path[i] = result[result.Count - i - 1];
-                return path;
+                    // Invertieren
+                    Control[] path = new Control[result.Count];
+                    for (int i = 0; i < result.Count; i++)
+                        path[i] = result[result.Count - i - 1];
+
+                    _rootPath = path;
+                    PathDirty = false;
+                }
+                return _rootPath;
             }
         }
 
@@ -531,7 +540,7 @@ namespace MonoGameUi
         /// <summary>
         /// Die Liste der enthaltenen Controls.
         /// </summary>
-        protected IControlCollection Children { get { return children; } }
+        protected ControlCollection Children { get { return children; } }
 
         /// <summary>
         /// Ein neues Control wurde in die Children-Liste eingefügt.
@@ -862,7 +871,7 @@ namespace MonoGameUi
             Point client = GetMaxClientSize(available);
 
             // Restliche Controls
-            foreach (var child in Children)
+            foreach (var child in Children.Items)
             {
                 Point size = child.GetExpectedSize(client);
                 result = new Point(Math.Max(result.X, size.X), Math.Max(result.Y, size.Y));
@@ -947,7 +956,7 @@ namespace MonoGameUi
             SetDimension(minSize, available);
 
             // Auf andere Controls anwenden
-            foreach (var child in Children)
+            foreach (var child in Children.Items)
                 child.SetActualSize(ActualClientSize);
         }
 
@@ -1002,7 +1011,7 @@ namespace MonoGameUi
         public bool HasInvalidDimensions()
         {
             bool result = invalidDimensions;
-            foreach (var child in Children.ToArray())
+            foreach (var child in Children.Items)
                 result |= child.HasInvalidDimensions();
             return result;
         }
@@ -1099,19 +1108,24 @@ namespace MonoGameUi
         private void HandleTransitions(GameTime gameTime)
         {
             // Transitions durchlaufen
-            List<Transition> drops = new List<Transition>();
-            foreach (var transition in transitions)
+            //List<Transition> drops = new List<Transition>();
+            for (var i = 0; i < transitions.Count; i++)
             {
+                var transition = transitions[i];
                 if (!transition.Update(gameTime))
-                    drops.Add(transition);
+                {
+                    transitionMap.Remove(transition.GetType());
+                    transitions.RemoveAt(i--);
+                }
+                    //drops.Add(transition);
             }
 
             // Abgelaufene Transitions wieder entfernen
-            foreach (var drop in drops)
-            {
-                transitions.Remove(drop);
-                transitionMap.Remove(drop.GetType());
-            }
+            //foreach (var drop in drops)
+            //{
+            //    transitions.Remove(drop);
+            //    transitionMap.Remove(drop.GetType());
+            //}
         }
 
         #endregion
@@ -1182,7 +1196,7 @@ namespace MonoGameUi
         {
             // Children first (Order by Z-Order)
             bool passive = false;
-            foreach (var child in Children.InZOrder())
+            foreach (var child in Children.InZOrder)
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
                 bool handled = child.InternalMouseMove(args);
@@ -1252,7 +1266,7 @@ namespace MonoGameUi
             Pressed = true;
 
             // Children first (Order by Z-Order)
-            foreach (var child in Children.InZOrder())
+            foreach (var child in Children.InZOrder)
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
                 args.Bubbled = child.InternalLeftMouseDown(args) || args.Bubbled;
@@ -1274,7 +1288,7 @@ namespace MonoGameUi
         internal void InternalLeftMouseUp(MouseEventArgs args)
         {
             // Children first (Order by Z-Order)
-            foreach (var child in Children.InZOrder())
+            foreach (var child in Children.InZOrder)
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
                 child.InternalLeftMouseUp(args);
@@ -1302,7 +1316,7 @@ namespace MonoGameUi
             if (!Enabled) return true;
 
             // Children first (Order by Z-Order)
-            foreach (var child in Children.InZOrder())
+            foreach (var child in Children.InZOrder)
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
                 args.Bubbled = child.InternalLeftMouseClick(args) || args.Bubbled;
@@ -1340,7 +1354,7 @@ namespace MonoGameUi
             if (!Enabled) return true;
 
             // Children first (Order by Z-Order)
-            foreach (var child in Children.InZOrder())
+            foreach (var child in Children.InZOrder)
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
                 args.Bubbled = child.InternalLeftMouseDoubleClick(args) || args.Bubbled;
@@ -1380,7 +1394,7 @@ namespace MonoGameUi
             Focus();
 
             // Children first (Order by Z-Order)
-            foreach (var child in Children.InZOrder())
+            foreach (var child in Children.InZOrder)
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
                 args.Bubbled = child.InternalRightMouseDown(args) || args.Bubbled;
@@ -1402,7 +1416,7 @@ namespace MonoGameUi
         internal void InternalRightMouseUp(MouseEventArgs args)
         {
             // Children first (Order by Z-Order)
-            foreach (var child in Children.InZOrder())
+            foreach (var child in Children.InZOrder)
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
                 child.InternalRightMouseUp(args);
@@ -1430,7 +1444,7 @@ namespace MonoGameUi
             if (!Enabled) return true;
 
             // Children first (Order by Z-Order)
-            foreach (var child in Children.InZOrder())
+            foreach (var child in Children.InZOrder)
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
                 args.Bubbled = child.InternalRightMouseClick(args) || args.Bubbled;
@@ -1464,7 +1478,7 @@ namespace MonoGameUi
             if (!Enabled) return true;
 
             // Children first (Order by Z-Order)
-            foreach (var child in Children.InZOrder())
+            foreach (var child in Children.InZOrder)
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
                 args.Bubbled = child.InternalRightMouseDoubleClick(args) || args.Bubbled;
@@ -1498,7 +1512,7 @@ namespace MonoGameUi
             if (!Enabled) return true;
 
             // Children first (Order by Z-Order)
-            foreach (var child in Children.InZOrder())
+            foreach (var child in Children.InZOrder)
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
                 args.Bubbled = child.InternalMouseScroll(args) || args.Bubbled;
@@ -1538,7 +1552,7 @@ namespace MonoGameUi
             Pressed = true;
 
             // Children first (Order by Z-Order)
-            foreach (var child in Children.InZOrder())
+            foreach (var child in Children.InZOrder)
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
                 args.Bubbled = child.InternalTouchDown(args) || args.Bubbled;
@@ -1560,7 +1574,7 @@ namespace MonoGameUi
         internal void InternalTouchMove(TouchEventArgs args)
         {
             // Children first (Order by Z-Order)
-            foreach (var child in Children.InZOrder())
+            foreach (var child in Children.InZOrder)
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
                 child.InternalTouchMove(args);
@@ -1580,7 +1594,7 @@ namespace MonoGameUi
         internal void InternalTouchUp(TouchEventArgs args)
         {
             // Children first (Order by Z-Order)
-            foreach (var child in Children.InZOrder())
+            foreach (var child in Children.InZOrder)
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
                 child.InternalTouchUp(args);
@@ -1618,7 +1632,7 @@ namespace MonoGameUi
             Pressed = true;
 
             // Children first (Order by Z-Order)
-            foreach (var child in Children.InZOrder())
+            foreach (var child in Children.InZOrder)
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
                 args.Bubbled = child.InternalTouchTap(args) || args.Bubbled;
@@ -1658,7 +1672,7 @@ namespace MonoGameUi
             Pressed = true;
 
             // Children first (Order by Z-Order)
-            foreach (var child in Children.InZOrder())
+            foreach (var child in Children.InZOrder)
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
                 args.Bubbled = child.InternalTouchDoubleTap(args) || args.Bubbled;
@@ -1807,7 +1821,7 @@ namespace MonoGameUi
         internal void InternalKeyDown(KeyEventArgs args)
         {
             // Children first (Order by Z-Order)
-            foreach (var child in Children.InZOrder())
+            foreach (var child in Children.InZOrder)
             {
                 child.InternalKeyDown(args);
                 if (args.Handled)
@@ -1818,15 +1832,14 @@ namespace MonoGameUi
             if (!args.Handled)
             {
                 OnKeyDown(args);
-                if (KeyDown != null)
-                    KeyDown(this, args);
+                KeyDown?.Invoke(this, args);
             }
         }
 
         internal void InternalKeyPress(KeyEventArgs args)
         {
             // Children first (Order by Z-Order)
-            foreach (var child in Children.InZOrder())
+            foreach (var child in Children.InZOrder)
             {
                 child.InternalKeyPress(args);
                 if (args.Handled)
@@ -1837,15 +1850,14 @@ namespace MonoGameUi
             if (!args.Handled)
             {
                 OnKeyPress(args);
-                if (KeyPress != null)
-                    KeyPress(this, args);
+                KeyPress?.Invoke(this, args);
             }
         }
 
         internal void InternalKeyTextPress(KeyTextEventArgs args)
         {
             // Children first (Order by Z-Order)
-            foreach (var child in Children.InZOrder())
+            foreach (var child in Children.InZOrder)
             {
                 child.InternalKeyTextPress(args);
                 if (args.Handled)
@@ -1856,15 +1868,14 @@ namespace MonoGameUi
             if (!args.Handled)
             {
                 OnKeyTextPress(args);
-                if (KeyTextPress != null)
-                    KeyTextPress(this, args);
+                KeyTextPress?.Invoke(this, args);
             }
         }
 
         internal void InternalKeyUp(KeyEventArgs args)
         {
             // Children first (Order by Z-Order)
-            foreach (var child in Children.InZOrder())
+            foreach (var child in Children.InZOrder)
             {
                 child.InternalKeyUp(args);
                 if (args.Handled)
@@ -1875,8 +1886,7 @@ namespace MonoGameUi
             if (!args.Handled)
             {
                 OnKeyUp(args);
-                if (KeyUp != null)
-                    KeyUp(this, args);
+                KeyUp?.Invoke(this, args);
             }
         }
 
@@ -1898,7 +1908,10 @@ namespace MonoGameUi
         /// <param name="args">Zusätzliche Daten zum Event.</param>
         protected virtual void OnKeyPress(KeyEventArgs args) { }
 
-        protected virtual void OnKeyTextPress(KeyTextEventArgs args) { }
+        protected virtual void OnKeyTextPress(KeyTextEventArgs args)
+        {
+            
+        }
 
         /// <summary>
         /// Wird aufgerufen, wenn eine Taste gedrückt wird.
@@ -1930,6 +1943,7 @@ namespace MonoGameUi
         private int tabOrder = 0;
 
         private int zOrder = 0;
+        public bool PathDirty = true;
 
         /// <summary>
         /// Legt fest, ob das Control per Tab zu erreichen ist.
@@ -2018,7 +2032,7 @@ namespace MonoGameUi
                 if (focused) return TreeState.Active;
 
                 // Schauen, ob irgend ein Child fokusiert ist
-                foreach (var child in Children.InZOrder())
+                foreach (var child in Children.InZOrder)
                     if (child.Focused != TreeState.None)
                         return TreeState.Passive;
 
@@ -2078,7 +2092,7 @@ namespace MonoGameUi
         internal void SetFocus(Control control)
         {
             // Rekursiver Aufruf
-            foreach (var child in Children.InZOrder())
+            foreach (var child in Children.InZOrder)
                 child.SetFocus(control);
 
             bool hit = (control == this);
@@ -2230,7 +2244,7 @@ namespace MonoGameUi
             if (!Enabled) return true;
 
             // Children first (Order by Z-Order)
-            foreach (var child in Children.InZOrder())
+            foreach (var child in Children.InZOrder)
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
                 args.Bubbled = child.InternalStartDrag(args) || args.Bubbled;
@@ -2253,7 +2267,7 @@ namespace MonoGameUi
         {
             // Children first (Order by Z-Order)
             bool passive = false;
-            foreach (var child in Children.InZOrder())
+            foreach (var child in Children.InZOrder)
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
                 bool handled = child.InternalDropMove(args);
@@ -2309,7 +2323,7 @@ namespace MonoGameUi
             if (!Enabled) return true;
 
             // Children first (Order by Z-Order)
-            foreach (var child in Children.InZOrder())
+            foreach (var child in Children.InZOrder)
             {
                 args.LocalPosition = CalculateLocalPosition(args.GlobalPosition, child);
                 args.Bubbled = child.InternalEndDrop(args) || args.Bubbled;

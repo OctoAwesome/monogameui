@@ -4,12 +4,14 @@ using System.Collections.Generic;
 
 namespace MonoGameUi
 {
+
+
     /// <summary>
     /// Erweiterte Liste für Controls
     /// </summary>
     public class ItemCollection<T> : IList<T> where T : class
     {
-        private List<T> items = new List<T>();
+        public List<T> Items = new List<T>();
 
         public ItemCollection() { }
 
@@ -17,9 +19,9 @@ namespace MonoGameUi
         {
             get
             {
-                lock (items)
+                lock (Items)
                 {
-                    return items[index];
+                    return Items[index];
                 }
             }
 
@@ -33,9 +35,9 @@ namespace MonoGameUi
         {
             get
             {
-                lock (items)
+                lock (Items)
                 {
-                    return items.Count;
+                    return Items.Count;
                 }
             }
         }
@@ -50,30 +52,30 @@ namespace MonoGameUi
 
         public virtual void Add(T item)
         {
-            lock (items)
+            lock (Items)
             {
                 if (item == null)
                     throw new ArgumentNullException("Item cant be null");
 
-                if (items.Contains(item))
+                if (Items.Contains(item))
                     throw new ArgumentException("Item is already part of this collection");
 
                 // Control einfügen
-                items.Add(item);
+                Items.Add(item);
 
                 // Event werfen
                 if (OnInsert != null)
-                    OnInsert(item, items.IndexOf(item));
+                    OnInsert(item, Items.IndexOf(item));
             }
         }
 
         public virtual void Clear()
         {
-            lock (items)
+            lock (Items)
             {
-                var temp = items.ToArray();
+                var temp = Items.ToArray();
 
-                items.Clear();
+                Items.Clear();
 
                 for (int i = 0; i < temp.Length; i++)
                     if (OnRemove != null)
@@ -83,68 +85,68 @@ namespace MonoGameUi
 
         public bool Contains(T item)
         {
-            lock (items)
+            lock (Items)
             {
-                return items.Contains(item);
+                return Items.Contains(item);
             }
         }
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            lock (items)
+            lock (Items)
             {
-                items.CopyTo(array, arrayIndex);
+                Items.CopyTo(array, arrayIndex);
             }
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            lock (items)
+            lock (Items)
             {
-                return items.GetEnumerator();
+                return Items.GetEnumerator();
             }
         }
 
         public int IndexOf(T item)
         {
-            lock (items)
+            lock (Items)
             {
-                return items.IndexOf(item);
+                return Items.IndexOf(item);
             }
         }
 
         public virtual void Insert(int index, T item)
         {
-            lock (items)
+            lock (Items)
             {
                 if (item == null)
                     throw new ArgumentNullException("Item cant be null");
 
-                if (items.Contains(item))
+                if (Items.Contains(item))
                     throw new ArgumentException("Item is already part of this collection");
 
                 // Control einfügen
-                items.Insert(index, item);
+                Items.Insert(index, item);
 
                 // Event werfen
                 if (OnInsert != null)
-                    OnInsert(item, items.IndexOf(item));
+                    OnInsert(item, Items.IndexOf(item));
             }
         }
 
         public virtual bool Remove(T item)
         {
-            lock (items)
+            lock (Items)
             {
                 if (item == null)
                     throw new ArgumentNullException("Item cant be null");
 
-                if (!items.Contains(item))
+                if (!Items.Contains(item))
                     return false;
 
                 // Control entfernen
-                int index = items.IndexOf(item);
-                items.Remove(item);
+                int index = Items.IndexOf(item);
+                Items.Remove(item);
 
                 // Event
                 if (OnRemove != null)
@@ -156,14 +158,14 @@ namespace MonoGameUi
 
         public virtual void RemoveAt(int index)
         {
-            lock (items)
+            lock (Items)
             {
-                if (index < 0 && index >= items.Count)
+                if (index < 0 && index >= Items.Count)
                     throw new ArgumentOutOfRangeException("index");
 
                 // Control entfernen
-                T c = items[index];
-                items.RemoveAt(index);
+                T c = Items[index];
+                Items.RemoveAt(index);
 
                 // Event werfen
                 if (OnRemove != null)
@@ -173,9 +175,9 @@ namespace MonoGameUi
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            lock (items)
+            lock (Items)
             {
-                return items.GetEnumerator();
+                return Items.GetEnumerator();
             }
         }
 

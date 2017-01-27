@@ -1,4 +1,5 @@
-﻿using engenious;
+﻿using System.Collections.Generic;
+using engenious;
 using engenious.Graphics;
 using engenious.Input;
 
@@ -96,6 +97,42 @@ namespace MonoGameUi
         }
     }
 
+    internal static class MouseEventArgsPool
+    {
+        private static readonly Stack<MouseEventArgs> FreeList = new Stack<MouseEventArgs>(16);
+        private static readonly object LockObj = new object();
+
+        public static MouseEventArgs Take()
+        {
+            if (FreeList.Count > 0)
+            {
+                lock (LockObj)
+                {
+                    if (FreeList.Count > 0)
+                    {
+                        return FreeList.Pop();
+                    }
+                }
+
+            }
+
+            return new MouseEventArgs();
+        }
+
+        public static void Release(MouseEventArgs arr)
+        {
+            arr.MouseMode = MouseMode.Captured;
+            arr.Bubbled = false;
+            arr.GlobalPosition = Point.Zero;
+            arr.LocalPosition = Point.Zero;
+
+            lock (LockObj)
+            {
+                FreeList.Push(arr);
+            }
+        }
+    }
+
     /// <summary>
     /// Event Arguments für alle Mouse Events.
     /// </summary>
@@ -159,6 +196,42 @@ namespace MonoGameUi
         /// ID des Touch Points.
         /// </summary>
         public int TouchId { get; set; }
+    }
+
+    internal static class KeyEventArgsPool
+    {
+        private static readonly Stack<KeyEventArgs> FreeList = new Stack<KeyEventArgs>(16);
+        private static readonly object LockObj = new object();
+        
+        public static KeyEventArgs Take()
+        {
+            if (FreeList.Count > 0)
+            {
+                lock (LockObj)
+                {
+                    if (FreeList.Count > 0)
+                    {
+                        return FreeList.Pop();
+                    }
+                }
+                
+            }
+
+            return new KeyEventArgs();
+        }
+
+        public static void Release(KeyEventArgs arr)
+        {
+            arr.Key = Keys.Unknown;
+            arr.Alt = false;
+            arr.Shift = false;
+            arr.Ctrl = false;
+
+            lock (LockObj)
+            {
+                FreeList.Push(arr);
+            }
+        }
     }
 
     /// <summary>

@@ -59,9 +59,9 @@ namespace MonoGameUi
 
             // Corners
             batch.Draw(UpperLeftTexture, new Rectangle(area.X, area.Y, UpperLeftTexture.Width, UpperLeftTexture.Height), color);
-            batch.Draw(UpperRightTexture, new Rectangle(area.X + area.Size.Width - UpperRightTexture.Width, area.Y, UpperRightTexture.Width, UpperRightTexture.Height), color);
-            batch.Draw(LowerLeftTexture, new Rectangle(area.X, area.Y + area.Size.Height - LowerLeftTexture.Height, LowerLeftTexture.Width, LowerLeftTexture.Height), color);
-            batch.Draw(LowerRightTexture, new Rectangle(area.X + area.Size.Width - LowerRightTexture.Width, area.Y + area.Size.Height - LowerRightTexture.Height, LowerRightTexture.Width, LowerRightTexture.Height), color);
+            batch.Draw(UpperRightTexture, new Rectangle(area.X + area.Width - UpperRightTexture.Width, area.Y, UpperRightTexture.Width, UpperRightTexture.Height), color);
+            batch.Draw(LowerLeftTexture, new Rectangle(area.X, area.Y + area.Height - LowerLeftTexture.Height, LowerLeftTexture.Width, LowerLeftTexture.Height), color);
+            batch.Draw(LowerRightTexture, new Rectangle(area.X + area.Width - LowerRightTexture.Width, area.Y + area.Height - LowerRightTexture.Height, LowerRightTexture.Width, LowerRightTexture.Height), color);
         }
 
         public static NineTileBrush FromSingleTexture(Texture2D texture, int cutX, int cutY)
