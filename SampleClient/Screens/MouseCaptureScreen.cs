@@ -50,7 +50,7 @@ namespace SampleClient.Screens
         {
             if (args.MouseMode == MouseMode.Captured)
             {
-                position += args.GlobalPosition;
+                position = args.GlobalPosition;
             }
 
             output.Text = position.ToString();

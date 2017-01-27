@@ -110,6 +110,10 @@ namespace MonoGameUi
                     mouseMode = value;
                     Game.IsMouseVisible = (mouseMode != MouseMode.Captured);
                 }
+                if (mouseMode == MouseMode.Captured)
+                {
+                    Mouse.SetPosition(GraphicsDevice.Viewport.Width/2,GraphicsDevice.Viewport.Height/2);
+                }
             }
         }
 
