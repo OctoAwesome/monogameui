@@ -1,17 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-VisualStudioVersion = 14.0.23107.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGameUi", "MonoGameUi\MonoGameUi.csproj", "{9E89B217-8424-4FCB-B365-3A01F61CD44F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleClient", "SampleClient\SampleClient.csproj", "{F3D30256-956A-4B10-AF7D-428ED8F0C3C6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5E3BA6F8-5B5A-42DD-A1B0-1D77B794D013}"
-	ProjectSection(SolutionItems) = preProject
-		libs\engenious.dll = libs\engenious.dll
-		libs\OpenTK.dll = libs\OpenTK.dll
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,8 +33,6 @@ Global
 		{F3D30256-956A-4B10-AF7D-428ED8F0C3C6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F3D30256-956A-4B10-AF7D-428ED8F0C3C6}.Release|x86.ActiveCfg = Release|Any CPU
 		{F3D30256-956A-4B10-AF7D-428ED8F0C3C6}.Release|x86.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

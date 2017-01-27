@@ -37,16 +37,17 @@ namespace MonoGameUi
         /// <param name="rectangle">Rechteck</param>
         /// <param name="transform">Transformationsmatrix</param>
         /// <returns>Transformiertes Rechteck</returns>
-        public static Rectangle Transform(this Rectangle rectangle, Matrix transform)
+        public unsafe static Rectangle Transform(this Rectangle rectangle, Matrix transform)
         {
             // In Punkte umwandeln
-            Vector2[] p = new[] {
-                new Vector2(rectangle.Left, rectangle.Top),
-                new Vector2(rectangle.Right, rectangle.Bottom)
-            };
+
+            Vector2* p = stackalloc Vector2[2];
+
+            p[0] = new Vector2(rectangle.X, rectangle.Y);
+            p[1] = new Vector2(rectangle.X + rectangle.Width,rectangle.Y + rectangle.Height);
 
             // Transformieren
-            Vector2.Transform(p, ref transform, p);
+            Vector2.Transform(2, p, ref transform, p);
 
             // Rectangle bauen
             return new Rectangle(

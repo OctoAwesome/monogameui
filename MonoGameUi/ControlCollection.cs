@@ -5,29 +5,12 @@ using System.Linq;
 namespace MonoGameUi
 {
     /// <summary>
-    /// Basisinterface für erweiterte Listen für Controls
-    /// </summary>
-    public interface IControlCollection : IList<Control>
-    {
-        /// <summary>
-        /// Elemente in Z-Ordner (von vorne nach hinten)
-        /// </summary>
-        /// <returns></returns>
-        Control[] InZOrder();
-
-        /// <summary>
-        /// Elemente in entgegengesetzter Z-Order (von hinten nach vorne)
-        /// </summary>
-        /// <returns></returns>
-        Control[] AgainstZOrdner();
-    }
-
-    /// <summary>
     /// Erweiterte Liste für Controls
     /// </summary>
-    internal class ControlCollection : ItemCollection<Control>, IControlCollection
+    public class ControlCollection : ItemCollection<Control>
     {
-        private Control[] inZOrder = new Control[0];
+        internal Control[] InZOrder = new Control[0];
+        internal Control[] AgainstZOrder = new Control[0];
 
         protected Control Owner { get; private set; }
 
@@ -63,7 +46,8 @@ namespace MonoGameUi
             item.Parent = Owner;
             ReorderTab();
             ReorderZ(item);
-
+            item.PathDirty = true;
+            Owner.PathDirty = true;
         }
 
         public override void Clear()
@@ -77,8 +61,9 @@ namespace MonoGameUi
                 temp[i].SetFocus(null);
                 temp[i].Parent = null;
                 temp[i].ZOrderChanged -= item_ZOrderChanged;
+                temp[i].PathDirty = true;
             }
-
+            Owner.PathDirty = true;
             ReorderZ(null);
         }
 
@@ -107,6 +92,8 @@ namespace MonoGameUi
             item.Parent = Owner;
             ReorderTab();
             ReorderZ(item);
+            item.PathDirty = true;
+            Owner.PathDirty = true;
         }
 
         public override bool Remove(Control item)
@@ -120,6 +107,9 @@ namespace MonoGameUi
 
                 ReorderTab();
                 ReorderZ(null);
+
+                item.PathDirty = true;
+                Owner.PathDirty = true;
                 return true;
             }
 
@@ -130,14 +120,18 @@ namespace MonoGameUi
         {
             // Fokus entfernen
             Control c = this[index];
-            if (c != null) c.SetFocus(null);
+            if (c != null)
+            {
+                c.SetFocus(null);
+                base.RemoveAt(index);
 
-            base.RemoveAt(index);
-
-            c.Parent = null;
-            c.ZOrderChanged -= item_ZOrderChanged;
-            ReorderTab();
-            ReorderZ(null);
+                c.Parent = null;
+                c.ZOrderChanged -= item_ZOrderChanged;
+                ReorderTab();
+                ReorderZ(null);
+                c.PathDirty = true;
+                Owner.PathDirty = true;
+            }
         }
 
         private void ReorderTab()
@@ -150,7 +144,7 @@ namespace MonoGameUi
 
         void item_ZOrderChanged(Control sender, PropertyEventArgs<int> args)
         {
-            if (inZOrder == null) return;
+            if (InZOrder == null) return;
 
             // Ein Control hat die Z-Order geändert -> neu sortieren
             ReorderZ(sender);
@@ -158,7 +152,7 @@ namespace MonoGameUi
 
         private void ReorderZ(Control control)
         {
-            inZOrder = null;
+            InZOrder = null;
 
             // Platz schaffen für das veränderte Control
             if (control != null)
@@ -170,27 +164,8 @@ namespace MonoGameUi
             foreach (var c in this.OrderBy(c => c.ZOrder))
                 c.TabOrder = index++;
 
-            inZOrder = this.OrderBy(c => c.ZOrder).ToArray();
-        }
-
-        /// <summary>
-        /// Elemente in Z-Ordner (von vorne nach hinten)
-        /// </summary>
-        /// <returns></returns>
-        public Control[] InZOrder()
-        {
-            return inZOrder.ToArray();
-        }
-
-        /// <summary>
-        /// Elemente in entgegengesetzter Z-Order (von hinten nach vorne)
-        /// </summary>
-        /// <returns></returns>
-        public Control[] AgainstZOrdner()
-        {
-            var localOrder = inZOrder.ToArray();
-            Array.Reverse(localOrder);
-            return localOrder;
+            InZOrder = this.OrderBy(c => c.ZOrder).ToArray();
+            AgainstZOrder = InZOrder.Reverse().ToArray();
         }
     }
 }
