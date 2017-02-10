@@ -4,6 +4,7 @@ using System.Linq;
 using engenious;
 using engenious.Graphics;
 using System.Reflection;
+using engenious.Audio;
 
 namespace MonoGameUi
 {
@@ -24,9 +25,9 @@ namespace MonoGameUi
 
         private Border padding = Border.All(0);
 
-        //private SoundEffect clickSound = null;
+        private SoundEffect clickSound = null;
 
-        //private SoundEffect hoverSound = null;
+        private SoundEffect hoverSound = null;
 
         /// <summary>
         /// Referenz auf den aktuellen Screen Manager
@@ -36,7 +37,7 @@ namespace MonoGameUi
         /// <summary>
         /// Sound der beim Klicken abgespielt wird
         /// </summary>
-        /*public SoundEffect ClickSound
+        public SoundEffect ClickSound
         {
             get
             {
@@ -67,7 +68,7 @@ namespace MonoGameUi
                     hoverSound = value;
                 }
             }
-        }*/
+        }
 
         /// <summary>
         /// Standard-Background des Controls
@@ -1165,8 +1166,8 @@ namespace MonoGameUi
                         HoveredChanged(this, args);
 
                     // Sound abspielen
-                    //if (hoverSound != null && hovered == TreeState.Active && args.OldValue != TreeState.Passive)
-                    //    hoverSound.Play();
+                    if (hoverSound != null && hovered == TreeState.Active && args.OldValue != TreeState.Passive)
+                        hoverSound.Play();
                 }
             }
         }
@@ -1333,8 +1334,8 @@ namespace MonoGameUi
             }
 
             // Click-Sound abspielen
-            //if (clickSound != null)
-            //    clickSound.Play();
+            if (clickSound != null)
+                clickSound.Play();
 
             return Background != null;
         }
@@ -1371,8 +1372,8 @@ namespace MonoGameUi
             }
 
             // Click-Sound abspielen
-            //if (clickSound != null)
-            //    clickSound.Play();
+            if (clickSound != null)
+                clickSound.Play();
 
             return Background != null;
         }

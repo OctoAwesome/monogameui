@@ -5,20 +5,45 @@
   <Name>Content</Name>
   <Contents>
     <ContentFile>
-      <Name>BoldFont.fnt</Name>
-      <Processor>FontProcessor</Processor>
-    </ContentFile>
-    <ContentFile>
-      <Name>GameFont.fnt</Name>
-      <Processor>FontProcessor</Processor>
-    </ContentFile>
-    <ContentFile>
-      <Name>HeadlineFont.fnt</Name>
-      <Processor>FontProcessor</Processor>
-    </ContentFile>
-    <ContentFile>
       <Name>drag.png</Name>
-      <Processor />
+      <Processor>BitmapProcessor</Processor>
+      <Importer>Bitmap Importer</Importer>
+      <Settings>
+        <AutoGenerateMipMaps>False</AutoGenerateMipMaps>
+        <MipMapCount>1</MipMapCount>
+        <Format>0</Format>
+      </Settings>
+    </ContentFile>
+    <ContentFile>
+      <Name>click1.wav</Name>
+      <Processor>AudioProcessor</Processor>
+      <Importer>Wave Importer</Importer>
+      <Settings>
+        <OutputFormat>1</OutputFormat>
+      </Settings>
+    </ContentFile>
+    <ContentFile>
+      <Name>rollover5.wav</Name>
+      <Processor>AudioProcessor</Processor>
+      <Importer>Wave Importer</Importer>
+      <Settings>
+        <OutputFormat>1</OutputFormat>
+      </Settings>
+    </ContentFile>
+    <ContentFile>
+      <Name>BoldFont.spritefont</Name>
+      <Processor>SpriteFontProcessor</Processor>
+      <Importer />
+    </ContentFile>
+    <ContentFile>
+      <Name>GameFont.spritefont</Name>
+      <Processor>SpriteFontProcessor</Processor>
+      <Importer />
+    </ContentFile>
+    <ContentFile>
+      <Name>HeadlineFont.spritefont</Name>
+      <Processor>SpriteFontProcessor</Processor>
+      <Importer />
     </ContentFile>
   </Contents>
 </Content>
