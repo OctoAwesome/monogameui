@@ -472,7 +472,7 @@ namespace MonoGameUi
                         if (keyboard.IsKeyDown(key))
                         {
                             // ReSharper disable once CompareOfFloatsByEqualityOperator
-                            if (_pressedKeys[i] != UnpressedKeyTimestamp)
+                            if (_pressedKeys[i] == UnpressedKeyTimestamp)
                             {
                                 // Taste ist neu
 
@@ -522,6 +522,7 @@ namespace MonoGameUi
                                     args.Shift = shift;
                                     args.Ctrl = ctrl;
                                     args.Alt = alt;
+
 
                                     root.InternalKeyPress(args);
                                     if (!args.Handled)

@@ -226,6 +226,7 @@ namespace MonoGameUi
             arr.Alt = false;
             arr.Shift = false;
             arr.Ctrl = false;
+            arr.Handled = false;
 
             lock (LockObj)
             {
