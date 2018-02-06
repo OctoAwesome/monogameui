@@ -18,6 +18,7 @@ namespace MonoGameUi
             : base()
         {
             Owner = owner;
+            AgainstZOrder.BaseList = InZOrder;
         }
 
         public override void Add(Control item)
@@ -64,6 +65,7 @@ namespace MonoGameUi
                 this[i].PathDirty = true;
             }
             base.Clear();
+            InZOrder.Clear();
             
             Owner.PathDirty = true;
             

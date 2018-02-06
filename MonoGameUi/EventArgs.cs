@@ -6,7 +6,7 @@ using engenious.Input;
 
 namespace MonoGameUi
 {
-    internal abstract class EventArgsPool<T> where T : new()
+    internal abstract class EventArgsPool<T> where T : EventArgs,new()
     {
 
         private readonly Stack<T> _freeList = new Stack<T>(16);
@@ -28,7 +28,7 @@ namespace MonoGameUi
 
         public void Release(T arr)
         {
-            /**/
+            if (arr == null) return;
             ResetVariable(arr);
 
             lock (_lockObj)
@@ -97,6 +97,7 @@ namespace MonoGameUi
         }
         protected override void ResetVariable(DragEventArgs arr)
         {
+            arr.Handled = false;
             arr.Sender = null;
             arr.Icon = null;
             arr.IconSize = Point.Zero;
@@ -167,6 +168,7 @@ namespace MonoGameUi
         }
         protected override void ResetVariable(MouseEventArgs arr)
         {
+            arr.Handled = false;
             arr.MouseMode = MouseMode.Captured;
             arr.Bubbled = false;
             arr.GlobalPosition = Point.Zero;

@@ -317,14 +317,12 @@ namespace MonoGameUi
                             // Handle Drop
                             if (DraggingArgs != null && DraggingArgs.Handled)
                             {
-                                DragEventArgs args = new DragEventArgs()
-                                {
-                                    GlobalPosition = mousePosition,
-                                    LocalPosition = mousePosition,
-                                    Content = DraggingArgs.Content,
-                                    Icon = DraggingArgs.Icon,
-                                    Sender = DraggingArgs.Sender
-                                };
+                                DragEventArgs args = DragEventArgsPool.Instance.Take();
+                                args.GlobalPosition = mousePosition;
+                                args.LocalPosition = mousePosition;
+                                args.Content = DraggingArgs.Content;
+                                args.Icon = DraggingArgs.Icon;
+                                args.Sender = DraggingArgs.Sender;
 
                                 root.InternalEndDrop(args);
                                 if (!args.Handled)
