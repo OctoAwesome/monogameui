@@ -109,10 +109,9 @@ namespace MonoGameUi
                 {
                     mouseMode = value;
                     Game.IsMouseVisible = (mouseMode != MouseMode.Captured);
-                }
-                if (mouseMode == MouseMode.Captured)
-                {
-                    Mouse.SetPosition(GraphicsDevice.Viewport.Width/2,GraphicsDevice.Viewport.Height/2);
+                    
+                    if (mouseMode == MouseMode.Free)
+                        Mouse.SetPosition(GraphicsDevice.Viewport.Width/2,GraphicsDevice.Viewport.Height/2);
                 }
             }
         }
@@ -241,8 +240,10 @@ namespace MonoGameUi
                     Point mousePosition = new Point(mouse.X, mouse.Y);
                     if (MouseMode == MouseMode.Captured)
                         mousePosition = new Point(
-                            mousePosition.X - (GraphicsDevice.Viewport.Width / 2),
-                            mousePosition.Y - (GraphicsDevice.Viewport.Height / 2));
+                            mousePosition.X - (lastMousePosition.X),
+                            mousePosition.Y - (lastMousePosition.Y));
+                    else
+                        mousePosition = new Point(Game.Mouse.X, Game.Mouse.Y);
 
                     MouseEventArgs mouseEventArgs = MouseEventArgsPool.Take();
 
@@ -446,7 +447,7 @@ namespace MonoGameUi
                     }
                     else if (mousePosition.X != 0 || mousePosition.Y != 0)
                     {
-                        Mouse.SetPosition(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
+                        lastMousePosition = new Point(mouse.X, mouse.Y);
                     }
 
                     MouseEventArgsPool.Release(mouseEventArgs);
