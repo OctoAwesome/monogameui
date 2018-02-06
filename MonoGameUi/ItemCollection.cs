@@ -42,13 +42,7 @@ namespace MonoGameUi
             }
         }
 
-        public bool IsReadOnly
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool IsReadOnly => false;
 
         public virtual void Add(T item)
         {
@@ -64,8 +58,7 @@ namespace MonoGameUi
                 Items.Add(item);
 
                 // Event werfen
-                if (OnInsert != null)
-                    OnInsert(item, Items.IndexOf(item));
+                OnInsert?.Invoke(item, Items.IndexOf(item));
             }
         }
 
@@ -78,8 +71,9 @@ namespace MonoGameUi
                 Items.Clear();
 
                 for (int i = 0; i < temp.Length; i++)
-                    if (OnRemove != null)
-                        OnRemove(temp[i], i);
+                {
+                    OnRemove?.Invoke(temp[i], i);
+                }
             }
         }
 
@@ -99,13 +93,7 @@ namespace MonoGameUi
             }
         }
 
-        public IEnumerator<T> GetEnumerator()
-        {
-            lock (Items)
-            {
-                return Items.GetEnumerator();
-            }
-        }
+
 
         public int IndexOf(T item)
         {
@@ -129,8 +117,7 @@ namespace MonoGameUi
                 Items.Insert(index, item);
 
                 // Event werfen
-                if (OnInsert != null)
-                    OnInsert(item, Items.IndexOf(item));
+                OnInsert?.Invoke(item, Items.IndexOf(item));
             }
         }
 
@@ -149,8 +136,7 @@ namespace MonoGameUi
                 Items.Remove(item);
 
                 // Event
-                if (OnRemove != null)
-                    OnRemove(item, index);
+                OnRemove?.Invoke(item, index);
 
                 return true;
             }
@@ -161,29 +147,37 @@ namespace MonoGameUi
             lock (Items)
             {
                 if (index < 0 && index >= Items.Count)
-                    throw new ArgumentOutOfRangeException("index");
+                    throw new ArgumentOutOfRangeException(nameof(index));
 
                 // Control entfernen
                 T c = Items[index];
                 Items.RemoveAt(index);
 
                 // Event werfen
-                if (OnRemove != null)
-                    OnRemove(c, index);
+                OnRemove?.Invoke(c, index);
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+
+        public event ItemCollectionDelegate<T> OnInsert;
+
+        public event ItemCollectionDelegate<T> OnRemove;
+        public List<T>.Enumerator GetEnumerator()
         {
             lock (Items)
             {
                 return Items.GetEnumerator();
             }
         }
+        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
-        public event ItemCollectionDelegate<T> OnInsert;
-
-        public event ItemCollectionDelegate<T> OnRemove;
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
     }
 
     public delegate void ItemCollectionDelegate<T>(T item, int index);

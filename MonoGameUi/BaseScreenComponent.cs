@@ -245,7 +245,7 @@ namespace MonoGameUi
                     else
                         mousePosition = new Point(Game.Mouse.X, Game.Mouse.Y);
 
-                    MouseEventArgs mouseEventArgs = MouseEventArgsPool.Take();
+                    MouseEventArgs mouseEventArgs = MouseEventArgsPool.Instance.Take();
 
                     mouseEventArgs.MouseMode = MouseMode;
                     mouseEventArgs.GlobalPosition = mousePosition;
@@ -264,11 +264,9 @@ namespace MonoGameUi
                         if (mouse.LeftButton == ButtonState.Pressed &&
                             DraggingArgs == null)
                         {
-                            DraggingArgs = new DragEventArgs()
-                            {
-                                GlobalPosition = mousePosition,
-                                LocalPosition = mousePosition,
-                            };
+                            DraggingArgs = DragEventArgsPool.Instance.Take();
+                            DraggingArgs.GlobalPosition = mousePosition;
+                            DraggingArgs.LocalPosition = mousePosition;
 
                             draggingId = null;
 
@@ -283,14 +281,14 @@ namespace MonoGameUi
                             draggingId == null &&
                             DraggingArgs.Handled)
                         {
-                            DragEventArgs args = new DragEventArgs()
-                            {
-                                GlobalPosition = mousePosition,
-                                LocalPosition = mousePosition,
-                                Content = DraggingArgs.Content,
-                                Icon = DraggingArgs.Icon,
-                                Sender = DraggingArgs.Sender
-                            };
+                            //TODO: perhaps pool single object?
+                            DragEventArgs args = DragEventArgsPool.Instance.Take();
+
+                            args.GlobalPosition = mousePosition;
+                            args.LocalPosition = mousePosition;
+                            args.Content = DraggingArgs.Content;
+                            args.Icon = DraggingArgs.Icon;
+                            args.Sender = DraggingArgs.Sender;
 
                             root.InternalDropMove(args);
                             if (!args.Handled)
@@ -319,14 +317,12 @@ namespace MonoGameUi
                             // Handle Drop
                             if (DraggingArgs != null && DraggingArgs.Handled)
                             {
-                                DragEventArgs args = new DragEventArgs()
-                                {
-                                    GlobalPosition = mousePosition,
-                                    LocalPosition = mousePosition,
-                                    Content = DraggingArgs.Content,
-                                    Icon = DraggingArgs.Icon,
-                                    Sender = DraggingArgs.Sender
-                                };
+                                DragEventArgs args = DragEventArgsPool.Instance.Take();
+                                args.GlobalPosition = mousePosition;
+                                args.LocalPosition = mousePosition;
+                                args.Content = DraggingArgs.Content;
+                                args.Icon = DraggingArgs.Icon;
+                                args.Sender = DraggingArgs.Sender;
 
                                 root.InternalEndDrop(args);
                                 if (!args.Handled)
@@ -334,6 +330,7 @@ namespace MonoGameUi
                             }
 
                             // Discard Dragging Infos
+                            DragEventArgsPool.Instance.Release(DraggingArgs);
                             DraggingArgs = null;
                             draggingId = null;
 
@@ -450,7 +447,7 @@ namespace MonoGameUi
                         lastMousePosition = new Point(mouse.X, mouse.Y);
                     }
 
-                    MouseEventArgsPool.Release(mouseEventArgs);
+                    MouseEventArgsPool.Instance.Release(mouseEventArgs);
                 }
 
                 #endregion

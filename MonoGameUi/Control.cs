@@ -357,6 +357,7 @@ namespace MonoGameUi
 
         private ControlCollection children;
 
+        private readonly PropertyEventArgs<bool> _enabledChangedEventArgs = new PropertyEventArgs<bool>();
         /// <summary>
         /// Gibt an, ob das Control aktiv ist.
         /// </summary>
@@ -368,22 +369,18 @@ namespace MonoGameUi
             }
             set
             {
-                if (enabled != value)
-                {
-                    PropertyEventArgs<bool> args = new PropertyEventArgs<bool>
-                    {
-                        OldValue = enabled,
-                        NewValue = value
-                    };
+                if (enabled == value) return;
+                
+                _enabledChangedEventArgs.OldValue = enabled;
+                _enabledChangedEventArgs.NewValue = value;
+                _enabledChangedEventArgs.Handled = false;
 
-                    enabled = value;
-                    InvalidateDrawing();
-                    if (!enabled) Unfocus();
+                enabled = value;
+                InvalidateDrawing();
+                if (!enabled) Unfocus();
 
-                    OnEnableChanged(args);
-                    if (EnableChanged != null)
-                        EnableChanged(this, args);
-                }
+                OnEnableChanged(_enabledChangedEventArgs);
+                EnableChanged?.Invoke(this, _enabledChangedEventArgs);
             }
         }
 
@@ -401,6 +398,7 @@ namespace MonoGameUi
             }
         }
 
+        private readonly PropertyEventArgs<bool> _visibleChangedEventArgs = new PropertyEventArgs<bool>();
         /// <summary>
         /// Gibt an, ob das Control gerendert werden soll.
         /// </summary>
@@ -412,23 +410,20 @@ namespace MonoGameUi
             }
             set
             {
-                if (visible != value)
-                {
-                    PropertyEventArgs<bool> args = new PropertyEventArgs<bool>
-                    {
-                        OldValue = visible,
-                        NewValue = value
-                    };
+                if (visible == value) return;
 
-                    visible = value;
-                    InvalidateDimensions();
-                    InvalidateDrawing();
-                    if (!visible) Unfocus();
 
-                    OnVisibleChanged(args);
-                    if (VisibleChanged != null)
-                        VisibleChanged(this, args);
-                }
+                _visibleChangedEventArgs.OldValue = visible;
+                _visibleChangedEventArgs.NewValue = value;
+                _visibleChangedEventArgs.Handled = false;
+                
+                visible = value;
+                InvalidateDimensions();
+                InvalidateDrawing();
+                if (!visible) Unfocus();
+
+                OnVisibleChanged(_visibleChangedEventArgs);
+                VisibleChanged?.Invoke(this, _visibleChangedEventArgs);
             }
         }
 
@@ -513,6 +508,8 @@ namespace MonoGameUi
             }
         }
 
+        
+        private readonly PropertyEventArgs<Control> _parentChangedEventArgs = new PropertyEventArgs<Control>();
         /// <summary>
         /// Gibt das Parent-Element dieses Controls zurück.
         /// </summary>
@@ -521,20 +518,16 @@ namespace MonoGameUi
             get { return parent; }
             internal set
             {
-                if (parent != value)
-                {
-                    PropertyEventArgs<Control> args = new PropertyEventArgs<Control>
-                    {
-                        OldValue = parent,
-                        NewValue = value
-                    };
+                if (parent == value) return;
+                
+                _parentChangedEventArgs.OldValue = parent;
+                _parentChangedEventArgs.NewValue = value;
+                _parentChangedEventArgs.Handled = false;
 
-                    parent = value;
+                parent = value;
 
-                    OnParentChanged(args);
-                    if (ParentChanged != null)
-                        ParentChanged(this, args);
-                }
+                OnParentChanged(_parentChangedEventArgs);
+                ParentChanged?.Invoke(this, _parentChangedEventArgs);
             }
         }
 
@@ -1139,6 +1132,7 @@ namespace MonoGameUi
 
         private bool pressed = false;
 
+        private readonly PropertyEventArgs<TreeState> _hoveredChangedEventArgs = new PropertyEventArgs<TreeState>();
         /// <summary>
         /// Gibt an, ob das Control unter der Maus ist.
         /// </summary>
@@ -1150,25 +1144,21 @@ namespace MonoGameUi
             }
             private set
             {
-                if (hovered != value)
-                {
-                    PropertyEventArgs<TreeState> args = new PropertyEventArgs<TreeState>
-                    {
-                        OldValue = hovered,
-                        NewValue = value
-                    };
+                if (hovered == value) return;
 
-                    hovered = value;
-                    InvalidateDrawing();
+                _hoveredChangedEventArgs.OldValue = hovered;
+                _hoveredChangedEventArgs.NewValue = value;
+                _hoveredChangedEventArgs.Handled = false;
 
-                    OnHoveredChanged(args);
-                    if (HoveredChanged != null)
-                        HoveredChanged(this, args);
+                hovered = value;
+                InvalidateDrawing();
 
-                    // Sound abspielen
-                    if (hoverSound != null && hovered == TreeState.Active && args.OldValue != TreeState.Passive)
-                        hoverSound.Play();
-                }
+                OnHoveredChanged(_hoveredChangedEventArgs);
+                HoveredChanged?.Invoke(this, _hoveredChangedEventArgs);
+
+                // Sound abspielen
+                if (hoverSound != null && hovered == TreeState.Active && _hoveredChangedEventArgs.OldValue != TreeState.Passive)
+                    hoverSound.Play();
             }
         }
 
@@ -1946,6 +1936,8 @@ namespace MonoGameUi
         private int zOrder = 0;
         public bool PathDirty = true;
 
+        
+        private readonly PropertyEventArgs<bool> _tabStopChangedEventArgs = new PropertyEventArgs<bool>();
         /// <summary>
         /// Legt fest, ob das Control per Tab zu erreichen ist.
         /// </summary>
@@ -1954,23 +1946,20 @@ namespace MonoGameUi
             get { return tabStop; }
             set
             {
-                if (tabStop != value)
-                {
-                    PropertyEventArgs<bool> args = new PropertyEventArgs<bool>
-                    {
-                        OldValue = tabStop,
-                        NewValue = value
-                    };
+                if (tabStop == value) return;
 
-                    tabStop = value;
+                _tabStopChangedEventArgs.OldValue = tabStop;
+                _tabStopChangedEventArgs.NewValue = value;
+                _tabStopChangedEventArgs.Handled = false;
 
-                    OnTabStopChanged(args);
-                    if (TabStopChanged != null)
-                        TabStopChanged(this, args);
-                }
+                tabStop = value;
+
+                OnTabStopChanged(_tabStopChangedEventArgs);
+                TabStopChanged?.Invoke(this, _tabStopChangedEventArgs);
             }
         }
 
+        private readonly PropertyEventArgs<bool> _canFocusChangedEventArgs = new PropertyEventArgs<bool>();
         /// <summary>
         /// Gibt an ob das Control den Fokus bekommen kann oder legt dies fest.
         /// </summary>
@@ -1979,24 +1968,21 @@ namespace MonoGameUi
             get { return canFocus; }
             set
             {
-                if (canFocus != value)
-                {
-                    PropertyEventArgs<bool> args = new PropertyEventArgs<bool>
-                    {
-                        OldValue = canFocus,
-                        NewValue = value
-                    };
+                if (canFocus == value) return;
+                
+                _canFocusChangedEventArgs.OldValue = canFocus;
+                _canFocusChangedEventArgs.NewValue = value;
+                _canFocusChangedEventArgs.Handled = false;
 
-                    canFocus = value;
-                    if (!canFocus) Unfocus();
+                canFocus = value;
+                if (!canFocus) Unfocus();
 
-                    OnCanFocusChanged(args);
-                    if (CanFocusChanged != null)
-                        CanFocusChanged(this, args);
-                }
+                OnCanFocusChanged(_canFocusChangedEventArgs);
+                CanFocusChanged?.Invoke(this, _canFocusChangedEventArgs);
             }
         }
 
+        private readonly PropertyEventArgs<int> _tabOrderChangedEventArgs = new PropertyEventArgs<int>();
         /// <summary>
         /// Gibt die Position der Tab-Reihenfolge an.
         /// </summary>
@@ -2005,20 +1991,16 @@ namespace MonoGameUi
             get { return tabOrder; }
             set
             {
-                if (tabOrder != value)
-                {
-                    PropertyEventArgs<int> args = new PropertyEventArgs<int>
-                    {
-                        OldValue = tabOrder,
-                        NewValue = value
-                    };
+                if (tabOrder == value) return;
 
-                    tabOrder = value;
+                _tabOrderChangedEventArgs.OldValue = tabOrder;
+                _tabOrderChangedEventArgs.NewValue = value;
+                _tabOrderChangedEventArgs.Handled = false;
 
-                    OnTabOrderChanged(args);
-                    if (TabOrderChanged != null)
-                        TabOrderChanged(this, args);
-                }
+                tabOrder = value;
+
+                OnTabOrderChanged(_tabOrderChangedEventArgs);
+                TabOrderChanged?.Invoke(this, _tabOrderChangedEventArgs);
             }
         }
 
@@ -2041,6 +2023,7 @@ namespace MonoGameUi
             }
         }
 
+        private readonly PropertyEventArgs<int> _zOrderChangedEventArgs = new PropertyEventArgs<int>();
         /// <summary>
         /// Gibt die grafische Reihenfolge der Controls 
         /// innerhalb eines Containers an. (0 ganz vorne, 9999 weiter hinten)
@@ -2050,20 +2033,16 @@ namespace MonoGameUi
             get { return zOrder; }
             set
             {
-                if (zOrder != value)
-                {
-                    PropertyEventArgs<int> args = new PropertyEventArgs<int>()
-                    {
-                        OldValue = zOrder,
-                        NewValue = value
-                    };
+                if (zOrder == value) return;
+                
+                _zOrderChangedEventArgs.OldValue = zOrder;
+                _zOrderChangedEventArgs.NewValue = value;
+                _zOrderChangedEventArgs.Handled = false;
 
-                    zOrder = value;
+                zOrder = value;
 
-                    OnZOrderChanged(args);
-                    if (ZOrderChanged != null)
-                        ZOrderChanged(this, args);
-                }
+                OnZOrderChanged(_zOrderChangedEventArgs);
+                ZOrderChanged?.Invoke(this, _zOrderChangedEventArgs);
             }
         }
 
@@ -2099,7 +2078,7 @@ namespace MonoGameUi
             bool hit = (control == this);
             if (focused != hit)
             {
-                EventArgs args = new EventArgs();
+                EventArgs args = EventArgsPool.Instance.Take();
                 if (hit)
                 {
                     // Unsichtbare und nicht fokusierbare Elemente ignorieren
@@ -2110,8 +2089,7 @@ namespace MonoGameUi
 
                     // Fokus gerade erhalten
                     OnGotFocus(args);
-                    if (GotFocus != null)
-                        GotFocus(this, args);
+                    GotFocus?.Invoke(this, args);
                 }
                 else
                 {
@@ -2119,10 +2097,11 @@ namespace MonoGameUi
 
                     // Fokus gerade verloren
                     OnLostFocus(args);
-                    if (LostFocus != null)
-                        LostFocus(this, args);
+                    LostFocus?.Invoke(this, args);
                 }
 
+                EventArgsPool.Instance.Release(args);
+                
                 InvalidateDrawing();
             }
         }

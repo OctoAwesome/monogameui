@@ -40,6 +40,7 @@
         /// </summary>
         public MouseMode DefaultMouseMode { get; protected set; }
 
+        private readonly PropertyEventArgs<bool> _isActiveScreenChangedEventArgs = new PropertyEventArgs<bool>();
         /// <summary>
         /// Gibt an ob dieser Screen der aktive Screen ist.
         /// </summary>
@@ -51,22 +52,18 @@
             }
             internal set
             {
-                if (isActiveScreen != value)
-                {
-                    PropertyEventArgs<bool> args = new PropertyEventArgs<bool>()
-                    {
-                        NewValue = value,
-                        OldValue = isActiveScreen,
-                    };
+                if (isActiveScreen == value) return;
 
-                    isActiveScreen = value;
-                    OnIsActiveScreenChanged(args);
-                    if (IsActiveScreenChanged != null)
-                        IsActiveScreenChanged(this, args);
-                }
+                _isActiveScreenChangedEventArgs.NewValue = value;
+                _isActiveScreenChangedEventArgs.OldValue = isActiveScreen;
+                _isActiveScreenChangedEventArgs.Handled = false;
+
+                isActiveScreen = value;
+                OnIsActiveScreenChanged(_isActiveScreenChangedEventArgs);
+                IsActiveScreenChanged?.Invoke(this, _isActiveScreenChangedEventArgs);
             }
         }
-
+        private readonly PropertyEventArgs<bool> _isVisibleScreenChangedEventArgs = new PropertyEventArgs<bool>();
         /// <summary>
         /// Gibt an ob dieser Screen im aktuellen Stack sichtbar ist.
         /// </summary>
@@ -75,20 +72,16 @@
             get { return isVisibleScreen; }
             internal set
             {
-                if (isVisibleScreen != value)
-                {
-                    PropertyEventArgs<bool> args = new PropertyEventArgs<bool>()
-                    {
-                        OldValue = isVisibleScreen,
-                        NewValue = value,
-                    };
+                if (isVisibleScreen == value) return;
 
-                    isVisibleScreen = value;
+                _isVisibleScreenChangedEventArgs.OldValue = isVisibleScreen;
+                _isVisibleScreenChangedEventArgs.NewValue = value;
+                _isVisibleScreenChangedEventArgs.Handled = false;
 
-                    OnIsVisibleScreenChanged(args);
-                    if (IsVisibleScreenChanged != null)
-                        IsVisibleScreenChanged(this, args);
-                }
+                isVisibleScreen = value;
+
+                OnIsVisibleScreenChanged(_isVisibleScreenChangedEventArgs);
+                IsVisibleScreenChanged?.Invoke(this, _isVisibleScreenChangedEventArgs);
             }
         }
 

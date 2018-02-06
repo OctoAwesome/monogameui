@@ -9,8 +9,8 @@ namespace MonoGameUi
     /// </summary>
     public class ControlCollection : ItemCollection<Control>
     {
-        internal Control[] InZOrder = new Control[0];
-        internal Control[] AgainstZOrder = new Control[0];
+        internal List<Control> InZOrder = new List<Control>();
+        internal readonly ReverseEnumerable<Control> AgainstZOrder = new ReverseEnumerable<Control>();
 
         protected Control Owner { get; private set; }
 
@@ -18,6 +18,7 @@ namespace MonoGameUi
             : base()
         {
             Owner = owner;
+            AgainstZOrder.BaseList = InZOrder;
         }
 
         public override void Add(Control item)
@@ -35,9 +36,12 @@ namespace MonoGameUi
             if (item.TabOrder == 0)
                 item.TabOrder = int.MaxValue;
             else
-                foreach (var control in this.Where(c => c.TabOrder >= item.TabOrder))
-                    control.TabOrder++;
+                foreach (var control in this)
+                {
+                    if (control.TabOrder >= item.TabOrder) control.TabOrder++;
+                }
 
+            InZOrder.Add(item);//TODO insertion sort
             // ZOrder einreihen
             item.ZOrderChanged += item_ZOrderChanged;
 
@@ -52,18 +56,19 @@ namespace MonoGameUi
 
         public override void Clear()
         {
-            var temp = this.ToArray();
-
-            base.Clear();
-
-            for (int i = 0; i < temp.Length; i++)
+            //TODO verify?
+            for (int i = 0; i < this.Count; i++)
             {
-                temp[i].SetFocus(null);
-                temp[i].Parent = null;
-                temp[i].ZOrderChanged -= item_ZOrderChanged;
-                temp[i].PathDirty = true;
+                this[i].SetFocus(null);
+                this[i].Parent = null;
+                this[i].ZOrderChanged -= item_ZOrderChanged;
+                this[i].PathDirty = true;
             }
+            base.Clear();
+            InZOrder.Clear();
+            
             Owner.PathDirty = true;
+            
             ReorderZ(null);
         }
 
@@ -81,9 +86,13 @@ namespace MonoGameUi
             // TabOrder
             if (item.TabOrder == 0)
                 item.TabOrder = index;
-            foreach (var control in this.Where(c => c.TabOrder >= item.TabOrder))
-                control.TabOrder++;
+            foreach (var control in this)
+            {
+                if (control.TabOrder >= item.TabOrder) control.TabOrder++;
+            }
 
+            InZOrder.Add(item);//TODO: insert sort?
+            
             // ZOrder einreihen
             item.ZOrderChanged += item_ZOrderChanged;
 
@@ -102,6 +111,9 @@ namespace MonoGameUi
             {
 
                 item.SetFocus(null);
+
+                InZOrder.Remove(item);
+                
                 item.Parent = null;
                 item.ZOrderChanged -= item_ZOrderChanged;
 
@@ -125,6 +137,7 @@ namespace MonoGameUi
                 c.SetFocus(null);
                 base.RemoveAt(index);
 
+                InZOrder.Remove(c);
                 c.Parent = null;
                 c.ZOrderChanged -= item_ZOrderChanged;
                 ReorderTab();
@@ -150,22 +163,32 @@ namespace MonoGameUi
             ReorderZ(sender);
         }
 
+        private class ZOrderComparer : IComparer<Control>
+        {
+            public int Compare(Control x, Control y)
+            {
+                if (x == null || y == null)
+                    return 0;
+                return x.ZOrder.CompareTo(y.ZOrder);
+            }
+        }
+        private readonly ZOrderComparer _zOrderComparer = new ZOrderComparer();
         private void ReorderZ(Control control)
         {
-            InZOrder = null;
-
             // Platz schaffen für das veränderte Control
             if (control != null)
-                foreach (var c in this.Where(c => c != control && c.ZOrder >= control.ZOrder))
-                    c.ZOrder++;
+                foreach (var c in this)
+                {
+                    if (c != control && c.ZOrder >= control.ZOrder) c.ZOrder++;
+                }
 
+            InZOrder.Sort(_zOrderComparer);
             // Taborder neu ermitteln
             int index = 1;
-            foreach (var c in this.OrderBy(c => c.ZOrder))
+            foreach (var c in InZOrder)
                 c.TabOrder = index++;
 
-            InZOrder = this.OrderBy(c => c.ZOrder).ToArray();
-            AgainstZOrder = InZOrder.Reverse().ToArray();
+            AgainstZOrder.BaseList = InZOrder;
         }
     }
 }

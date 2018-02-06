@@ -27,6 +27,7 @@ namespace MonoGameUi
 
         private bool wordWrap = false;
 
+        private readonly PropertyEventArgs<string> _textChangedEventArgs = new PropertyEventArgs<string>();
         /// <summary>
         /// Gibt den enthaltenen Text an oder legt diesen fest.
         /// </summary>
@@ -35,13 +36,14 @@ namespace MonoGameUi
             get { return text ?? string.Empty; }
             set
             {
-                if (text != value)
-                {
-                    if (TextChanged != null)
-                        TextChanged(this, new PropertyEventArgs<String>(text, value));
-                    text = value;
-                    InvalidateDimensions();
-                }
+                if (text == value) return;
+
+                _textChangedEventArgs.OldValue = text;
+                _textChangedEventArgs.NewValue = value;
+                _textChangedEventArgs.Handled = false;
+                TextChanged?.Invoke(this, _textChangedEventArgs);
+                text = value;
+                InvalidateDimensions();
             }
         }
 

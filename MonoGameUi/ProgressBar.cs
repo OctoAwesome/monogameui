@@ -14,6 +14,8 @@ namespace MonoGameUi
 
         private Brush barBrush = null;
 
+        private readonly PropertyEventArgs<Orientation> _orientationChangedEventArgs = new PropertyEventArgs<Orientation>();
+        
         /// <summary>
         /// Gibt die Ausrichtung der Progress-Bar zurück oder legt diese fest.
         /// </summary>
@@ -22,24 +24,21 @@ namespace MonoGameUi
             get { return orientation; }
             set
             {
-                if (orientation != value)
-                {
-                    PropertyEventArgs<Orientation> args = new PropertyEventArgs<Orientation>()
-                    {
-                        OldValue = orientation,
-                        NewValue = value,
-                    };
+                if (orientation == value) return;
 
-                    orientation = value;
-                    InvalidateDimensions();
+                _orientationChangedEventArgs.OldValue = orientation;
+                _orientationChangedEventArgs.NewValue = value;
+                _orientationChangedEventArgs.Handled = false;
 
-                    OnOrientationChanged(args);
-                    if (OrientationChanged != null)
-                        OrientationChanged(this, args);
-                }
+                orientation = value;
+                InvalidateDimensions();
+
+                OnOrientationChanged(_orientationChangedEventArgs);
+                OrientationChanged?.Invoke(this, _orientationChangedEventArgs);
             }
         }
 
+        private readonly PropertyEventArgs<int> _valueChangedEventArgs = new PropertyEventArgs<int>();
         /// <summary>
         /// Gibt den Fortschritt des Balkens an.
         /// </summary>
@@ -48,24 +47,21 @@ namespace MonoGameUi
             get { return barvalue; }
             set
             {
-                if (barvalue != value)
-                {
-                    PropertyEventArgs<int> args = new PropertyEventArgs<int>()
-                    {
-                        OldValue = barvalue,
-                        NewValue = value,
-                    };
+                if (barvalue == value) return;
+                
+                
+                _valueChangedEventArgs.OldValue = barvalue;
+                _valueChangedEventArgs.NewValue = value;
+                _valueChangedEventArgs.Handled = false;
 
-                    barvalue = value;
-                    InvalidateDrawing();
+                barvalue = value;
+                InvalidateDrawing();
 
-                    OnValueChanged(args);
-                    if (ValueChanged != null)
-                        ValueChanged(this, args);
-                }
+                OnValueChanged(_valueChangedEventArgs);
+                ValueChanged?.Invoke(this, _valueChangedEventArgs);
             }
         }
-
+        private readonly PropertyEventArgs<int> _maximumChangedEventArgs = new PropertyEventArgs<int>();
         /// <summary>
         /// Gibt den Maximalwert des Balkens an.
         /// </summary>
@@ -74,24 +70,20 @@ namespace MonoGameUi
             get { return maximum; }
             set
             {
-                if (maximum != value)
-                {
-                    PropertyEventArgs<int> args = new PropertyEventArgs<int>()
-                    {
-                        OldValue = maximum,
-                        NewValue = value,
-                    };
+                if (maximum == value) return;
 
-                    maximum = value;
-                    InvalidateDrawing();
+                _maximumChangedEventArgs.OldValue = maximum;
+                _maximumChangedEventArgs.NewValue = value;
+                _maximumChangedEventArgs.Handled = false;
 
-                    OnMaximumChanged(args);
-                    if (MaximumChanged != null)
-                        MaximumChanged(this, args);
-                }
+                maximum = value;
+                InvalidateDrawing();
+
+                OnMaximumChanged(_maximumChangedEventArgs);
+                MaximumChanged?.Invoke(this, _maximumChangedEventArgs);
             }
         }
-
+        private readonly PropertyEventArgs<Brush> _barBrushChangedEventArgs = new PropertyEventArgs<Brush>();
         /// <summary>
         /// Gibt den Brush an, mit dem der Inhalt des Balkens gemalt werden soll.
         /// </summary>
@@ -100,21 +92,17 @@ namespace MonoGameUi
             get { return barBrush; }
             set
             {
-                if (barBrush != value)
-                {
-                    PropertyEventArgs<Brush> args = new PropertyEventArgs<Brush>()
-                    {
-                        OldValue = barBrush,
-                        NewValue = value,
-                    };
+                if (barBrush == value) return;
 
-                    barBrush = value;
-                    InvalidateDrawing();
+                _barBrushChangedEventArgs.OldValue = barBrush;
+                _barBrushChangedEventArgs.NewValue = value;
+                _barBrushChangedEventArgs.Handled = false;
 
-                    OnBarBrushChanged(args);
-                    if (BarBrushChanged != null)
-                        BarBrushChanged(this, args);
-                }
+                barBrush = value;
+                InvalidateDrawing();
+
+                OnBarBrushChanged(_barBrushChangedEventArgs);
+                BarBrushChanged?.Invoke(this, _barBrushChangedEventArgs);
             }
         }
 

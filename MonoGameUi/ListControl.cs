@@ -42,6 +42,7 @@ namespace MonoGameUi
             }
         }
 
+        private readonly PropertyEventArgs<Brush> _selectedItemBrushChangedArgs = new PropertyEventArgs<Brush>();
         /// <summary>
         /// Gibt den Brush für selektierte Elemente zurück oder legt diesen fest.
         /// </summary>
@@ -50,21 +51,18 @@ namespace MonoGameUi
             get { return selectedItemBrush; }
             set
             {
-                if (selectedItemBrush != value)
-                {
-                    PropertyEventArgs<Brush> args = new PropertyEventArgs<Brush>()
-                    {
-                        OldValue = selectedItemBrush,
-                        NewValue = value,
-                    };
+                if (selectedItemBrush == value) return;
+                
+                
+                _selectedItemBrushChangedArgs.OldValue = selectedItemBrush;
+                _selectedItemBrushChangedArgs.NewValue = value;
+                _selectedItemBrushChangedArgs.Handled = false;
 
-                    selectedItemBrush = value;
-                    InvalidateDrawing();
+                selectedItemBrush = value;
+                InvalidateDrawing();
 
-                    OnSelectedItemBrushChanged(args);
-                    if (SelectedItemBrushChanged != null)
-                        SelectedItemBrushChanged(this, args);
-                }
+                OnSelectedItemBrushChanged(_selectedItemBrushChangedArgs);
+                SelectedItemBrushChanged?.Invoke(this, _selectedItemBrushChangedArgs);
             }
         }
 
