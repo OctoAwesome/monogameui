@@ -6,6 +6,40 @@ using engenious.Input;
 
 namespace MonoGameUi
 {
+    internal abstract class EventArgsPool<T> where T : new()
+    {
+
+        private readonly Stack<T> _freeList = new Stack<T>(16);
+        private readonly object _lockObj = new object();
+
+        public T Take()
+        {
+            if (_freeList.Count <= 0) return new T();
+            lock (_lockObj)
+            {
+                if (_freeList.Count > 0)
+                {
+                    return _freeList.Pop();
+                }
+            }
+
+            return new T();
+        }
+
+        public void Release(T arr)
+        {
+            /**/
+            ResetVariable(arr);
+
+            lock (_lockObj)
+            {
+                _freeList.Push(arr);
+            }
+        }
+
+        protected abstract void ResetVariable(T arr);
+    }
+
     /// <summary>
     /// Basisklasse für alle Arten von Event Args innerhalb des UI Frameworks
     /// </summary>
@@ -15,6 +49,18 @@ namespace MonoGameUi
         /// Gibt an ob das Event bereits verarbeitet wurde oder legt dies fest.
         /// </summary>
         public bool Handled { get; set; }
+    }
+    internal class EventArgsPool : EventArgsPool<EventArgs>
+    {
+        private static EventArgsPool _instance;
+        public static EventArgsPool Instance
+        {
+            get {return _instance = _instance ?? new EventArgsPool(); }
+        }
+        protected override void ResetVariable(EventArgs arr)
+        {
+            arr.Handled = false;
+        }
     }
 
     /// <summary>
@@ -42,11 +88,25 @@ namespace MonoGameUi
         /// </summary>
         public object Content { get; set; }
     }
-
+    internal class DragEventArgsPool : EventArgsPool<DragEventArgs>
+    {
+        private static DragEventArgsPool _instance;
+        public static DragEventArgsPool Instance
+        {
+            get {return _instance = _instance ?? new DragEventArgsPool(); }
+        }
+        protected override void ResetVariable(DragEventArgs arr)
+        {
+            arr.Sender = null;
+            arr.Icon = null;
+            arr.IconSize = Point.Zero;
+            arr.Content = null;
+        }
+    }
     /// <summary>
     /// Basisklasse für alle Positionsbasierten Events (Maus, Touch)
     /// </summary>
-    public class PointerEventArgs : EventArgs
+    public abstract class PointerEventArgs : EventArgs
     {
         /// <summary>
         /// Gibt an, ob das Event 
@@ -97,42 +157,22 @@ namespace MonoGameUi
         }
     }
 
-    internal static class MouseEventArgsPool
+
+    internal class MouseEventArgsPool : EventArgsPool<MouseEventArgs>
     {
-        private static readonly Stack<MouseEventArgs> FreeList = new Stack<MouseEventArgs>(16);
-        private static readonly object LockObj = new object();
-
-        public static MouseEventArgs Take()
+        private static MouseEventArgsPool _instance;
+        public static MouseEventArgsPool Instance
         {
-            if (FreeList.Count > 0)
-            {
-                lock (LockObj)
-                {
-                    if (FreeList.Count > 0)
-                    {
-                        return FreeList.Pop();
-                    }
-                }
-
-            }
-
-            return new MouseEventArgs();
+            get {return _instance = _instance ?? new MouseEventArgsPool(); }
         }
-
-        public static void Release(MouseEventArgs arr)
+        protected override void ResetVariable(MouseEventArgs arr)
         {
             arr.MouseMode = MouseMode.Captured;
             arr.Bubbled = false;
             arr.GlobalPosition = Point.Zero;
             arr.LocalPosition = Point.Zero;
-
-            lock (LockObj)
-            {
-                FreeList.Push(arr);
-            }
         }
     }
-
     /// <summary>
     /// Event Arguments für alle Mouse Events.
     /// </summary>

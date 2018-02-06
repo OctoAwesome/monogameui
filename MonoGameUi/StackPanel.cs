@@ -11,6 +11,7 @@ namespace MonoGameUi
     {
         private Orientation orientation = Orientation.Vertical;
 
+        private readonly PropertyEventArgs<Orientation> _orientationChangedEventArgs = new PropertyEventArgs<Orientation>();
         /// <summary>
         /// Gibt die Ausrichtungsrichtung des Stacks an oder legt diesen fest.
         /// </summary>
@@ -19,21 +20,17 @@ namespace MonoGameUi
             get { return orientation; }
             set
             {
-                if (orientation != value)
-                {
-                    PropertyEventArgs<Orientation> args = new PropertyEventArgs<Orientation>
-                    {
-                        OldValue = orientation,
-                        NewValue = value
-                    };
+                if (orientation == value) return;
 
-                    orientation = value;
-                    InvalidateDimensions();
+                _orientationChangedEventArgs.OldValue = orientation;
+                _orientationChangedEventArgs.NewValue = value;
+                _orientationChangedEventArgs.Handled = false;
 
-                    OnOrientationChanged(args);
-                    if (OrientationChanged != null)
-                        OrientationChanged(this, args);
-                }
+                orientation = value;
+                InvalidateDimensions();
+
+                OnOrientationChanged(_orientationChangedEventArgs);
+                OrientationChanged?.Invoke(this, _orientationChangedEventArgs);
             }
         }
 

@@ -26,6 +26,7 @@ namespace MonoGameUi
 
         private int splitterPosition;
 
+        private readonly PropertyEventArgs<Control> _slot1ChangedEventArgs = new PropertyEventArgs<Control>();
         /// <summary>
         /// Inhalt des ersten Panels (je nach Orientierung oben oder links)
         /// </summary>
@@ -34,35 +35,31 @@ namespace MonoGameUi
             get { return slot1; }
             set
             {
-                if (slot1 != value)
+                if (slot1 == value) return;
+
+                _slot1ChangedEventArgs.OldValue = slot1;
+                _slot1ChangedEventArgs.NewValue = value;
+                _slot1ChangedEventArgs.Handled = false;
+
+                if (slot1 != null)
                 {
-                    PropertyEventArgs<Control> args = new PropertyEventArgs<Control>()
-                    {
-                        OldValue = slot1,
-                        NewValue = value
-                    };
-
-                    if (slot1 != null)
-                    {
-                        Children.Remove(slot1);
-                        slot1 = null;
-                    }
-
-                    if (value != null)
-                    {
-                        slot1 = value;
-                        Children.Add(slot1);
-                    }
-
-                    InvalidateDimensions();
-
-                    OnSlot1Changed(args);
-                    if (Slot1Changed != null)
-                        Slot1Changed(this, args);
+                    Children.Remove(slot1);
+                    slot1 = null;
                 }
+
+                if (value != null)
+                {
+                    slot1 = value;
+                    Children.Add(slot1);
+                }
+
+                InvalidateDimensions();
+
+                OnSlot1Changed(_slot1ChangedEventArgs);
+                Slot1Changed?.Invoke(this, _slot1ChangedEventArgs);
             }
         }
-
+        private readonly PropertyEventArgs<int?> _slot1MinSizeChangedEventArgs = new PropertyEventArgs<int?>();
         /// <summary>
         /// Mindestgröße des ersten Panels oder null, falls egal
         /// </summary>
@@ -71,25 +68,22 @@ namespace MonoGameUi
             get { return slot1MinSize; }
             set
             {
-                if (slot1MinSize != value)
-                {
-                    PropertyEventArgs<int?> args = new PropertyEventArgs<int?>()
-                    {
-                        OldValue = slot1MinSize,
-                        NewValue = value
-                    };
+                if (slot1MinSize == value) return;
 
-                    slot1MinSize = value;
+                _slot1MinSizeChangedEventArgs.OldValue = slot1MinSize;
+                _slot1MinSizeChangedEventArgs.NewValue = value;
+                _slot1MinSizeChangedEventArgs.Handled = false;
 
-                    InvalidateDimensions();
+                slot1MinSize = value;
 
-                    OnSlot1MinSizeChanged(args);
-                    if (Slot1MinSizeChanged != null)
-                        Slot1MinSizeChanged(this, args);
-                }
+                InvalidateDimensions();
+
+                OnSlot1MinSizeChanged(_slot1MinSizeChangedEventArgs);
+                Slot1MinSizeChanged?.Invoke(this, _slot1MinSizeChangedEventArgs);
             }
         }
 
+        private readonly PropertyEventArgs<int?> _slot1MaxSizeChangedEventArgs = new PropertyEventArgs<int?>();
         /// <summary>
         /// Maximalgröße des ersten Panels oder null, falls egal.
         /// </summary>
@@ -98,25 +92,21 @@ namespace MonoGameUi
             get { return slot1MaxSize; }
             set
             {
-                if (slot1MaxSize != value)
-                {
-                    PropertyEventArgs<int?> args = new PropertyEventArgs<int?>()
-                    {
-                        OldValue = slot1MaxSize,
-                        NewValue = value
-                    };
+                if (slot1MaxSize == value) return;
+                
+                _slot1MaxSizeChangedEventArgs.OldValue = slot1MaxSize;
+                _slot1MaxSizeChangedEventArgs.NewValue = value;
+                _slot1MaxSizeChangedEventArgs.Handled = false;
 
-                    slot1MaxSize = value;
+                slot1MaxSize = value;
 
-                    InvalidateDimensions();
+                InvalidateDimensions();
 
-                    OnSlot1MaxSizeChanged(args);
-                    if (Slot1MaxSizeChanged != null)
-                        Slot1MaxSizeChanged(this, args);
-                }
+                OnSlot1MaxSizeChanged(_slot1MaxSizeChangedEventArgs);
+                Slot1MaxSizeChanged?.Invoke(this, _slot1MaxSizeChangedEventArgs);
             }
         }
-
+        private readonly PropertyEventArgs<Control> _slot2ChangedEventArgs = new PropertyEventArgs<Control>();
         /// <summary>
         /// Inhalt des zweiten Panels (je nach Orientierung unten oder rechts).
         /// </summary>
@@ -125,35 +115,32 @@ namespace MonoGameUi
             get { return slot2; }
             set
             {
-                if (slot2 != value)
+                if (slot2 == value) return;
+
+                _slot2ChangedEventArgs.OldValue = slot2;
+                _slot2ChangedEventArgs.NewValue = value;
+                _slot2ChangedEventArgs.Handled = false;
+
+                if (slot2 != null)
                 {
-                    PropertyEventArgs<Control> args = new PropertyEventArgs<Control>()
-                    {
-                        OldValue = slot2,
-                        NewValue = value
-                    };
-
-                    if (slot2 != null)
-                    {
-                        Children.Remove(slot2);
-                        slot2 = null;
-                    }
-
-                    if (value != null)
-                    {
-                        slot2 = value;
-                        Children.Add(slot2);
-                    }
-
-                    InvalidateDimensions();
-
-                    OnSlot2Changed(args);
-                    if (Slot2Changed != null)
-                        Slot2Changed(this, args);
+                    Children.Remove(slot2);
+                    slot2 = null;
                 }
+
+                if (value != null)
+                {
+                    slot2 = value;
+                    Children.Add(slot2);
+                }
+
+                InvalidateDimensions();
+
+                OnSlot2Changed(_slot2ChangedEventArgs);
+                Slot2Changed?.Invoke(this, _slot2ChangedEventArgs);
             }
         }
 
+        private readonly PropertyEventArgs<int?> _slot2MinSizeChangedEventArgs = new PropertyEventArgs<int?>();
         /// <summary>
         /// Mindestgröße des zweiten Panels oder null, falls egal.
         /// </summary>
@@ -162,25 +149,21 @@ namespace MonoGameUi
             get { return slot2MinSize; }
             set
             {
-                if (slot2MinSize != value)
-                {
-                    PropertyEventArgs<int?> args = new PropertyEventArgs<int?>()
-                    {
-                        OldValue = slot2MinSize,
-                        NewValue = value
-                    };
+                if (slot2MinSize == value) return;
 
-                    slot2MinSize = value;
+                _slot2MinSizeChangedEventArgs.OldValue = slot2MinSize;
+                _slot2MinSizeChangedEventArgs.NewValue = value;
+                _slot2MinSizeChangedEventArgs.Handled = false;
 
-                    InvalidateDimensions();
+                slot2MinSize = value;
 
-                    OnSlot2MinSizeChanged(args);
-                    if (Slot2MinSizeChanged != null)
-                        Slot2MinSizeChanged(this, args);
-                }
+                InvalidateDimensions();
+
+                OnSlot2MinSizeChanged(_slot2MinSizeChangedEventArgs);
+                Slot2MinSizeChanged?.Invoke(this, _slot2MinSizeChangedEventArgs);
             }
         }
-
+        private readonly PropertyEventArgs<int?> _slot2MaxSizeChangedEventArgs = new PropertyEventArgs<int?>();
         /// <summary>
         /// Maximalgröße des zweiten Panels oder null, falls egal.
         /// </summary>
@@ -189,25 +172,22 @@ namespace MonoGameUi
             get { return slot2MaxSize; }
             set
             {
-                if (slot2MaxSize != value)
-                {
-                    PropertyEventArgs<int?> args = new PropertyEventArgs<int?>()
-                    {
-                        OldValue = slot2MaxSize,
-                        NewValue = value
-                    };
+                if (slot2MaxSize == value) return;
 
-                    slot2MaxSize = value;
+                _slot2MaxSizeChangedEventArgs.OldValue = slot2MaxSize;
+                _slot2MaxSizeChangedEventArgs.NewValue = value;
+                _slot2MaxSizeChangedEventArgs.Handled = false;
 
-                    InvalidateDimensions();
+                slot2MaxSize = value;
 
-                    OnSlot2MaxSizeChanged(args);
-                    if (Slot2MaxSizeChanged != null)
-                        Slot2MaxSizeChanged(this, args);
-                }
+                InvalidateDimensions();
+
+                OnSlot2MaxSizeChanged(_slot2MaxSizeChangedEventArgs);
+                Slot2MaxSizeChanged?.Invoke(this, _slot2MaxSizeChangedEventArgs);
             }
         }
 
+        private readonly PropertyEventArgs<int> _splitterSizeChangedEventArgs = new PropertyEventArgs<int>();
         /// <summary>
         /// Die Breite des Splitt-Bereichs.
         /// </summary>
@@ -216,25 +196,22 @@ namespace MonoGameUi
             get { return splitterSize; }
             set
             {
-                if (splitterSize != value)
-                {
-                    PropertyEventArgs<int> args = new PropertyEventArgs<int>()
-                    {
-                        OldValue = splitterSize,
-                        NewValue = value
-                    };
+                if (splitterSize == value) return;
 
-                    splitterSize = value;
+                _splitterSizeChangedEventArgs.OldValue = splitterSize;
+                _splitterSizeChangedEventArgs.NewValue = value;
+                _splitterSizeChangedEventArgs.Handled = false;
 
-                    InvalidateDimensions();
+                splitterSize = value;
 
-                    OnSplitterSizeChanged(args);
-                    if (SplitterSizeChanged != null)
-                        SplitterSizeChanged(this, args);
-                }
+                InvalidateDimensions();
+
+                OnSplitterSizeChanged(_splitterSizeChangedEventArgs);
+                SplitterSizeChanged?.Invoke(this, _splitterSizeChangedEventArgs);
             }
         }
 
+        private readonly PropertyEventArgs<int> _splitterPositionChangedEventArgs = new PropertyEventArgs<int>();
         /// <summary>
         /// Aktuelle Position des Splitters.
         /// </summary>
@@ -243,21 +220,17 @@ namespace MonoGameUi
             get { return splitterPosition; }
             set
             {
-                if (splitterPosition != value)
-                {
-                    PropertyEventArgs<int> args = new PropertyEventArgs<int>()
-                    {
-                        OldValue = splitterPosition,
-                        NewValue = value
-                    };
+                if (splitterPosition == value) return;
 
-                    splitterPosition = value;
-                    InvalidateDimensions();
+                _splitterPositionChangedEventArgs.OldValue = splitterPosition;
+                _splitterPositionChangedEventArgs.NewValue = value;
+                _splitterPositionChangedEventArgs.Handled = false;
 
-                    OnSplitterPositionChanged(args);
-                    if (SplitterPositionChanged != null)
-                        SplitterPositionChanged(this, args);
-                }
+                splitterPosition = value;
+                InvalidateDimensions();
+
+                OnSplitterPositionChanged(_splitterPositionChangedEventArgs);
+                SplitterPositionChanged?.Invoke(this, _splitterPositionChangedEventArgs);
             }
         }
 

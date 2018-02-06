@@ -31,6 +31,9 @@ namespace MonoGameUi
 
         private Point virtualSize;
 
+        
+        private readonly PropertyEventArgs<bool> _horizontalScrollbarEnabledChangedEventArgs = new PropertyEventArgs<bool>();
+        
         /// <summary>
         /// Gibt an, ob es eine horizontale Scrollbar geben soll.
         /// </summary>
@@ -39,24 +42,20 @@ namespace MonoGameUi
             get { return horizontalScrollbarEnabled; }
             set
             {
-                if (horizontalScrollbarEnabled != value)
-                {
-                    PropertyEventArgs<bool> args = new PropertyEventArgs<bool>()
-                    {
-                        OldValue = horizontalScrollbarEnabled,
-                        NewValue = value,
-                    };
+                if (horizontalScrollbarEnabled == value) return;
 
-                    horizontalScrollbarEnabled = value;
-                    InvalidateDimensions();
+                _horizontalScrollbarEnabledChangedEventArgs.OldValue = horizontalScrollbarEnabled;
+                _horizontalScrollbarEnabledChangedEventArgs.NewValue = value;
+                _horizontalScrollbarEnabledChangedEventArgs.Handled = false;
 
-                    OnHorizontalScrollbarEnabledChanged(args);
-                    if (HorizontalScrollbarEnabledChanged != null)
-                        HorizontalScrollbarEnabledChanged(this, args);
-                }
+                horizontalScrollbarEnabled = value;
+                InvalidateDimensions();
+
+                OnHorizontalScrollbarEnabledChanged(_horizontalScrollbarEnabledChangedEventArgs);
+                HorizontalScrollbarEnabledChanged?.Invoke(this, _horizontalScrollbarEnabledChangedEventArgs);
             }
         }
-
+        private readonly PropertyEventArgs<bool> _verticalScrollbarEnabledChangedEventArgs = new PropertyEventArgs<bool>();
         /// <summary>
         /// Gibt an, ob es eine vertikale Scrollbar geben soll.
         /// </summary>
@@ -65,24 +64,21 @@ namespace MonoGameUi
             get { return verticalScrollbarEnabled; }
             set
             {
-                if (verticalScrollbarEnabled != value)
-                {
-                    PropertyEventArgs<bool> args = new PropertyEventArgs<bool>()
-                    {
-                        OldValue = verticalScrollbarEnabled,
-                        NewValue = value,
-                    };
+                if (verticalScrollbarEnabled == value) return;
 
-                    verticalScrollbarEnabled = value;
-                    InvalidateDimensions();
+                _verticalScrollbarEnabledChangedEventArgs.OldValue = verticalScrollbarEnabled;
+                _verticalScrollbarEnabledChangedEventArgs.NewValue = value;
+                _verticalScrollbarEnabledChangedEventArgs.Handled = false;
 
-                    OnVerticalScrollbarEnabledChanged(args);
-                    if (VerticalScrollbarEnabledChanged != null)
-                        VerticalScrollbarEnabledChanged(this, args);
-                }
+                verticalScrollbarEnabled = value;
+                InvalidateDimensions();
+
+                OnVerticalScrollbarEnabledChanged(_verticalScrollbarEnabledChangedEventArgs);
+                VerticalScrollbarEnabledChanged?.Invoke(this, _verticalScrollbarEnabledChangedEventArgs);
             }
         }
 
+        private readonly PropertyEventArgs<bool?> _horizontalScrollbarVisibleChangedEventArgs = new PropertyEventArgs<bool?>();
         /// <summary>
         /// Gibt die Sichtbarkeit der Scrollbar auf horizontaler Achse an oder legt 
         /// diese fest. null steht hier für "auto", sonfern eine Scrollbar 
@@ -93,24 +89,21 @@ namespace MonoGameUi
             get { return horizontalScrollbarVisible; }
             set
             {
-                if (horizontalScrollbarVisible != value)
-                {
-                    PropertyEventArgs<bool?> args = new PropertyEventArgs<bool?>()
-                    {
-                        OldValue = horizontalScrollbarVisible,
-                        NewValue = value,
-                    };
+                if (horizontalScrollbarVisible == value) return;
 
-                    horizontalScrollbarVisible = value;
-                    InvalidateDimensions();
+                _horizontalScrollbarVisibleChangedEventArgs.OldValue = horizontalScrollbarVisible;
+                _horizontalScrollbarVisibleChangedEventArgs.NewValue = value;
+                _horizontalScrollbarVisibleChangedEventArgs.Handled = false;
 
-                    OnHorizontalScrollbarVisibleChanged(args);
-                    if (HorizontalScrollbarVisibleChanged != null)
-                        HorizontalScrollbarVisibleChanged(this, args);
-                }
+                horizontalScrollbarVisible = value;
+                InvalidateDimensions();
+
+                OnHorizontalScrollbarVisibleChanged(_horizontalScrollbarVisibleChangedEventArgs);
+                HorizontalScrollbarVisibleChanged?.Invoke(this, _horizontalScrollbarVisibleChangedEventArgs);
             }
         }
 
+        private readonly PropertyEventArgs<bool?> _verticalScrollbarVisibleChangedEventArgs = new PropertyEventArgs<bool?>();
         /// <summary>
         /// Gibt die Sichtbarkeit der Scrollbar auf vertikaler Achse an oder legt
         /// diese fest. null steht hier für "auto", sofern eine Scrollbar notwendig
@@ -121,24 +114,21 @@ namespace MonoGameUi
             get { return verticalScrollbarVisible; }
             set
             {
-                if (verticalScrollbarVisible != value)
-                {
-                    PropertyEventArgs<bool?> args = new PropertyEventArgs<bool?>()
-                    {
-                        OldValue = verticalScrollbarVisible,
-                        NewValue = value,
-                    };
+                if (verticalScrollbarVisible == value) return;
 
-                    verticalScrollbarVisible = value;
-                    InvalidateDimensions();
+                _verticalScrollbarVisibleChangedEventArgs.OldValue = verticalScrollbarVisible;
+                _verticalScrollbarVisibleChangedEventArgs.NewValue = value;
+                _verticalScrollbarVisibleChangedEventArgs.Handled = false;
+                
+                verticalScrollbarVisible = value;
+                InvalidateDimensions();
 
-                    OnVerticalScrollbarVisibleChanged(args);
-                    if (VerticalScrollbarVisibleChanged != null)
-                        VerticalScrollbarVisibleChanged(this, args);
-                }
+                OnVerticalScrollbarVisibleChanged(_verticalScrollbarVisibleChangedEventArgs);
+                VerticalScrollbarVisibleChanged?.Invoke(this, _verticalScrollbarVisibleChangedEventArgs);
             }
         }
 
+        private readonly PropertyEventArgs<Point> _virtualSizeChangedEventArgs = new PropertyEventArgs<Point>();
         /// <summary>
         /// Gibt die Größe des virtuellen Client-Bereichs an.
         /// </summary>
@@ -147,20 +137,16 @@ namespace MonoGameUi
             get { return virtualSize; }
             private set
             {
-                if (virtualSize != value)
-                {
-                    PropertyEventArgs<Point> args = new PropertyEventArgs<Point>()
-                    {
-                        OldValue = virtualSize,
-                        NewValue = value,
-                    };
+                if (virtualSize == value) return;
 
-                    virtualSize = value;
+                _virtualSizeChangedEventArgs.OldValue = virtualSize;
+                _virtualSizeChangedEventArgs.NewValue = value;
+                _virtualSizeChangedEventArgs.Handled = false;
 
-                    OnVirtualSizeChanged(args);
-                    if (VirtualSizeChanged != null)
-                        VirtualSizeChanged(this, args);
-                }
+                virtualSize = value;
+
+                OnVirtualSizeChanged(_virtualSizeChangedEventArgs);
+                VirtualSizeChanged?.Invoke(this, _virtualSizeChangedEventArgs);
             }
         }
 
@@ -240,6 +226,7 @@ namespace MonoGameUi
             }
         }
 
+        private readonly PropertyEventArgs<int> _verticalScrollPositionChangedEventArgs = new PropertyEventArgs<int>();
         /// <summary>
         /// Gibt die Scroll-Position auf der virtuellen Achse an oder legt diese fest.
         /// </summary>
@@ -253,24 +240,20 @@ namespace MonoGameUi
             {
                 int scrollRange = VirtualSize.Y - ActualClientSize.Y;
                 int newPosition = Math.Max(0, Math.Min(scrollRange, value));
-                if (scrollPosition.Y != newPosition)
-                {
-                    PropertyEventArgs<int> args = new PropertyEventArgs<int>()
-                    {
-                        OldValue = scrollPosition.Y,
-                        NewValue = newPosition,
-                    };
+                if (scrollPosition.Y == newPosition) return;
 
-                    scrollPosition.Y = newPosition;
-                    InvalidateDimensions();
+                _verticalScrollPositionChangedEventArgs.OldValue = scrollPosition.Y;
+                _verticalScrollPositionChangedEventArgs.NewValue = newPosition;
+                _verticalScrollPositionChangedEventArgs.Handled = false;
 
-                    OnVerticalScrollPositionChanged(args);
-                    if (VerticalScrollPositionChanged != null)
-                        VerticalScrollPositionChanged(this, args);
-                }
+                scrollPosition.Y = newPosition;
+                InvalidateDimensions();
+
+                OnVerticalScrollPositionChanged(_verticalScrollPositionChangedEventArgs);
+                VerticalScrollPositionChanged?.Invoke(this, _verticalScrollPositionChangedEventArgs);
             }
         }
-
+        private readonly PropertyEventArgs<int> _horizontalScrollPositionChangedEventArgs = new PropertyEventArgs<int>();
         /// <summary>
         /// Gibt die Scroll-Position auf der horizontalen Achse an oder legt diese fest.
         /// </summary>
@@ -284,21 +267,18 @@ namespace MonoGameUi
             {
                 int scrollRange = VirtualSize.X - ActualClientSize.X;
                 int newPosition = Math.Max(0, Math.Min(scrollRange, value));
-                if (scrollPosition.X != newPosition)
-                {
-                    PropertyEventArgs<int> args = new PropertyEventArgs<int>()
-                    {
-                        OldValue = scrollPosition.X,
-                        NewValue = newPosition,
-                    };
+                if (scrollPosition.X == newPosition) return;
+                
+                
+                _horizontalScrollPositionChangedEventArgs.OldValue = scrollPosition.X;
+                _horizontalScrollPositionChangedEventArgs.NewValue = newPosition;
+                _horizontalScrollPositionChangedEventArgs.Handled = false;
 
-                    scrollPosition.X = newPosition;
-                    InvalidateDimensions();
+                scrollPosition.X = newPosition;
+                InvalidateDimensions();
 
-                    OnHorizontalScrollPositionChanged(args);
-                    if (HorizontalScrollPositionChanged != null)
-                        HorizontalScrollPositionChanged(this, args);
-                }
+                OnHorizontalScrollPositionChanged(_horizontalScrollPositionChangedEventArgs);
+                HorizontalScrollPositionChanged?.Invoke(this, _horizontalScrollPositionChangedEventArgs);
             }
         }
 

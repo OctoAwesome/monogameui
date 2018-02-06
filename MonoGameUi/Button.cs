@@ -33,12 +33,13 @@ namespace MonoGameUi
             if (Focused == TreeState.Active &&
                 (args.Key == Keys.Enter || args.Key == Keys.Space))
             {
-                EventArgs e = new EventArgs();
+                EventArgs e = EventArgsPool.Instance.Take();
 
                 OnExecuted(e);
-                if (Executed != null)
-                    Executed(this, e);
+                Executed?.Invoke(this, e);
 
+                EventArgsPool.Instance.Release(e);
+                
                 args.Handled = true;
             }
         }
@@ -51,11 +52,12 @@ namespace MonoGameUi
         {
             base.OnLeftMouseClick(args);
 
-            EventArgs e = new EventArgs();
+            EventArgs e = EventArgsPool.Instance.Take();
             OnExecuted(e);
-            if (Executed != null)
-                Executed(this, e);
+            Executed?.Invoke(this, e);
 
+            EventArgsPool.Instance.Release(e);
+            
             args.Handled = true;
         }
 
@@ -68,11 +70,12 @@ namespace MonoGameUi
         {
             base.OnTouchTap(args);
 
-            EventArgs e = new EventArgs();
+            EventArgs e = EventArgsPool.Instance.Take();
             OnExecuted(e);
-            if (Executed != null)
-                Executed(this, e);
+            Executed?.Invoke(this, e);
 
+            EventArgsPool.Instance.Release(e);
+            
             args.Handled = true;
         }
 
