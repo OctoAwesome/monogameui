@@ -66,9 +66,9 @@ namespace MonoGameUi
             }
             base.Clear();
             InZOrder.Clear();
-            
+
             Owner.PathDirty = true;
-            
+
             ReorderZ(null);
         }
 
@@ -92,7 +92,7 @@ namespace MonoGameUi
             }
 
             InZOrder.Add(item);//TODO: insert sort?
-            
+
             // ZOrder einreihen
             item.ZOrderChanged += item_ZOrderChanged;
 
@@ -113,7 +113,7 @@ namespace MonoGameUi
                 item.SetFocus(null);
 
                 InZOrder.Remove(item);
-                
+
                 item.Parent = null;
                 item.ZOrderChanged -= item_ZOrderChanged;
 
@@ -157,7 +157,7 @@ namespace MonoGameUi
 
         void item_ZOrderChanged(Control sender, PropertyEventArgs<int> args)
         {
-            if (InZOrder == null) return;
+            if (InZOrder == null || isDoingUpdate) return;
 
             // Ein Control hat die Z-Order geändert -> neu sortieren
             ReorderZ(sender);
@@ -173,8 +173,10 @@ namespace MonoGameUi
             }
         }
         private readonly ZOrderComparer _zOrderComparer = new ZOrderComparer();
+        private bool isDoingUpdate = false;
         private void ReorderZ(Control control)
         {
+            isDoingUpdate = true;
             // Platz schaffen für das veränderte Control
             if (control != null)
                 foreach (var c in this)
@@ -189,6 +191,8 @@ namespace MonoGameUi
                 c.TabOrder = index++;
 
             AgainstZOrder.BaseList = InZOrder;
+
+            isDoingUpdate = false;
         }
     }
 }
