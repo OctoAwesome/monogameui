@@ -109,7 +109,6 @@ namespace MonoGameUi
         {
             if (base.Remove(item))
             {
-
                 item.SetFocus(null);
 
                 InZOrder.Remove(item);
@@ -156,12 +155,7 @@ namespace MonoGameUi
         }
 
         void item_ZOrderChanged(Control sender, PropertyEventArgs<int> args)
-        {
-            if (InZOrder == null || isDoingUpdate) return;
-
-            // Ein Control hat die Z-Order geändert -> neu sortieren
-            ReorderZ(sender);
-        }
+            => ReorderZ(sender); // Ein Control hat die Z-Order geändert -> neu sortieren
 
         private class ZOrderComparer : IComparer<Control>
         {
@@ -176,7 +170,10 @@ namespace MonoGameUi
         private bool isDoingUpdate = false;
         private void ReorderZ(Control control)
         {
+            if (isDoingUpdate) return; // Wir sind schon in einem Reorder-Vorgang
+
             isDoingUpdate = true;
+
             // Platz schaffen für das veränderte Control
             if (control != null)
                 foreach (var c in this)
