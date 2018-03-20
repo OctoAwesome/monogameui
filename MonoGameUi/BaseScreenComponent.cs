@@ -5,6 +5,8 @@ using engenious;
 using engenious.Content;
 using engenious.Graphics;
 using engenious.Input;
+using OpenTK;
+using Vector2 = engenious.Vector2;
 
 namespace MonoGameUi
 {
@@ -234,16 +236,25 @@ namespace MonoGameUi
 
                     
 
-                    MouseState mouse = Mouse.GetState();
+                    MouseState mouse;
+                    Point mousePosition;
+                    if (MouseMode == MouseMode.Captured)
+                    {
+
+                        mouse = Mouse.GetState();
+                        mousePosition = new Point(
+                            mouse.X - (lastMousePosition.X),
+                            mouse.Y - (lastMousePosition.Y));
+                    }
+                    else
+                    {
+                        mouse = Mouse.GetCursorState();
+                        mousePosition = Game.Window.PointToClient(mouse.Location);
+                    }
 
                     // Mausposition anhand des Mouse Modes ermitteln
-                    Point mousePosition = new Point(mouse.X, mouse.Y);
-                    if (MouseMode == MouseMode.Captured)
-                        mousePosition = new Point(
-                            mousePosition.X - (lastMousePosition.X),
-                            mousePosition.Y - (lastMousePosition.Y));
-                    else
-                        mousePosition = new Point(Game.Mouse.X, Game.Mouse.Y);
+                   
+
 
                     MouseEventArgs mouseEventArgs = MouseEventArgsPool.Instance.Take();
 
@@ -440,11 +451,11 @@ namespace MonoGameUi
                     // Potentieller Positionsreset
                     if (MouseMode == MouseMode.Free)
                     {
-                        lastMousePosition = new Point(mouse.X, mouse.Y);
+                        lastMousePosition = mousePosition;
                     }
                     else if (mousePosition.X != 0 || mousePosition.Y != 0)
                     {
-                        lastMousePosition = new Point(mouse.X, mouse.Y);
+                        lastMousePosition = mouse.Location;
                     }
 
                     MouseEventArgsPool.Instance.Release(mouseEventArgs);

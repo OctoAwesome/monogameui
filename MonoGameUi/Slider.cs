@@ -99,8 +99,9 @@ namespace MonoGameUi
             //Berechnen des Werts wenn die Maus gehalten wird & das Control ausgewählt ist
             if (mouseClickActive)
             {
-                MouseState mouse = Mouse.GetState();
-                Point localMousePos =new Point(mouse.X-contentArea.X, mouse.Y-contentArea.Y); //Berechnet die Position relativ zum Control
+                MouseState mouse = Mouse.GetCursorState();
+                Point localMousePos = ScreenManager.Game.Window.PointToClient(mouse.Location);
+                localMousePos = new Point(localMousePos.X-contentArea.X, localMousePos.Y-contentArea.Y); //Berechnet die Position relativ zum Control
 
                 //Wenn der Slider Horizontal ist
                 if (Orientation == Orientation.Horizontal)
