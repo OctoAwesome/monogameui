@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>6efba8a9-a407-4029-bdd0-651d22a87386</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>MonoGameUi</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Alignments.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AlphaTransition.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BaseScreenComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Border.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BorderBrush.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Brush.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Button.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CanvasControl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Checkbox.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Combobox.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ContainerControl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ContentControl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Control.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ControlCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ExtensionMethods.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FlyoutControl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Grid.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Image.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ItemCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Label.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Listbox.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ListControl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MouseMode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NineTileBrush.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Orientation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Panel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ProgressBar.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Screen.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ScrollContainer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Skin.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Slider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Splitter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StackPanel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SystemSpecific.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TabControl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TabPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Textbox.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TextureBrush.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TilesBrush.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Transition.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TranslateTransition.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)packages.config" />
+  </ItemGroup>
+</Project>

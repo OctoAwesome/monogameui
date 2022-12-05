@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGameUi", "MonoGameUi\MonoGameUi.csproj", "{9E89B217-8424-4FCB-B365-3A01F61CD44F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleClient", "SampleClient\SampleClient.csproj", "{82FBE009-335B-4BA3-A915-E0D46D8942E5}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "MonoGameUi", "MonoGameUi\MonoGameUi.shproj", "{A0CDBD0E-3A41-42B7-9425-A838BC2C7383}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,14 +15,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9E89B217-8424-4FCB-B365-3A01F61CD44F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9E89B217-8424-4FCB-B365-3A01F61CD44F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9E89B217-8424-4FCB-B365-3A01F61CD44F}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{9E89B217-8424-4FCB-B365-3A01F61CD44F}.Debug|x86.Build.0 = Debug|Any CPU
-		{9E89B217-8424-4FCB-B365-3A01F61CD44F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9E89B217-8424-4FCB-B365-3A01F61CD44F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9E89B217-8424-4FCB-B365-3A01F61CD44F}.Release|x86.ActiveCfg = Release|Any CPU
-		{9E89B217-8424-4FCB-B365-3A01F61CD44F}.Release|x86.Build.0 = Release|Any CPU
 		{82FBE009-335B-4BA3-A915-E0D46D8942E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{82FBE009-335B-4BA3-A915-E0D46D8942E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{82FBE009-335B-4BA3-A915-E0D46D8942E5}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -37,5 +29,9 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6979E958-2176-4194-BB86-475FC172596D}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		MonoGameUi\MonoGameUi.projitems*{82fbe009-335b-4ba3-a915-e0d46d8942e5}*SharedItemsImports = 5
+		MonoGameUi\MonoGameUi.projitems*{a0cdbd0e-3a41-42b7-9425-a838bc2c7383}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal
