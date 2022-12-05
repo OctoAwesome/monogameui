@@ -1,8 +1,8 @@
 
 #----------------------------- Global Properties ----------------------------#
 
-/outputDir:bin/Windows
-/intermediateDir:obj/Windows
+/outputDir:bin/$(Platform)
+/intermediateDir:obj/$(Platform)
 /platform:Windows
 /config:
 /profile:Reach
@@ -13,21 +13,10 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin HeadlineFont.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:TextureFormat=Compressed
-/build:HeadlineFont.spritefont
-
-#begin GameFont.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:TextureFormat=Compressed
-/build:GameFont.spritefont
-
 #begin BoldFont.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:BoldFont.spritefont
 
@@ -36,12 +25,6 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:click1.wav
-
-#begin rollover5.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:rollover5.wav
 
 #begin drag.png
 /importer:TextureImporter
@@ -54,4 +37,24 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:drag.png
+
+#begin GameFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:GameFont.spritefont
+
+#begin HeadlineFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:HeadlineFont.spritefont
+
+#begin rollover5.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:rollover5.wav
 
